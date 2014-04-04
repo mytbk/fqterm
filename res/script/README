@@ -1,0 +1,112 @@
+
+I've contacted one of the authors of CTerm, and got his permisson to use these scripts with FQTerm.
+Other scripts were directly drawn from qterm0.4.1.
+
+Any file to be written to or read from should be in the format of UTF-8.
+
+Usage:
+
+sessionID=long(sys.argv[0])
+
+formatError(sessionID) 
+get the traceback info
+return string
+
+getArticle(sessionID, interval)
+copy current article
+return (string, success)
+
+
+copyArticle(sessionID)
+copy current article (obsolete)
+return string
+
+getText(sessionID, line)
+get text at line
+return string
+
+
+getAttrText(sessionID, line)
+get attr text at line
+return string
+
+sendString(sessionID, str)
+send string to server
+return number of bytes written
+
+
+sendParsedString(sessionID, str)
+send string with escape
+return number of bytes written
+
+caretX(sessionID)
+caret x
+return int
+
+caretY(sessionID)
+caret y
+return int
+
+
+columns(sessionID)
+screen width
+return int
+
+
+rows(sessionID)
+screen height
+return int
+
+
+isConnected(sessionID)
+connected to server or not
+return int
+
+disconnect(sessionID)
+disconnect from server
+
+
+reconnect(sessionID)
+reconnect
+
+
+getBBSCodec(sessionID)
+get the bbs encoding, GBK or Big5
+return string
+
+getAddress(sessionID)
+get the bbs address
+return string
+
+getPort(sessionID)
+get the bbs port number
+return int
+
+getProtocol(sessionID)
+get the bbs protocol, 0/1/2 TELNET/SSH1/SSH2
+return int
+
+getReplyKey(sessionID)
+get the key to reply messages
+return string (wtf...?)
+
+
+getURL(sessionID)
+get the url string under mouse (not sure if works)
+return string
+
+
+previewImage(sessionID, url)
+preview the image link
+
+
+fromUTF8(str, codec)
+decode from utf8 to string in specified codec
+return string
+
+
+toUTF8(str, codec)
+decode from string in specified codec to utf8
+return string
+
+

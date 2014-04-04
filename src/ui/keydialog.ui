@@ -1,0 +1,665 @@
+<ui version="4.0" >
+ <class>keyDialog</class>
+ <widget class="QDialog" name="keyDialog" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>545</width>
+    <height>463</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Key Setup</string>
+  </property>
+  <layout class="QGridLayout" >
+   <item row="0" column="0" colspan="10" >
+    <layout class="QHBoxLayout" >
+     <item>
+      <widget class="QPushButton" name="addButton" >
+       <property name="text" >
+        <string>Add</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="deleteButton" >
+       <property name="text" >
+        <string>Delete</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="updateButton" >
+       <property name="text" >
+        <string>Update</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer>
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0" >
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="closeButton" >
+       <property name="text" >
+        <string>Close</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="1" column="0" colspan="10" >
+    <widget class="QListWidget" name="nameListWidget" />
+   </item>
+   <item row="2" column="0" >
+    <widget class="QLabel" name="textLabel1" >
+     <property name="text" >
+      <string>Name</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="3" colspan="4" >
+    <widget class="QLineEdit" name="nameEdit" />
+   </item>
+   <item row="3" column="0" colspan="2" >
+    <widget class="QLabel" name="shortcutLabel" >
+     <property name="text" >
+      <string>Short Cut</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="3" colspan="4" >
+    <widget class="QLineEdit" name="shortcutEdit" />
+   </item>
+   <item row="4" column="0" colspan="10" >
+    <widget class="QGroupBox" name="groupBox" >
+     <property name="title" >
+      <string>Define</string>
+     </property>
+     <layout class="QGridLayout" >
+      <item row="0" column="0" >
+       <widget class="QRadioButton" name="radioButton1" >
+        <property name="text" >
+         <string>Key</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" colspan="8" >
+       <widget class="QLineEdit" name="keyEdit" />
+      </item>
+      <item row="1" column="0" colspan="3" >
+       <widget class="QLabel" name="textLabel3" >
+        <property name="text" >
+         <string>General Keys</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="3" >
+       <widget class="QPushButton" name="upButton" >
+        <property name="text" >
+         <string>Up</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="4" >
+       <widget class="QPushButton" name="downButton" >
+        <property name="text" >
+         <string>Down</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="5" >
+       <widget class="QPushButton" name="leftButton" >
+        <property name="text" >
+         <string>Left</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="6" colspan="2" >
+       <widget class="QPushButton" name="rightButton" >
+        <property name="text" >
+         <string>Right</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="8" >
+       <widget class="QPushButton" name="enterButton" >
+        <property name="text" >
+         <string>Enter</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0" >
+       <widget class="QRadioButton" name="radioButton2" >
+        <property name="text" >
+         <string>Script</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2" colspan="5" >
+       <widget class="QLineEdit" name="scriptEdit" />
+      </item>
+      <item row="2" column="7" colspan="2" >
+       <widget class="QPushButton" name="scriptButton" >
+        <property name="text" >
+         <string>Browse...</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0" colspan="2" >
+       <widget class="QRadioButton" name="radioButton3" >
+        <property name="text" >
+         <string>Program</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="2" colspan="5" >
+       <widget class="QLineEdit" name="programEdit" />
+      </item>
+      <item row="3" column="7" colspan="2" >
+       <widget class="QPushButton" name="programButton" >
+        <property name="text" >
+         <string>Browse...</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11" />
+ <resources/>
+ <connections>
+  <connection>
+   <sender>radioButton1</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>keyEdit</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>69</x>
+     <y>230</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>109</x>
+     <y>230</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButton1</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>upButton</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>66</x>
+     <y>230</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>151</x>
+     <y>266</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButton1</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>downButton</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>20</x>
+     <y>237</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>234</x>
+     <y>267</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButton1</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>leftButton</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>69</x>
+     <y>230</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>299</x>
+     <y>263</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButton1</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>rightButton</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>50</x>
+     <y>230</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>359</x>
+     <y>265</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButton1</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>enterButton</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>64</x>
+     <y>230</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>417</x>
+     <y>264</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButton1</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>scriptEdit</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>20</x>
+     <y>246</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>124</x>
+     <y>314</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButton1</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>scriptButton</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>41</x>
+     <y>230</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>362</x>
+     <y>293</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButton1</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>programEdit</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>20</x>
+     <y>245</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>111</x>
+     <y>354</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButton1</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>programButton</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>64</x>
+     <y>230</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>409</x>
+     <y>343</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButton2</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>keyEdit</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>20</x>
+     <y>296</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>101</x>
+     <y>230</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButton2</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>upButton</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>85</x>
+     <y>290</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>142</x>
+     <y>284</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButton2</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>downButton</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>20</x>
+     <y>307</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>205</x>
+     <y>277</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButton2</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>leftButton</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>21</x>
+     <y>290</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>299</x>
+     <y>277</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButton2</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>rightButton</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>25</x>
+     <y>290</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>359</x>
+     <y>284</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButton2</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>enterButton</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>81</x>
+     <y>290</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>419</x>
+     <y>266</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButton2</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>scriptEdit</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>76</x>
+     <y>290</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>119</x>
+     <y>290</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButton2</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>scriptButton</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>82</x>
+     <y>290</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>341</x>
+     <y>290</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButton2</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>programEdit</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>20</x>
+     <y>294</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>113</x>
+     <y>354</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButton2</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>programButton</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>83</x>
+     <y>305</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>346</x>
+     <y>354</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButton3</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>keyEdit</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>20</x>
+     <y>339</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>116</x>
+     <y>248</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButton3</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>upButton</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>20</x>
+     <y>349</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>173</x>
+     <y>271</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButton3</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>downButton</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>96</x>
+     <y>349</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>200</x>
+     <y>284</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButton3</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>leftButton</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>20</x>
+     <y>349</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>299</x>
+     <y>270</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButton3</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>rightButton</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>20</x>
+     <y>349</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>359</x>
+     <y>275</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButton3</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>enterButton</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>90</x>
+     <y>349</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>419</x>
+     <y>277</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButton3</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>scriptEdit</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>77</x>
+     <y>349</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>269</x>
+     <y>312</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButton3</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>scriptButton</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>98</x>
+     <y>333</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>346</x>
+     <y>309</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButton3</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>programEdit</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>72</x>
+     <y>349</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>128</x>
+     <y>349</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButton3</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>programButton</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>73</x>
+     <y>335</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>342</x>
+     <y>335</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

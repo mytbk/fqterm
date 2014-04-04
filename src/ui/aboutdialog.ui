@@ -1,0 +1,175 @@
+<ui version="4.0" >
+ <class>aboutDialog</class>
+ <widget class="QDialog" name="aboutDialog" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>290</height>
+   </rect>
+  </property>
+  <property name="mouseTracking" >
+   <bool>false</bool>
+  </property>
+  <property name="windowTitle" >
+   <string>About FQTerm</string>
+  </property>
+  <layout class="QGridLayout" >
+   <item row="0" column="0" >
+    <widget class="QLabel" name="pixmapLabel" >
+     <property name="text" >
+      <string/>
+     </property>
+     <property name="scaledContents" >
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1" >
+    <widget class="QLabel" name="TextLabel" >
+     <property name="frameShape" >
+      <enum>QFrame::NoFrame</enum>
+     </property>
+     <property name="frameShadow" >
+      <enum>QFrame::Plain</enum>
+     </property>
+     <property name="text" >
+      <string>FQTerm</string>
+     </property>
+     <property name="alignment" >
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0" colspan="3" >
+    <widget class="QTabWidget" name="mainTabWidget" >
+     <property name="currentIndex" >
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="tab1" >
+      <property name="geometry" >
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>376</width>
+        <height>194</height>
+       </rect>
+      </property>
+      <attribute name="title" >
+       <string>About</string>
+      </attribute>
+      <layout class="QGridLayout" >
+       <item row="0" column="0" >
+        <widget class="QLabel" name="label" >
+         <property name="text" >
+          <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
+p, li { white-space: pre-wrap; }
+&lt;/style>&lt;/head>&lt;body>
+&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">&lt;br />FQTerm&lt;br />&lt;br />&lt;br />&lt;a href="http://code.google.com/p/fqterm">&lt;span style=" text-decoration: underline; color:#0000ff;">http://code.google.com/p/fqterm&lt;/span>&lt;/a>&lt;/p>&lt;/body>&lt;/html></string>
+         </property>
+         <property name="textFormat" >
+          <enum>Qt::RichText</enum>
+         </property>
+         <property name="alignment" >
+          <set>Qt::AlignCenter</set>
+         </property>
+         <property name="openExternalLinks" >
+          <bool>true</bool>
+         </property>
+         <property name="textInteractionFlags" >
+          <set>Qt::TextBrowserInteraction</set>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab2" >
+      <property name="geometry" >
+       <rect>
+        <x>77</x>
+        <y>97</y>
+        <width>944</width>
+        <height>522</height>
+       </rect>
+      </property>
+      <attribute name="title" >
+       <string>Authors</string>
+      </attribute>
+      <layout class="QGridLayout" >
+       <item row="0" column="0" >
+        <widget class="QLabel" name="TextLabel1" >
+         <property name="text" >
+          <string>fqterm@gmail.com
+
+devilphoenix@newsmth</string>
+         </property>
+         <property name="alignment" >
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab3" >
+      <property name="geometry" >
+       <rect>
+        <x>100</x>
+        <y>120</y>
+        <width>944</width>
+        <height>522</height>
+       </rect>
+      </property>
+      <attribute name="title" >
+       <string>Credits</string>
+      </attribute>
+      <layout class="QGridLayout" >
+       <item row="0" column="0" >
+        <widget class="QTextBrowser" name="TextBrowser" >
+         <property name="html" >
+          <string>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
+&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
+p, li { white-space: pre-wrap; }
+&lt;/style>&lt;/head>&lt;body style=" font-family:'SimSun'; font-size:9pt; font-weight:400; font-style:normal;">
+&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">&lt;/p>&lt;/body>&lt;/html></string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+   <item row="2" column="2" >
+    <widget class="QPushButton" name="closeButton" >
+     <property name="text" >
+      <string>Close</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11" />
+ <tabstops>
+  <tabstop>closeButton</tabstop>
+  <tabstop>mainTabWidget</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>closeButton</sender>
+   <signal>clicked()</signal>
+   <receiver>aboutDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>339</x>
+     <y>261</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>211</x>
+     <y>249</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

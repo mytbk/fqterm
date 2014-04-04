@@ -1,0 +1,13 @@
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Type=Application
+Categories=Application;Qt;Network;
+Icon=/usr/local/share/FQTerm/pic/fqterm_256x256.png
+Name=FQTerm
+Exec=fqterm -caption "%c" %i %u
+GenericName=BBS Client
+GenericName[zh_CN]=BBS 客户端程序
+GenericName[zh_TW]=BBS 客戶端程式
+Comment=BBS client based on Qt library in linux
+Terminal=false

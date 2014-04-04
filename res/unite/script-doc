@@ -1,0 +1,199 @@
+﻿
+FQTerm支持javascript和Python脚本
+
+javascript运行方式是在脚本菜单中选择运行脚本
+
+而Python则需要选择运行Python脚本
+
+如果你的菜单中没有"运行Python脚本"，说明编译时未将Python支持编译进FQTerm，请与作者或者打包者联系
+
+*编译fqterm时，若要支持Python，请在环境变量中包含python2*.lib的路径
+
+现在fqterm对脚本回调的支持仍然处于试验阶段，所以没有记载在这里。
+
+
+以下是js的api列表，你基本可以在js中像调用普通的javascript function一样调用这些函数
+
+QString类型的返回值将被转变为字符串，而QList类型则会被转变为一个列表
+
+如果需要sleep，则需要fqterm.import(utils.js)。sleep是忙等，参数为ms。
+
+调用方式：在js脚本中，fqterm.function()即可
+
+  //import另一个脚本，如果是相对路径，则先在脚本当前路径搜索
+  //然后在script目录下搜索
+  bool import(const QString& filename);
+
+  //timer
+  int setInterval(int ms, const QScriptValue& func);
+  void clearInterval(int id);
+
+  //ui functions.
+  void msgBox(const QString& msg);
+
+  //bbs ui functions
+  int caretX();
+  int caretY();
+
+  QString getText(int row);
+  QString getTextAt(int row, int column, int len);
+  //当column是一个字的后半部分时，用full的这个版本可以得到这个字
+  QString getFullTextAt(int row, int column, int len);
+  QString getAttrText(int row);
+  QString getAttrTextAt(int row, int column, int len);
+  QString getFullAttrTextAt(int row, int column, int len);
+
+  void sendString(const QString& str);
+  void sendParsedString(const QString& str);
+
+  int columns();
+  int rows();
+
+  bool isConnected();
+  void disconnect();
+  void reconnect();
+
+  QString getBBSCodec();
+  QString getAddress();
+  int getPort();
+  int getProtocol();
+
+  QString getReplyKey();
+
+  QString getURL();
+  QString getIP();
+  void previewImage(const QString& url);
+  QString copyArticle();
+  void openUrl(const QString & url);
+  QString getSelect(bool color_copy);
+  QList<int> mapToChar(int screenX, int screenY);
+  //next 2 functions are map screen to char for x, y.
+  int charX(int screenX);
+  int charY(int screenY);
+  //mouse position is given in screen coordinate.
+  int mouseX();
+  int mouseY();
+
+  //auxiliary functions.
+  //should be move to some other class.
+  //qt script provides so poor extensions to js.
+  void writeFile(const QString& filename, const QString& str);
+  void appendFile(const QString& filename, const QString& str);
+  QString readFile(const QString& filename);
+  QStringList readFolder(const QString& path);
+  QString platform();
+  bool makePath(const QString& path);
+  QString newLine();
+
+
+以下是Python的API列表，具体用法还请参考script目录下的脚本示例
+
+需要注意的是
+
+1.需要import fqterm，才能使用fqterm的API
+2.long(sys.argv[0])是当前窗口的标记
+
+sessionID=long(sys.argv[0])
+
+formatError(sessionID) 
+get the traceback info
+return string
+
+getArticle(sessionID, interval)
+copy current article
+return (string, success)
+
+
+copyArticle(sessionID)
+copy current article (obsolete)
+return string
+
+getText(sessionID, line)
+get text at line
+return string
+
+
+getAttrText(sessionID, line)
+get attr text at line
+return string
+
+sendString(sessionID, str)
+send string to server
+return number of bytes written
+
+
+sendParsedString(sessionID, str)
+send string with escape
+return number of bytes written
+
+caretX(sessionID)
+caret x
+return int
+
+caretY(sessionID)
+caret y
+return int
+
+
+columns(sessionID)
+screen width
+return int
+
+
+rows(sessionID)
+screen height
+return int
+
+
+isConnected(sessionID)
+connected to server or not
+return int
+
+disconnect(sessionID)
+disconnect from server
+
+
+reconnect(sessionID)
+reconnect
+
+
+getBBSCodec(sessionID)
+get the bbs encoding, GBK or Big5
+return string
+
+getAddress(sessionID)
+get the bbs address
+return string
+
+getPort(sessionID)
+get the bbs port number
+return int
+
+getProtocol(sessionID)
+get the bbs protocol, 0/1/2 TELNET/SSH1/SSH2
+return int
+
+getReplyKey(sessionID)
+get the key to reply messages
+return string (wtf...?)
+
+
+getURL(sessionID)
+get the url string under mouse (not sure if works)
+return string
+
+
+previewImage(sessionID, url)
+preview the image link
+
+
+fromUTF8(str, codec)
+decode from utf8 to string in specified codec
+return string
+
+
+toUTF8(str, codec)
+decode from string in specified codec to utf8
+return string
+
+

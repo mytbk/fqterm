@@ -1,0 +1,161 @@
+For convenience, we will call the root directory of fqterm source code
+as $FQTERM in this document.
+
+--------------------------------------------------------
+[ How to build FQTerm under Linux using GCC]
+
+First make sure that the latest version of Qt4 library and OpenSSL
+library are installed. Next please install CMake, which is a very
+powerful cross-platform build system. Then follow the instructions
+below to setup the development environment.
+
+1. Create "build" directory.
+
+  Create directory $FQTERM/build.
+
+2. Generate the project file and build FQTerm. 
+
+  In the console run commands below:
+   
+  $ cd $FQTERM/build  # change current postion to the build direcotry
+  $ cmake ../         # generate necessary Makefiles
+  $ make              # build the program
+  $ make love         # invoke this command if you are eager to run 
+                      # fqterm before installing it. 
+  $ make install      # install fqterm.
+  $ fqterm            # run fqterm just installed.
+
+3. Enable IP location detection feature.
+
+  If you want to enable the IP location detection feature, please
+  download the IP location database file "QQWry.dat" and put a copy of
+  it under "$HOME/.fqterm" or "$PREFIX/share/FQTerm". You can get
+  "QQWry.dat" from this project's home page or from other websites.
+
+
+--------------------------------------------------------
+[ How to build FQTerm under MacOS X using GCC or Xcode ]
+
+First make sure that the latest version of Qt4 are installed properly.
+Next please install CMake, which is a very powerful cross-platform
+build system. Then follow the instructions below to setup the
+development environment.
+
+1. Create "build" directory.
+
+  Create directory $FQTERM/build.
+
+2. Generate the project file and build FQTerm. 
+
+  In the console run commands below:
+   
+  $ cd $FQTERM/build  # change current postion to the build direcotry
+  $ cmake ../         # generate necessary Makefiles
+  $ make              # build the program
+  $ make love         # invoke this command if you are eager to run 
+                      # fqterm before installing it.
+  $ make diskimage    # create fqterm.dmg for distribution.
+  $ make install      # get a complete MacOS X application bundle
+                      # in $FQTERM/build/fqterm.app
+  $ open ./fqterm.app # run fqterm just installed.
+                      
+  Or if you want to use Xcode to build FQTerm other than GNU make,
+  please run command below instead:
+
+  $ cmake -G "Xcode" ../
+
+  and then use Xcode to open the generated project file.
+
+3. Enable IP location detection feature.
+
+  If you want to enable the IP location detection feature, please
+  download the IP location database file "QQWry.dat" and put a copy of
+  it under "$HOME/.fqterm" or "$PREFIX/share/FQTerm". You can get
+  "QQWry.dat" from this project's home page or from other websites.
+
+4. Known issues.
+
+  You may get an error when running "$ make diskimage" as below: 
+
+  $ make diskimage
+   ...
+   hdiutil: create failed - error 49168
+   ...
+  
+  [zz http://lists.apple.com/archives/Carbon-dev/2007/Aug/msg00357.html]
+  It seemed one of the reasons listed below could contribute to this problem:
+  
+  1) Some of the files you're trying to archive are being used
+  exclusively by another process. A couple of people figured that
+  their Anti-Virus software (e.g. Norton AV) was to blame.
+   
+  2) Disk space is low, and the hdiutil tool cannot perform its
+  internal caching.
+   
+  3) A file system error which is not detected by Disk Utility
+  prevents proper accessing some crucial files. Repairing the disk
+  using "Disk Warrior" did help.
+   
+  4) Files which were put into the trash can but were not deleted yet
+  cause problems when tried to being put into the disk image.
+
+----------------------------------------------------------
+[ How to build FQTerm under Win32 using MS Visual Studio ]
+
+MS Visual Studio Express 2005 is recommended, but other version of
+Visual Studio can also be used. First make sure that the latest
+version of OpenSSL with default configurations and Qt4 are also
+installed properly. Next please install CMake, which is a very
+powerful cross-platform build system. Then follow the instructions
+below to setup the development environment.
+
+1. Set environment variables. 
+
+   Make sure the environment variable QTDIR is set to the directory
+   where Qt4 is installed.
+
+2. Specify OpenSSL path. And prepare python lib.
+
+   First open the file $FQTERM/CMakeLists.txt.win32 with a text
+   editor, and then change the two macros, OPENSSL_INCLUDE_DIR and
+   OPENSSL_LIBRARIES, based on where OpenSSL is installed.
+
+   You MUST have debug version of python lib(pythonxx_d.lib) when
+   build debug version.
+
+3. Create "build" directory.
+
+  Create directory %FQTERM%\build.
+   
+4. Generate project files. 
+
+  In the console run the command below to generate Visual Studio
+  project files.
+
+  $ cd %FQTERM%\build
+  $ cmake -G "Visual Studio 9 2008" ..\
+   
+  This command will generate ".sln" and ".vcproject" files for Visual
+  Studio 8. Then you can use Visual Studio to open the .sln file.
+
+  For other versions of Visual Studio, please see the help
+  message of CMake by running "cmake --help".
+
+5. Start coding/buiding/debuging as usual using Visual Studio.
+
+6. Enable IP location detection feature.
+
+  If you want to enable the IP location detection feature, please
+  download the IP location database file "QQWry.dat" and put a copy of
+  it under "$FQTERM/build/debug" and "$FQTERM/build/release". You can
+  get "QQWry.dat" from this project's home page or from other
+  websites.
+
+7. Generate FQTerm Installer (Windows)
+
+  If you wish to install FQTerm to your system, please install NSIS and
+  compile FQTermNSIS.nsi. This will require some files in the right 
+  position. Please check FQTermNSIS.nsi and see the section Section 
+  "-CopyFiles".
+
+  

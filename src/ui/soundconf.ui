@@ -1,0 +1,162 @@
+<ui version="4.0" >
+ <class>soundConf</class>
+ <widget class="QDialog" name="soundConf" >
+  <property name="enabled" >
+   <bool>true</bool>
+  </property>
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>308</width>
+    <height>269</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Configure</string>
+  </property>
+  <layout class="QGridLayout" >
+   <item row="0" column="0" colspan="2" >
+    <widget class="QGroupBox" name="groupBox" >
+     <property name="title" >
+      <string>Sound File:</string>
+     </property>
+     <layout class="QGridLayout" >
+      <item row="0" column="0" >
+       <widget class="QLineEdit" name="leFile" />
+      </item>
+      <item row="0" column="2" >
+       <widget class="QPushButton" name="bfSelect" >
+        <property name="text" >
+         <string>Select...</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="1" column="0" colspan="2" >
+    <widget class="QGroupBox" name="groupBox_2" >
+     <property name="title" >
+      <string>Play With:</string>
+     </property>
+     <layout class="QGridLayout" >
+      <item row="0" column="0" >
+       <widget class="QRadioButton" name="radioButton1" >
+        <property name="enabled" >
+         <bool>true</bool>
+        </property>
+        <property name="text" >
+         <string>Internal</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" >
+       <widget class="QRadioButton" name="radioButton2" >
+        <property name="enabled" >
+         <bool>true</bool>
+        </property>
+        <property name="text" >
+         <string>External</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="4" >
+       <widget class="QPushButton" name="bpTest" >
+        <property name="text" >
+         <string>Test</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2" >
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0" >
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="2" column="0" colspan="2" >
+    <widget class="QGroupBox" name="groupBox_3" >
+     <property name="enabled" >
+      <bool>false</bool>
+     </property>
+     <property name="title" >
+      <string>External Program:</string>
+     </property>
+     <layout class="QGridLayout" >
+      <item row="0" column="0" >
+       <widget class="QLineEdit" name="leProg" />
+      </item>
+      <item row="0" column="2" >
+       <widget class="QPushButton" name="bpSelect" >
+        <property name="text" >
+         <string>Select...</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="3" column="0" >
+    <spacer>
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0" >
+      <size>
+       <width>40</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="3" column="1" >
+    <layout class="QHBoxLayout" >
+     <item>
+      <widget class="QPushButton" name="bOK" >
+       <property name="text" >
+        <string>OK</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="bCancel" >
+       <property name="text" >
+        <string>Cancel</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11" />
+ <resources/>
+ <connections>
+  <connection>
+   <sender>radioButton2</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>groupBox_3</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>124</x>
+     <y>136</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>123</x>
+     <y>176</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

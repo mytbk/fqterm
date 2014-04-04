@@ -1,0 +1,114 @@
+find_package(OpenSSL REQUIRED)
+find_package(OSS)
+
+set(CMAKE_VERBOSE_MAKEFILE ON)
+
+ADD_DEFINITIONS(-Wall)
+ADD_DEFINITIONS(-DQT_SHARED)
+ADD_DEFINITIONS(-D_OS_FREEBSD_)
+ADD_DEFINITIONS(-DFQTERM_VERSION_STRING="\\"${FQTERM_VERSION}\\"")
+ADD_DEFINITIONS(-DFQTERM_SVN_REVISION="\\"${MCGSVN_WC_REVISION}\\"")
+IF(OSS_FOUND)
+  ADD_DEFINITIONS(-DAUDIO_OSS)
+  SET(AUDIO_INCLUDE_DIR "${OSS_INCLUDE_DIR}")
+ELSE(OSS_FOUND)
+  SET(AUDIO_INCLUDE_DIR)
+ENDIF(OSS_FOUND)
+
+add_subdirectory(src)
+
+ADD_EXECUTABLE(fqterm.bin
+  src/fqterm/main.cpp
+)
+
+include_directories(
+  ${AUDIO_INCLUDE_DIR}
+  ${QT_INCLUDE_DIR}
+  ${QT_QTCORE_INCLUDE_DIR}
+  ${QT_QTGUI_INCLUDE_DIR}
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/common
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/protocol
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/terminal
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/utilities
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/ui
+  ${AUDIO_INCLUDE_DIR}
+)
+
+link_directories(
+  ${QT_PLUGINS_DIR}/codecs
+  ${QT_PLUGINS_DIR}/imageformats
+)
+
+target_link_libraries(fqterm.bin
+  fqterm_main
+  fqterm_terminal 
+  fqterm_protocol 
+  fqterm_utilities 
+  fqterm_ui
+  fqterm_common 
+  fqterm_unite
+  ${QT_QTNETWORK_LIBRARIES}
+  ${QT_QTSCRIPT_LIBRARIES}  
+  ${QT_LIBRARIES}
+  ${QT_QTXML_LIBRARIES}  
+  ${OPENSSL_LIBRARIES}
+  ${PYTHON_LIB}
+)
+
+add_dependencies(fqterm.bin
+  fqterm_main
+  fqterm_common
+  fqterm_terminal
+  fqterm_protocol
+  fqterm_ui
+  fqterm_utilities
+  fqterm_qm_target
+)
+
+add_custom_target(love
+COMMAND FQTERM_RESOURCE=${CMAKE_SOURCE_DIR}/res ${CMAKE_BINARY_DIR}/fqterm.bin
+DEPENDS ${CMAKE_BINARY_DIR}/fqterm.bin
+)
+
+INSTALL(
+  FILES ${CMAKE_BINARY_DIR}/fqterm.bin
+  DESTINATION bin/
+  PERMISSIONS
+      OWNER_EXECUTE OWNER_WRITE OWNER_READ
+      GROUP_EXECUTE GROUP_READ
+      WORLD_EXECUTE WORLD_READ
+)
+
+INSTALL(
+  FILES ${CMAKE_SOURCE_DIR}/res/fqterm.sh
+  DESTINATION bin/
+  PERMISSIONS
+      OWNER_EXECUTE OWNER_WRITE OWNER_READ
+      GROUP_EXECUTE GROUP_READ
+      WORLD_EXECUTE WORLD_READ
+  RENAME fqterm
+)
+
+INSTALL(
+  DIRECTORY ${CMAKE_SOURCE_DIR}/res/
+  DESTINATION share/FQTerm/
+  DIRECTORY_PERMISSIONS
+              OWNER_EXECUTE OWNER_WRITE OWNER_READ
+              GROUP_EXECUTE GROUP_READ
+              WORLD_EXECUTE WORLD_READ
+  FILE_PERMISSIONS
+              OWNER_WRITE OWNER_READ
+              GROUP_READ
+              WORLD_READ
+  PATTERN "*.svn*" EXCLUDE
+  PATTERN "*.ts.orig*" EXCLUDE
+)
+
+INSTALL(
+  FILES ${fqterm_qm_files}
+  DESTINATION share/FQTerm/dict/
+  PERMISSIONS
+      OWNER_WRITE OWNER_READ
+      GROUP_READ
+      WORLD_READ
+)

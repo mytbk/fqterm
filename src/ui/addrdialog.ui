@@ -1,0 +1,1211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>addrDialog</class>
+ <widget class="QDialog" name="addrDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>493</width>
+    <height>383</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Site Setting</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout_4">
+   <item row="1" column="0">
+    <spacer>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>40</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="1" column="1">
+    <widget class="QPushButton" name="applyPushButton">
+     <property name="text">
+      <string>Apply (&amp;Temporarily)</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="3">
+    <widget class="QPushButton" name="closePushButton">
+     <property name="text">
+      <string>&amp;Cancel</string>
+     </property>
+     <property name="shortcut">
+      <string/>
+     </property>
+     <property name="autoDefault">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="2">
+    <widget class="QPushButton" name="savePushButton">
+     <property name="text">
+      <string>&amp;Apply (Save)</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0" colspan="4">
+    <widget class="QTabWidget" name="tabWidget">
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="Widget2">
+      <attribute name="title">
+       <string>General</string>
+      </attribute>
+      <layout class="QGridLayout">
+       <item row="0" column="0">
+        <layout class="QGridLayout" name="_2">
+         <item row="0" column="0">
+          <widget class="QLabel" name="TextLabel1">
+           <property name="text">
+            <string>Name</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1" colspan="3">
+          <widget class="QLineEdit" name="nameLineEdit"/>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="TextLabel2">
+           <property name="text">
+            <string>Address</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1" colspan="3">
+          <widget class="QLineEdit" name="addrLineEdit"/>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="TextLabel1_3">
+           <property name="text">
+            <string>Protocol</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QComboBox" name="protocolComboBox">
+           <item>
+            <property name="text">
+             <string>Telnet</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>SSH1</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>SSH2</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item row="2" column="3">
+          <widget class="QLineEdit" name="portLineEdit">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0">
+          <widget class="QLabel" name="TextLabel3_6">
+           <property name="text">
+            <string>Type</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1">
+          <widget class="QComboBox" name="hostTypeComboBox">
+           <item>
+            <property name="text">
+             <string>BBS</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>*NIX</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item row="4" column="0" colspan="4">
+          <widget class="QGroupBox" name="telnetAutoLoginGroup">
+           <property name="title">
+            <string>Telnet Auto Login</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+           <property name="checked">
+            <bool>false</bool>
+           </property>
+           <layout class="QGridLayout">
+            <item row="0" column="0">
+             <widget class="QLabel" name="TextLabel1_2">
+              <property name="text">
+               <string>Prelogin</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QLineEdit" name="preloginLineEdit"/>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="TextLabel4">
+              <property name="text">
+               <string>User</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignVCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QLineEdit" name="userLineEdit"/>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="TextLabel5">
+              <property name="text">
+               <string>Password</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignVCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QLineEdit" name="passwdLineEdit">
+              <property name="echoMode">
+               <enum>QLineEdit::Password</enum>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="TextLabel11">
+              <property name="text">
+               <string>Postlogin</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="1">
+             <widget class="QLineEdit" name="postloginLineEdit"/>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item row="2" column="2">
+          <widget class="QCheckBox" name="portCheckBox">
+           <property name="text">
+            <string>Port</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="4">
+          <widget class="QGroupBox" name="sshAutoLoginGroup">
+           <property name="title">
+            <string>SSH Auto Login</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+           <property name="checked">
+            <bool>false</bool>
+           </property>
+           <layout class="QGridLayout">
+            <item row="0" column="0">
+             <widget class="QLabel" name="TextLabel2_3">
+              <property name="text">
+               <string>User</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QLineEdit" name="sshuserLineEdit"/>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="TextLabel3_3">
+              <property name="text">
+               <string>Password</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QLineEdit" name="sshpasswdLineEdit">
+              <property name="echoMode">
+               <enum>QLineEdit::Password</enum>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <spacer>
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab1">
+      <attribute name="title">
+       <string>Display</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_3">
+       <item row="0" column="0">
+        <widget class="QLabel" name="TextLabel6">
+         <property name="text">
+          <string>BBS Encoding</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QComboBox" name="bbscodeComboBox">
+         <item>
+          <property name="text">
+           <string>GBK</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>BIG5</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>UTF8</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>BIG5-HKSCS</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>BIG5-UAO</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QCheckBox" name="highlightCheckBox">
+         <property name="text">
+          <string>Always Hightlight</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0" rowspan="4" colspan="4">
+        <widget class="QLabel" name="fontPreviewer">
+         <property name="autoFillBackground">
+          <bool>true</bool>
+         </property>
+         <property name="text">
+          <string>TextLabel3</string>
+         </property>
+         <property name="textFormat">
+          <enum>Qt::RichText</enum>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="3">
+        <widget class="QLabel" name="label_4">
+         <property name="text">
+          <string>Align Mode</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="4">
+        <widget class="QSpinBox" name="lineSpacingSpinBox"/>
+       </item>
+       <item row="0" column="3">
+        <widget class="QLabel" name="label_3">
+         <property name="text">
+          <string>Line Spacing</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="4">
+        <widget class="QSpinBox" name="charSpacingSpinBox"/>
+       </item>
+       <item row="1" column="3">
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>Char Spacing</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QCheckBox" name="ansicolorCheckBox">
+         <property name="text">
+          <string>ANSI Color</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="4">
+        <widget class="QComboBox" name="alignComboBox">
+         <item>
+          <property name="text">
+           <string>Align Mid</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Align Bottom</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Align Top</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="7" column="4">
+        <widget class="QComboBox" name="schemaComboBox"/>
+       </item>
+       <item row="6" column="4">
+        <widget class="QPushButton" name="bgcolorPushButton">
+         <property name="text">
+          <string>Background</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="4">
+        <widget class="QPushButton" name="fgcolorPushButton">
+         <property name="text">
+          <string>Text Color</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="4">
+        <widget class="QToolButton" name="fontToolButton">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Font</string>
+         </property>
+         <property name="popupMode">
+          <enum>QToolButton::InstantPopup</enum>
+         </property>
+         <property name="toolButtonStyle">
+          <enum>Qt::ToolButtonTextOnly</enum>
+         </property>
+         <property name="arrowType">
+          <enum>Qt::DownArrow</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0" colspan="2">
+        <widget class="QComboBox" name="fontAdjustComboBox">
+         <property name="currentIndex">
+          <number>1</number>
+         </property>
+         <item>
+          <property name="text">
+           <string>Keep Font; Adjust Row/Column.</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Keep Row/Column; Adjust Font.</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Keep Font; Keep Row/Column.</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab2">
+      <attribute name="title">
+       <string>Terminal</string>
+      </attribute>
+      <layout class="QGridLayout">
+       <item row="0" column="0">
+        <widget class="QLabel" name="TextLabel1_5">
+         <property name="text">
+          <string>Term Type</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="termtypeLineEdit"/>
+       </item>
+       <item row="0" column="2">
+        <widget class="QLabel" name="TextLabel2_5">
+         <property name="text">
+          <string>Key Type</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="3">
+        <widget class="QComboBox" name="keytypeComboBox">
+         <item>
+          <property name="text">
+           <string>VT100</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>XTERM</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>BBS</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="TextLabel3_4">
+         <property name="text">
+          <string>Columns</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="columnLineEdit"/>
+       </item>
+       <item row="1" column="2">
+        <widget class="QLabel" name="TextLabel5_3">
+         <property name="text">
+          <string>Scroll Lines</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="3">
+        <widget class="QLineEdit" name="scrollLineEdit"/>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="TextLabel4_3">
+         <property name="text">
+          <string>Rows</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QLineEdit" name="rowLineEdit"/>
+       </item>
+       <item row="2" column="2">
+        <widget class="QLabel" name="TextLabel6_3">
+         <property name="text">
+          <string>Cursor Type</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="3">
+        <widget class="QComboBox" name="cursorTypeComboBox">
+         <item>
+          <property name="text">
+           <string>Block</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Underline</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>I Type</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="3" column="0" colspan="2">
+        <widget class="QLabel" name="TextLabel1_4">
+         <property name="text">
+          <string>Escape string (i.e. *[ )</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="2" colspan="2">
+        <widget class="QLineEdit" name="escapeLineEdit"/>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab7">
+      <attribute name="title">
+       <string>Keyboard</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <widget class="QGroupBox" name="BackSpace">
+         <property name="title">
+          <string>BackSpace Setting</string>
+         </property>
+         <layout class="QGridLayout" name="_3">
+          <item row="0" column="0">
+           <widget class="QRadioButton" name="backspace8">
+            <property name="text">
+             <string>Send backspace as ^H</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QRadioButton" name="backspace127">
+            <property name="text">
+             <string>Send backspace as ^? (127)</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <spacer name="spacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab3">
+      <attribute name="title">
+       <string>Proxy</string>
+      </attribute>
+      <layout class="QGridLayout">
+       <item row="0" column="0">
+        <widget class="QLabel" name="TextLabel2_2">
+         <property name="text">
+          <string>Type</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QComboBox" name="proxytypeComboBox">
+         <item>
+          <property name="text">
+           <string>None</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Wingate</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>SOCKS4</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>SOCKS5</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>HTTP</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="TextLabel3_2">
+         <property name="text">
+          <string>Address</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="proxyaddrLineEdit"/>
+       </item>
+       <item row="1" column="2">
+        <widget class="QLabel" name="TextLabel4_2">
+         <property name="text">
+          <string>Port</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="3">
+        <widget class="QLineEdit" name="proxyportLineEdit"/>
+       </item>
+       <item row="2" column="0" colspan="4">
+        <widget class="QGroupBox" name="authentationGroup">
+         <property name="title">
+          <string>Authentation</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="checked">
+          <bool>false</bool>
+         </property>
+         <layout class="QGridLayout">
+          <item row="0" column="0">
+           <widget class="QLabel" name="TextLabel5_2">
+            <property name="text">
+             <string>User</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="proxyuserLineEdit"/>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="TextLabel5_4">
+            <property name="text">
+             <string>Password</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="proxypasswdLineEdit"/>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <spacer>
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="Widget3">
+      <attribute name="title">
+       <string>Misc</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_2">
+       <item row="0" column="0" colspan="5">
+        <widget class="QGroupBox" name="antiIdleGroupBox">
+         <property name="title">
+          <string>Anti-idle</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <layout class="QGridLayout" name="gridLayout">
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="antiLineEdit"/>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="TextLabel8">
+            <property name="text">
+             <string>Max Idle Time</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="idletimeLineEdit"/>
+          </item>
+          <item row="1" column="2">
+           <widget class="QLabel" name="TextLabel9">
+            <property name="text">
+             <string>s</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label">
+            <property name="text">
+             <string>Anti-idle String</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="1" column="0" colspan="2">
+        <widget class="QLabel" name="textLabel1_2">
+         <property name="text">
+          <string>Key to reply message</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="2">
+        <widget class="QLineEdit" name="replykeyLineEdit"/>
+       </item>
+       <item row="2" column="0" colspan="2">
+        <widget class="QCheckBox" name="replyCheckBox">
+         <property name="text">
+          <string>Autoreply Message</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="2" colspan="3">
+        <widget class="QLineEdit" name="replyLineEdit">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0" colspan="3">
+        <widget class="QCheckBox" name="reconnectCheckBox">
+         <property name="text">
+          <string>When disconnected, reconnect every</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="3">
+        <widget class="QLineEdit" name="reconnectLineEdit">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="4">
+        <widget class="QLabel" name="textLabel2">
+         <property name="text">
+          <string>s</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0">
+        <widget class="QLabel" name="textLabel4">
+         <property name="text">
+          <string>For Maximum</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1" colspan="2">
+        <widget class="QLineEdit" name="retryLineEdit">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="3" colspan="2">
+        <widget class="QLabel" name="textLabel5">
+         <property name="text">
+          <string>Times (-1 means infinite)</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="0" colspan="2">
+        <widget class="QCheckBox" name="scriptCheckBox">
+         <property name="text">
+          <string>Load Control Script</string>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="0" colspan="3">
+        <widget class="QLineEdit" name="scriptLineEdit">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="3" colspan="2">
+        <widget class="QPushButton" name="scriptPushButton">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string>Browse...</string>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="0">
+        <widget class="QCheckBox" name="zmodemCheck">
+         <property name="text">
+          <string>Enable Zmodem</string>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="3">
+        <widget class="QCheckBox" name="buzzCheck">
+         <property name="text">
+          <string>Enable Buzz</string>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="2">
+        <widget class="QCheckBox" name="beepCheck">
+         <property name="text">
+          <string>Enable Beep</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="0" colspan="3">
+        <widget class="QCheckBox" name="autoCloseWinCheckBox">
+         <property name="text">
+          <string>When disconnected, close window automatically</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab4">
+      <attribute name="title">
+       <string>Mouse</string>
+      </attribute>
+      <layout class="QGridLayout">
+       <item row="0" column="0">
+        <widget class="QGroupBox" name="menuGroup">
+         <property name="title">
+          <string>Menu Type</string>
+         </property>
+         <layout class="QGridLayout">
+          <item row="0" column="0">
+           <widget class="QRadioButton" name="radioButton1">
+            <property name="text">
+             <string>Underline</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QRadioButton" name="radioButton2">
+            <property name="text">
+             <string>Reverse</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <widget class="QRadioButton" name="radioButton3">
+            <property name="text">
+             <string>Custom Color</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" colspan="2">
+           <widget class="QLabel" name="menuLabel">
+            <property name="autoFillBackground">
+             <bool>true</bool>
+            </property>
+            <property name="text">
+             <string>Menu Color</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="2">
+           <widget class="QPushButton" name="menuColorButton">
+            <property name="text">
+             <string>Color...</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <spacer>
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="1" column="0">
+        <widget class="QCheckBox" name="mouseCheck">
+         <property name="text">
+          <string>Enable Mouse Support</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <tabstops>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>nameLineEdit</tabstop>
+  <tabstop>addrLineEdit</tabstop>
+  <tabstop>portLineEdit</tabstop>
+  <tabstop>hostTypeComboBox</tabstop>
+  <tabstop>preloginLineEdit</tabstop>
+  <tabstop>userLineEdit</tabstop>
+  <tabstop>passwdLineEdit</tabstop>
+  <tabstop>postloginLineEdit</tabstop>
+  <tabstop>bbscodeComboBox</tabstop>
+  <tabstop>highlightCheckBox</tabstop>
+  <tabstop>termtypeLineEdit</tabstop>
+  <tabstop>keytypeComboBox</tabstop>
+  <tabstop>columnLineEdit</tabstop>
+  <tabstop>scrollLineEdit</tabstop>
+  <tabstop>rowLineEdit</tabstop>
+  <tabstop>cursorTypeComboBox</tabstop>
+  <tabstop>escapeLineEdit</tabstop>
+  <tabstop>idletimeLineEdit</tabstop>
+  <tabstop>replykeyLineEdit</tabstop>
+  <tabstop>replyCheckBox</tabstop>
+  <tabstop>replyLineEdit</tabstop>
+  <tabstop>reconnectCheckBox</tabstop>
+  <tabstop>reconnectLineEdit</tabstop>
+  <tabstop>retryLineEdit</tabstop>
+  <tabstop>autoCloseWinCheckBox</tabstop>
+  <tabstop>scriptCheckBox</tabstop>
+  <tabstop>scriptLineEdit</tabstop>
+  <tabstop>scriptPushButton</tabstop>
+  <tabstop>radioButton1</tabstop>
+  <tabstop>radioButton2</tabstop>
+  <tabstop>radioButton3</tabstop>
+  <tabstop>menuColorButton</tabstop>
+  <tabstop>applyPushButton</tabstop>
+  <tabstop>closePushButton</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>radioButton2</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>menuColorButton</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>260</x>
+     <y>79</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>392</x>
+     <y>110</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButton1</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>menuColorButton</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>53</x>
+     <y>79</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>392</x>
+     <y>110</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButton3</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>menuColorButton</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>392</x>
+     <y>79</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>392</x>
+     <y>110</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>replyCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>replyLineEdit</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>23</x>
+     <y>158</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>168</x>
+     <y>156</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>reconnectCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>reconnectLineEdit</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>23</x>
+     <y>184</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>295</x>
+     <y>182</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>reconnectCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>retryLineEdit</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>23</x>
+     <y>184</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>147</x>
+     <y>213</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>scriptCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>scriptLineEdit</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>26</x>
+     <y>236</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>26</x>
+     <y>261</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>scriptCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>scriptPushButton</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>26</x>
+     <y>236</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>289</x>
+     <y>260</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>portCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>portLineEdit</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>187</x>
+     <y>108</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>209</x>
+     <y>108</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>antiIdleGroupBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>antiLineEdit</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>89</x>
+     <y>42</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>145</x>
+     <y>67</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>antiIdleGroupBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>idletimeLineEdit</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>114</x>
+     <y>40</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>270</x>
+     <y>110</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>beepCheck</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>buzzCheck</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>223</x>
+     <y>301</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>298</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
