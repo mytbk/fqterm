@@ -18,8 +18,9 @@ ENDIF(NOT CMAKE_BUILD_TYPE)
 
 set(CMAKE_COLOR_MAKEFILE ON)
 
-include(${CMAKE_MODULE_PATH}/VersionControl.cmake)
-vcs_get_revision(MCGSVN_WC_REVISION)
+include(GetGitRevisionDescription)
+git_describe(MCGGIT_WC_REVISION)
+message("Git revision: " ${MCGGIT_WC_REVISION})
 
 find_package(Qt4 COMPONENTS QtCore QtGui QtNetwork QtScript QtXml REQUIRED)
 IF(APPLE)

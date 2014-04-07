@@ -120,3 +120,5 @@ add_dependencies(fqterm_ui
   fqterm_common
   fqterm_utilities
 )
+
+ADD_DEFINITIONS(-D "FQTERM_GIT_REVISION=\\\"${MCGGIT_WC_REVISION}\\\"")

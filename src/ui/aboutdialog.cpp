@@ -52,10 +52,7 @@ aboutDialog::aboutDialog(QWidget *parent, Qt::WFlags fl)
     ui_.TextBrowser->setPlainText(line);
     file.close();
   }
-  QString aboutText = "FQTerm "  + QString(FQTERM_VERSION_STRING) + QString("\nSVN revision ") + QString(FQTERM_SVN_REVISION) + QString("\n Built with Qt") + QT_VERSION_STR + QString("\n Running with Qt ") + qVersion();
-  if (QString(FQTERM_VERSION_STRING).startsWith("0.9.8")) {
-    aboutText += "\n>>2012 - End of the world edition<<";
-  }
+  QString aboutText = "FQTerm "  + QString(FQTERM_VERSION_STRING) + QString("\ngit revision ") + QString(FQTERM_GIT_REVISION) + QString("\n Built with Qt") + QT_VERSION_STR + QString("\n Running with Qt ") + qVersion();
    ui_.TextLabel->setText(aboutText);
 }
 
