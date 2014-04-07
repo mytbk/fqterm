@@ -347,6 +347,7 @@ void FQTermTelnet::windowSizeChanged(int x, int y) {
     }
     naws = 0;
 
+    /*
     QByteArray cmd(10, 0);
     cmd[0] = (char)TCIAC;
     cmd[1] = (char)TCSB;
@@ -358,6 +359,7 @@ void FQTermTelnet::windowSizeChanged(int x, int y) {
     cmd[7] = (char)TCIAC;
     cmd[8] = (char)TCSE;
     socket->writeBlock(cmd);
+    */
 
   }
 }
