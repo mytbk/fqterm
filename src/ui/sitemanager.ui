@@ -1,7 +1,8 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>siteManager</class>
- <widget class="QDialog" name="siteManager" >
-  <property name="geometry" >
+ <widget class="QDialog" name="siteManager">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -9,198 +10,193 @@
     <height>495</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Address Book</string>
   </property>
-  <layout class="QGridLayout" >
-   <item row="0" column="0" >
-    <layout class="QGridLayout" >
-     <item row="0" column="0" colspan="2" >
-      <widget class="QListWidget" name="siteList" />
+  <layout class="QGridLayout">
+   <item row="0" column="0">
+    <layout class="QGridLayout">
+     <item row="0" column="0" colspan="2">
+      <widget class="QListWidget" name="siteList"/>
      </item>
-     <item row="1" column="0" >
-      <widget class="QPushButton" name="upButton" >
-       <property name="text" >
+     <item row="1" column="0">
+      <widget class="QPushButton" name="upButton">
+       <property name="text">
         <string>&amp;Up</string>
        </property>
       </widget>
      </item>
-     <item row="1" column="1" >
-      <widget class="QPushButton" name="downButton" >
-       <property name="text" >
+     <item row="1" column="1">
+      <widget class="QPushButton" name="downButton">
+       <property name="text">
         <string>&amp;Down</string>
        </property>
       </widget>
      </item>
     </layout>
    </item>
-   <item row="0" column="1" >
-    <widget class="QGroupBox" name="editGroup" >
-     <property name="title" >
+   <item row="0" column="1">
+    <widget class="QGroupBox" name="editGroup">
+     <property name="title">
       <string/>
      </property>
-     <layout class="QGridLayout" >
-      <item row="0" column="0" >
-       <widget class="QLabel" name="nameLabel" >
-        <property name="text" >
+     <layout class="QGridLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="nameLabel">
+        <property name="text">
          <string>Site Name</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="1" colspan="3" >
-       <widget class="QLineEdit" name="nameEdit" />
+      <item row="0" column="1" colspan="3">
+       <widget class="QLineEdit" name="nameEdit"/>
       </item>
-      <item row="1" column="0" >
-       <widget class="QLabel" name="addrLabel" >
-        <property name="text" >
+      <item row="1" column="0">
+       <widget class="QLabel" name="addrLabel">
+        <property name="text">
          <string>Address</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="1" colspan="3" >
-       <widget class="QLineEdit" name="addrEdit" />
+      <item row="1" column="1" colspan="3">
+       <widget class="QLineEdit" name="addrEdit"/>
       </item>
-      <item row="2" column="0" >
-       <widget class="QLabel" name="protocolLabel" >
-        <property name="text" >
+      <item row="2" column="0">
+       <widget class="QLabel" name="protocolLabel">
+        <property name="text">
          <string>Protocol</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="1" >
-       <widget class="QComboBox" name="protocolCombo" >
+      <item row="2" column="1">
+       <widget class="QComboBox" name="protocolCombo">
         <item>
-         <property name="text" >
+         <property name="text">
           <string>Telnet</string>
          </property>
         </item>
         <item>
-         <property name="text" >
-          <string>SSH1</string>
-         </property>
-        </item>
-        <item>
-         <property name="text" >
-          <string>SSH2</string>
+         <property name="text">
+          <string>SSH</string>
          </property>
         </item>
        </widget>
       </item>
-      <item row="2" column="2" >
-       <widget class="QCheckBox" name="portCheck" >
-        <property name="text" >
+      <item row="2" column="2">
+       <widget class="QCheckBox" name="portCheck">
+        <property name="text">
          <string>Port</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="3" >
-       <widget class="QLineEdit" name="portEdit" >
-        <property name="enabled" >
+      <item row="2" column="3">
+       <widget class="QLineEdit" name="portEdit">
+        <property name="enabled">
          <bool>false</bool>
         </property>
-        <property name="text" >
+        <property name="text">
          <string/>
         </property>
        </widget>
       </item>
-      <item row="3" column="0" >
-       <widget class="QLabel" name="hostTypeLabel" >
-        <property name="text" >
+      <item row="3" column="0">
+       <widget class="QLabel" name="hostTypeLabel">
+        <property name="text">
          <string>Host Type</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="1" >
-       <widget class="QComboBox" name="hostTypeCombo" >
+      <item row="3" column="1">
+       <widget class="QComboBox" name="hostTypeCombo">
         <item>
-         <property name="text" >
+         <property name="text">
           <string>BBS</string>
          </property>
         </item>
         <item>
-         <property name="text" >
+         <property name="text">
           <string>*NIX</string>
          </property>
         </item>
        </widget>
       </item>
-      <item row="4" column="0" >
-       <widget class="QCheckBox" name="proxyCheck" >
-        <property name="sizePolicy" >
-         <sizepolicy vsizetype="Preferred" hsizetype="Minimum" >
+      <item row="4" column="0">
+       <widget class="QCheckBox" name="proxyCheck">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
-        <property name="text" >
+        <property name="text">
          <string>Use Proxy</string>
         </property>
        </widget>
       </item>
-      <item row="4" column="1" >
-       <widget class="QPushButton" name="proxyButton" >
-        <property name="enabled" >
+      <item row="4" column="1">
+       <widget class="QPushButton" name="proxyButton">
+        <property name="enabled">
          <bool>false</bool>
         </property>
-        <property name="text" >
+        <property name="text">
          <string>Setting...</string>
         </property>
        </widget>
       </item>
-      <item row="5" column="0" >
-       <widget class="QCheckBox" name="autoLoginCheck" >
-        <property name="text" >
+      <item row="5" column="0">
+       <widget class="QCheckBox" name="autoLoginCheck">
+        <property name="text">
          <string>Auto Login</string>
         </property>
        </widget>
       </item>
-      <item row="5" column="1" >
-       <widget class="QPushButton" name="autoLoginButton" >
-        <property name="enabled" >
+      <item row="5" column="1">
+       <widget class="QPushButton" name="autoLoginButton">
+        <property name="enabled">
          <bool>false</bool>
         </property>
-        <property name="sizePolicy" >
-         <sizepolicy vsizetype="Fixed" hsizetype="Preferred" >
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
-        <property name="text" >
+        <property name="text">
          <string>Setting...</string>
         </property>
        </widget>
       </item>
-      <item row="6" column="0" >
-       <widget class="QLabel" name="label_10" >
-        <property name="text" >
+      <item row="6" column="0">
+       <widget class="QLabel" name="label_10">
+        <property name="text">
          <string>Font Preview</string>
         </property>
        </widget>
       </item>
-      <item row="6" column="1" colspan="3" >
-       <widget class="QLabel" name="fontPreviewer" >
-        <property name="autoFillBackground" >
+      <item row="6" column="1" colspan="3">
+       <widget class="QLabel" name="fontPreviewer">
+        <property name="autoFillBackground">
          <bool>true</bool>
         </property>
-        <property name="text" >
+        <property name="text">
          <string>Font Previewer</string>
         </property>
-        <property name="textFormat" >
+        <property name="textFormat">
          <enum>Qt::RichText</enum>
         </property>
-        <property name="alignment" >
+        <property name="alignment">
          <set>Qt::AlignCenter</set>
         </property>
        </widget>
       </item>
-      <item row="8" column="0" colspan="4" >
-       <layout class="QHBoxLayout" >
+      <item row="8" column="0" colspan="4">
+       <layout class="QHBoxLayout">
         <item>
          <spacer>
-          <property name="orientation" >
+          <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
-          <property name="sizeHint" stdset="0" >
+          <property name="sizeHint" stdset="0">
            <size>
             <width>55</width>
             <height>25</height>
@@ -209,18 +205,18 @@
          </spacer>
         </item>
         <item>
-         <widget class="QPushButton" name="resetButton" >
-          <property name="text" >
+         <widget class="QPushButton" name="resetButton">
+          <property name="text">
            <string>&amp;Reset</string>
           </property>
          </widget>
         </item>
         <item>
          <spacer>
-          <property name="orientation" >
+          <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
-          <property name="sizeHint" stdset="0" >
+          <property name="sizeHint" stdset="0">
            <size>
             <width>54</width>
             <height>25</height>
@@ -229,20 +225,20 @@
          </spacer>
         </item>
         <item>
-         <widget class="QPushButton" name="advanceButton" >
-          <property name="text" >
+         <widget class="QPushButton" name="advanceButton">
+          <property name="text">
            <string>A&amp;dvance</string>
           </property>
          </widget>
         </item>
        </layout>
       </item>
-      <item row="7" column="1" >
+      <item row="7" column="1">
        <spacer>
-        <property name="orientation" >
+        <property name="orientation">
          <enum>Qt::Vertical</enum>
         </property>
-        <property name="sizeHint" stdset="0" >
+        <property name="sizeHint" stdset="0">
          <size>
           <width>20</width>
           <height>40</height>
@@ -253,21 +249,21 @@
      </layout>
     </widget>
    </item>
-   <item row="1" column="0" colspan="2" >
-    <layout class="QHBoxLayout" >
+   <item row="1" column="0" colspan="2">
+    <layout class="QHBoxLayout">
      <item>
-      <widget class="QPushButton" name="newButton" >
-       <property name="text" >
+      <widget class="QPushButton" name="newButton">
+       <property name="text">
         <string>&amp;New</string>
        </property>
       </widget>
      </item>
      <item>
       <spacer>
-       <property name="orientation" >
+       <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
-       <property name="sizeHint" stdset="0" >
+       <property name="sizeHint" stdset="0">
         <size>
          <width>40</width>
          <height>20</height>
@@ -276,18 +272,18 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="deleteButton" >
-       <property name="text" >
+      <widget class="QPushButton" name="deleteButton">
+       <property name="text">
         <string>&amp;Delete</string>
        </property>
       </widget>
      </item>
      <item>
       <spacer>
-       <property name="orientation" >
+       <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
-       <property name="sizeHint" stdset="0" >
+       <property name="sizeHint" stdset="0">
         <size>
          <width>40</width>
          <height>20</height>
@@ -296,18 +292,18 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="connectButton" >
-       <property name="text" >
+      <widget class="QPushButton" name="connectButton">
+       <property name="text">
         <string>C&amp;onnect</string>
        </property>
       </widget>
      </item>
      <item>
       <spacer>
-       <property name="orientation" >
+       <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
-       <property name="sizeHint" stdset="0" >
+       <property name="sizeHint" stdset="0">
         <size>
          <width>40</width>
          <height>20</height>
@@ -316,18 +312,18 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="applyButton" >
-       <property name="text" >
+      <widget class="QPushButton" name="applyButton">
+       <property name="text">
         <string>&amp;Save</string>
        </property>
       </widget>
      </item>
      <item>
       <spacer>
-       <property name="orientation" >
+       <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
-       <property name="sizeHint" stdset="0" >
+       <property name="sizeHint" stdset="0">
         <size>
          <width>40</width>
          <height>20</height>
@@ -336,8 +332,8 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="closeButton" >
-       <property name="text" >
+      <widget class="QPushButton" name="closeButton">
+       <property name="text">
         <string>&amp;Close</string>
        </property>
       </widget>
@@ -345,8 +341,8 @@
     </layout>
    </item>
   </layout>
-  <widget class="QLabel" name="label" >
-   <property name="geometry" >
+  <widget class="QLabel" name="label">
+   <property name="geometry">
     <rect>
      <x>9</x>
      <y>553</y>
@@ -354,18 +350,18 @@
      <height>0</height>
     </rect>
    </property>
-   <property name="maximumSize" >
+   <property name="maximumSize">
     <size>
      <width>16777215</width>
      <height>0</height>
     </size>
    </property>
-   <property name="text" >
+   <property name="text">
     <string/>
    </property>
   </widget>
-  <widget class="QLabel" name="label_2" >
-   <property name="geometry" >
+  <widget class="QLabel" name="label_2">
+   <property name="geometry">
     <rect>
      <x>120</x>
      <y>553</y>
@@ -373,18 +369,18 @@
      <height>0</height>
     </rect>
    </property>
-   <property name="maximumSize" >
+   <property name="maximumSize">
     <size>
      <width>16777215</width>
      <height>0</height>
     </size>
    </property>
-   <property name="text" >
+   <property name="text">
     <string/>
    </property>
   </widget>
-  <widget class="QLabel" name="label_3" >
-   <property name="geometry" >
+  <widget class="QLabel" name="label_3">
+   <property name="geometry">
     <rect>
      <x>156</x>
      <y>553</y>
@@ -392,18 +388,18 @@
      <height>0</height>
     </rect>
    </property>
-   <property name="maximumSize" >
+   <property name="maximumSize">
     <size>
      <width>16777215</width>
      <height>0</height>
     </size>
    </property>
-   <property name="text" >
+   <property name="text">
     <string/>
    </property>
   </widget>
-  <widget class="QLabel" name="label_4" >
-   <property name="geometry" >
+  <widget class="QLabel" name="label_4">
+   <property name="geometry">
     <rect>
      <x>240</x>
      <y>553</y>
@@ -411,18 +407,18 @@
      <height>0</height>
     </rect>
    </property>
-   <property name="maximumSize" >
+   <property name="maximumSize">
     <size>
      <width>16777215</width>
      <height>0</height>
     </size>
    </property>
-   <property name="text" >
+   <property name="text">
     <string/>
    </property>
   </widget>
-  <widget class="QLabel" name="label_5" >
-   <property name="geometry" >
+  <widget class="QLabel" name="label_5">
+   <property name="geometry">
     <rect>
      <x>410</x>
      <y>553</y>
@@ -430,18 +426,18 @@
      <height>0</height>
     </rect>
    </property>
-   <property name="maximumSize" >
+   <property name="maximumSize">
     <size>
      <width>16777215</width>
      <height>0</height>
     </size>
    </property>
-   <property name="text" >
+   <property name="text">
     <string/>
    </property>
   </widget>
-  <widget class="QLabel" name="label_6" >
-   <property name="geometry" >
+  <widget class="QLabel" name="label_6">
+   <property name="geometry">
     <rect>
      <x>369</x>
      <y>553</y>
@@ -449,18 +445,18 @@
      <height>0</height>
     </rect>
    </property>
-   <property name="maximumSize" >
+   <property name="maximumSize">
     <size>
      <width>16777215</width>
      <height>0</height>
     </size>
    </property>
-   <property name="text" >
+   <property name="text">
     <string/>
    </property>
   </widget>
-  <widget class="QLabel" name="label_7" >
-   <property name="geometry" >
+  <widget class="QLabel" name="label_7">
+   <property name="geometry">
     <rect>
      <x>46</x>
      <y>553</y>
@@ -468,18 +464,18 @@
      <height>0</height>
     </rect>
    </property>
-   <property name="maximumSize" >
+   <property name="maximumSize">
     <size>
      <width>16777215</width>
      <height>0</height>
     </size>
    </property>
-   <property name="text" >
+   <property name="text">
     <string/>
    </property>
   </widget>
-  <widget class="QLabel" name="label_8" >
-   <property name="geometry" >
+  <widget class="QLabel" name="label_8">
+   <property name="geometry">
     <rect>
      <x>82</x>
      <y>553</y>
@@ -487,18 +483,18 @@
      <height>0</height>
     </rect>
    </property>
-   <property name="maximumSize" >
+   <property name="maximumSize">
     <size>
      <width>16777215</width>
      <height>0</height>
     </size>
    </property>
-   <property name="text" >
+   <property name="text">
     <string/>
    </property>
   </widget>
-  <widget class="QLabel" name="label_9" >
-   <property name="geometry" >
+  <widget class="QLabel" name="label_9">
+   <property name="geometry">
     <rect>
      <x>315</x>
      <y>553</y>
@@ -506,13 +502,13 @@
      <height>0</height>
     </rect>
    </property>
-   <property name="maximumSize" >
+   <property name="maximumSize">
     <size>
      <width>16777215</width>
      <height>0</height>
     </size>
    </property>
-   <property name="text" >
+   <property name="text">
     <string/>
    </property>
   </widget>
@@ -547,11 +543,11 @@
    <receiver>portEdit</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>372</x>
      <y>81</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>477</x>
      <y>83</y>
     </hint>
@@ -563,11 +559,11 @@
    <receiver>proxyButton</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>235</x>
      <y>141</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>285</x>
      <y>126</y>
     </hint>
@@ -579,11 +575,11 @@
    <receiver>autoLoginButton</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>232</x>
      <y>155</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>361</x>
      <y>172</y>
     </hint>

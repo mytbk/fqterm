@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>493</width>
-    <height>383</height>
+    <height>413</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -108,12 +108,7 @@
            </item>
            <item>
             <property name="text">
-             <string>SSH1</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>SSH2</string>
+             <string>SSH</string>
             </property>
            </item>
           </widget>

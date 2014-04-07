@@ -270,17 +270,6 @@ void addrDialog::onProtocol(int n) {
     ui_.sshAutoLoginGroup->setChecked(false);
     break;
   case 1:
-#if defined(_NO_SSH_COMPILED)
-    QMessageBox::warning(this, "sorry",
-      "SSH support is not compiled, check your OpenSSL and try to recompile FQTerm");
-    ui_.protocolComboBox->setCurrentItem(0);
-#else
-    ui_.telnetAutoLoginGroup->setEnabled(false);
-    ui_.telnetAutoLoginGroup->setChecked(false);
-    ui_.sshAutoLoginGroup->setEnabled(true);
-    ui_.sshAutoLoginGroup->setChecked(param_.isAutoLogin_);
-#endif
-    break;
   case 2:
 #if defined(_NO_SSH_COMPILED)
     QMessageBox::warning(this, "sorry",

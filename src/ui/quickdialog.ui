@@ -1,71 +1,72 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>quickDialog</class>
- <widget class="QDialog" name="quickDialog" >
-  <property name="geometry" >
+ <widget class="QDialog" name="quickDialog">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>394</width>
-    <height>117</height>
+    <height>123</height>
    </rect>
   </property>
-  <property name="sizePolicy" >
-   <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Quick Login</string>
   </property>
-  <layout class="QGridLayout" >
-   <item row="0" column="0" >
-    <layout class="QHBoxLayout" >
+  <layout class="QGridLayout">
+   <item row="0" column="0">
+    <layout class="QHBoxLayout">
      <item>
-      <widget class="QLabel" name="TextLabel4" >
-       <property name="frameShape" >
+      <widget class="QLabel" name="TextLabel4">
+       <property name="frameShape">
         <enum>QFrame::NoFrame</enum>
        </property>
-       <property name="frameShadow" >
+       <property name="frameShadow">
         <enum>QFrame::Plain</enum>
        </property>
-       <property name="text" >
+       <property name="text">
         <string>Host Name</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="historyComboBox" >
-       <property name="sizePolicy" >
-        <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+      <widget class="QComboBox" name="historyComboBox">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="editable" >
+       <property name="editable">
         <bool>true</bool>
        </property>
-       <property name="insertPolicy" >
+       <property name="insertPolicy">
         <enum>QComboBox::NoInsert</enum>
        </property>
-       <property name="duplicatesEnabled" >
+       <property name="duplicatesEnabled">
         <bool>true</bool>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="deletePushButton" >
-       <property name="text" >
+      <widget class="QPushButton" name="deletePushButton">
+       <property name="text">
         <string>Delete</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="addPushButton" >
-       <property name="text" >
+      <widget class="QPushButton" name="addPushButton">
+       <property name="text">
         <string/>
        </property>
-       <property name="icon" >
+       <property name="icon">
         <iconset>
          <normaloff/>
         </iconset>
@@ -74,28 +75,28 @@
      </item>
     </layout>
    </item>
-   <item row="2" column="0" >
-    <widget class="Line" name="line" >
-     <property name="orientation" >
+   <item row="2" column="0">
+    <widget class="Line" name="line">
+     <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
     </widget>
    </item>
-   <item row="3" column="0" >
-    <layout class="QHBoxLayout" >
+   <item row="3" column="0">
+    <layout class="QHBoxLayout">
      <item>
-      <widget class="QPushButton" name="advPushButton" >
-       <property name="text" >
+      <widget class="QPushButton" name="advPushButton">
+       <property name="text">
         <string>Advanced</string>
        </property>
       </widget>
      </item>
      <item>
       <spacer>
-       <property name="orientation" >
+       <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
-       <property name="sizeHint" stdset="0" >
+       <property name="sizeHint" stdset="0">
         <size>
          <width>40</width>
          <height>20</height>
@@ -104,74 +105,69 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="connectPushButton" >
-       <property name="text" >
+      <widget class="QPushButton" name="connectPushButton">
+       <property name="text">
         <string>Connect</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="closePushButton" >
-       <property name="text" >
+      <widget class="QPushButton" name="closePushButton">
+       <property name="text">
         <string>Close</string>
        </property>
       </widget>
      </item>
     </layout>
    </item>
-   <item row="1" column="0" >
-    <layout class="QHBoxLayout" >
+   <item row="1" column="0">
+    <layout class="QHBoxLayout">
      <item>
-      <widget class="QLabel" name="TextLabel6" >
-       <property name="sizePolicy" >
-        <sizepolicy vsizetype="Preferred" hsizetype="Minimum" >
+      <widget class="QLabel" name="TextLabel6">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="text" >
+       <property name="text">
         <string>Protocol</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="protocolComboBox" >
+      <widget class="QComboBox" name="protocolComboBox">
        <item>
-        <property name="text" >
+        <property name="text">
          <string>Telnet</string>
         </property>
        </item>
        <item>
-        <property name="text" >
-         <string>SSH1</string>
-        </property>
-       </item>
-       <item>
-        <property name="text" >
-         <string>SSH2</string>
+        <property name="text">
+         <string>SSH</string>
         </property>
        </item>
       </widget>
      </item>
      <item>
-      <widget class="QCheckBox" name="portCheck" >
-       <property name="text" >
+      <widget class="QCheckBox" name="portCheck">
+       <property name="text">
         <string>Port</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="portEdit" >
-       <property name="enabled" >
+      <widget class="QLineEdit" name="portEdit">
+       <property name="enabled">
         <bool>false</bool>
        </property>
-       <property name="sizePolicy" >
-        <sizepolicy vsizetype="Fixed" hsizetype="Maximum" >
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="text" >
+       <property name="text">
         <string>23</string>
        </property>
       </widget>
@@ -180,7 +176,7 @@
    </item>
   </layout>
  </widget>
- <layoutdefault spacing="6" margin="11" />
+ <layoutdefault spacing="6" margin="11"/>
  <tabstops>
   <tabstop>historyComboBox</tabstop>
   <tabstop>deletePushButton</tabstop>
@@ -197,11 +193,11 @@
    <receiver>portEdit</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>151</x>
      <y>54</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>203</x>
      <y>54</y>
     </hint>
