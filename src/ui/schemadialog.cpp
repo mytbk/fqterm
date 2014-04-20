@@ -31,7 +31,7 @@
 
 namespace FQTerm {
 
-schemaDialog::schemaDialog(QWidget *parent, Qt::WFlags fl)
+schemaDialog::schemaDialog(QWidget *parent, Qt::WindowFlags fl)
     : QDialog(parent, fl),
       buttonGroup_(this) {
   ui_.setupUi(this);

@@ -32,7 +32,7 @@
 #include <QSignalMapper>
 namespace FQTerm
 {
-FQTermShortcutDialog::FQTermShortcutDialog(FQTermShortcutHelper* helper, QWidget *parent_, Qt::WFlags fl)
+FQTermShortcutDialog::FQTermShortcutDialog(FQTermShortcutHelper* helper, QWidget *parent_, Qt::WindowFlags fl)
   : QDialog(parent_, fl),
     helper_(helper),
     table_(NULL) {

@@ -88,7 +88,7 @@ class FQTermWindow : public QMainWindow,
   Q_OBJECT;
  public:
   FQTermWindow(FQTermConfig *, FQTermFrame *frame, FQTermParam param, int addr = -1, QWidget
-              *parent = 0, const char *name = 0, Qt::WFlags wflags = Qt::Window);
+              *parent = 0, const char *name = 0, Qt::WindowFlags wflags = Qt::Window);
   ~FQTermWindow();
 
   void connectHost();

@@ -33,7 +33,7 @@ class FQTermConfig;
 class prefDialog: public QDialog {
   Q_OBJECT;
  public:
-  prefDialog(FQTermConfig *, QWidget *parent_ = 0, Qt::WFlags fl = 0);
+  prefDialog(FQTermConfig *, QWidget *parent_ = 0, Qt::WindowFlags fl = 0);
   ~prefDialog();
 
  protected slots:

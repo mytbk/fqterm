@@ -91,7 +91,7 @@ char FQTermWindow::directions_[][5] =  {
   "\x1b[D",  // 6 LEFT
   "\x1b[C" // 7 RIGHT
 };
-
+/*
 class FAQ: public QObject {
   Q_OBJECT;
  public slots:
@@ -102,12 +102,12 @@ class FAQ: public QObject {
  private:
   int a;
 };
-
+*/
 
 //constructor
 FQTermWindow::FQTermWindow(FQTermConfig *config, FQTermFrame *frame, FQTermParam param,
                            int addressIndex, QWidget *parent,
-                           const char *name, Qt::WFlags wflags)
+                           const char *name, Qt::WindowFlags wflags)
     : QMainWindow(parent, wflags),
       frame_(frame),
       isSelecting_(false),
@@ -1800,7 +1800,7 @@ void FQTermWindow::startBlink() {
 void FQTermWindow::stopBlink() {
   if (tabBlinkTimer_->isActive()) {
     tabBlinkTimer_->stop();
-    emit blinkTheTab(this, TRUE);
+    emit blinkTheTab(this, true);
   }
 }
 

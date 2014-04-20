@@ -27,7 +27,7 @@
 namespace FQTerm {
 
 //constructor
-FQTermTimeLabel::FQTermTimeLabel(QWidget *parent, const char *name, Qt::WFlags f)
+FQTermTimeLabel::FQTermTimeLabel(QWidget *parent, const char *name, Qt::WindowFlags f)
     : QLabel(parent, f) {
   setAlignment(Qt::AlignHCenter);
   currentTime_ = new QTime();

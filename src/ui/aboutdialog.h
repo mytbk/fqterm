@@ -28,7 +28,7 @@ namespace FQTerm {
 class aboutDialog: public QDialog {
   Q_OBJECT;
  public:
-  aboutDialog(QWidget *parent = 0, Qt::WFlags fl = 0);
+  aboutDialog(QWidget *parent = 0, Qt::WindowFlags fl = 0);
   ~aboutDialog();
  private:
   Ui::aboutDialog ui_;

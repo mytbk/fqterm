@@ -35,7 +35,7 @@ namespace FQTerm {
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
  */
-keyDialog::keyDialog(FQTermConfig * config, QWidget *parent, Qt::WFlags fl)
+keyDialog::keyDialog(FQTermConfig * config, QWidget *parent, Qt::WindowFlags fl)
     : QDialog(parent, fl),
       keyButtonGroup_(this),
       config_(config) {

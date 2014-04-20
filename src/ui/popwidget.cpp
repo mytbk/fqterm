@@ -34,7 +34,7 @@ namespace FQTerm {
 extern QString pathLib;
 
 popWidget::popWidget(FQTermWindow *win, QWidget *parent_, const char *name,
-                     Qt::WFlags f)
+                     Qt::WindowFlags f)
     : QWidget(parent_, f) {
   //     QPixmap pxm(QPixmap(pathLib+"pic/popwidget.png") );
   //     if(!pxm.isNull())

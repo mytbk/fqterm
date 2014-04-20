@@ -202,7 +202,7 @@ bool FQTermIPLocation::getLocation(QString &url, QByteArray &country,
 
   record_count = (ipDatabase_->offset_last_start_ip - ipDatabase_->offset_first_start_ip) / 7;
   if (record_count <= 1) {
-    return FALSE;
+    return false;
   }
 
   // search for right range
@@ -225,7 +225,7 @@ bool FQTermIPLocation::getLocation(QString &url, QByteArray &country,
 
   if (ipDatabase_->cur_start_ip <= ip && ip <= ipDatabase_->cur_end_ip) {
     getCountryCity(ipDatabase_->ipfp, ipDatabase_->offset_cur_end_ip + 4, country, city);
-    //country.replace( country.find( "CZ88.NET", 0, FALSE ), 8, "" );
+    //country.replace( country.find( "CZ88.NET", 0, false ), 8, "" );
     if ((rec = country.toUpper().indexOf("CZ88.NET", 0)) >= 0) {
       country.replace(rec, 8, "********");
     }
@@ -239,7 +239,7 @@ bool FQTermIPLocation::getLocation(QString &url, QByteArray &country,
     city = "";
   }
   // if ip_start<=ip<=ip_end
-  return TRUE;
+  return true;
 }
 
 FQTermIPLocation* FQTermIPLocation::getInstance() {

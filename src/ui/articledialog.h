@@ -31,7 +31,7 @@ class FQTermFileDialog;
 class articleDialog: public QDialog {
   Q_OBJECT; 
 public:
-  articleDialog(FQTermConfig *, QWidget *parent_ = 0, Qt::WFlags fl = 0);
+  articleDialog(FQTermConfig *, QWidget *parent_ = 0, Qt::WindowFlags fl = 0);
   ~articleDialog();
 
   QString articleText_;

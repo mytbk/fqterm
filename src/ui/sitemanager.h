@@ -35,7 +35,7 @@ class FQTermConfig;
 class siteDialog: public QDialog {
   Q_OBJECT;
  public:
-  siteDialog(QWidget *parent_ = 0, Qt::WFlags fl = 0);;
+  siteDialog(QWidget *parent_ = 0, Qt::WindowFlags fl = 0);;
   ~siteDialog();
 
   FQTermParam currentParameter();

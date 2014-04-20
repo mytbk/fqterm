@@ -34,7 +34,7 @@ namespace FQTerm {
  *  TRUE to construct a modal dialog.
  */
 SSHLoginDialog::SSHLoginDialog(QString *username, QString *password,
-                               QWidget *parent_, Qt::WFlags fl)
+                               QWidget *parent_, Qt::WindowFlags fl)
   : QDialog(parent_, fl) {
   ui_.setupUi(this);
   setWindowTitle(parent_->windowTitle());

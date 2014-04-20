@@ -20,7 +20,7 @@
 
 
 
-#include <QCustomEvent>
+#include <QEvent>
 #include <QTextStream>
 #include <QApplication>
 #include <QDir>

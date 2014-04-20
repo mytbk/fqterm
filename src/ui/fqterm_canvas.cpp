@@ -45,7 +45,7 @@
 
 namespace FQTerm {
 
-FQTermCanvas::FQTermCanvas(FQTermConfig * config, QWidget *parent, Qt::WFlags f)
+FQTermCanvas::FQTermCanvas(FQTermConfig * config, QWidget *parent, Qt::WindowFlags f)
     : QScrollArea(parent),
       adjustMode_(Fit),
       aspectRatioMode_(Qt::KeepAspectRatio){

@@ -21,7 +21,7 @@
 #include <QPaintEvent>
 #include <QEvent>
 #include <QHBoxLayout>
-#include <QCustomEvent>
+#include <QEvent>
 #include <QProgressBar>
 #include <QToolButton>
 #include <QPushButton>
@@ -404,7 +404,7 @@ void StatusBar::abortAllProgressOperations() { //slot
 void StatusBar::toggleProgressWindow(bool show) { //slot
   popupProgressMessage_->adjustSize();
   //FIXME shouldn't be needed, adding bars doesn't seem to do this
-  popupProgressMessage_->setShown(show);
+  popupProgressMessage_->setVisible(show);
 
   if (!show) {
     hideMainProgressBar();
@@ -492,7 +492,7 @@ void StatusBar::updateTotalProgress() {
 }
 
 void StatusBar::updateProgressAppearance() {
-  toggleProgressWindowButton()->setShown(progressMap_.count() > 1);
+  toggleProgressWindowButton()->setVisible(progressMap_.count() > 1);
 
   resetMainText();
 
@@ -521,7 +521,7 @@ void StatusBar::pruneProgressBars() {
   if (count == 1 && removedBar) { //if its gone from 2 or more bars to one bar...
     resetMainText();
     (progressBox()->findChild < QWidget * > ("showAllProgressDetails"))->hide();
-    popupProgressMessage_->setShown(false);
+    popupProgressMessage_->setVisible(false);
   }
 }
 

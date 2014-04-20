@@ -39,7 +39,7 @@ namespace FQTerm{
 
 int siteDialog::ports[] = {23, 22, 22, 0};
 
-siteDialog::siteDialog(QWidget *parent_ /*= 0*/, Qt::WFlags fl /*= 0*/) 
+siteDialog::siteDialog(QWidget *parent_ /*= 0*/, Qt::WindowFlags fl /*= 0*/) 
   : QDialog(parent_, fl) {
   ui_.setupUi(this);
 

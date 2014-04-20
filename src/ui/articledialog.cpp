@@ -36,7 +36,7 @@
 
 namespace FQTerm {
 
-articleDialog::articleDialog(FQTermConfig *config, QWidget *parent, Qt::WFlags fl)
+articleDialog::articleDialog(FQTermConfig *config, QWidget *parent, Qt::WindowFlags fl)
   : QDialog(parent, fl) {
   ui_.setupUi(this);
   connectSlots();

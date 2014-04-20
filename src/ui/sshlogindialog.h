@@ -29,7 +29,7 @@ class SSHLoginDialog: public QDialog {
   Q_OBJECT; 
 public:
   SSHLoginDialog(QString *username, QString *password,
-                 QWidget *parent_ = 0, Qt::WFlags fl = 0);
+                 QWidget *parent_ = 0, Qt::WindowFlags fl = 0);
   ~SSHLoginDialog();
 private:
   QString *strUserName;

@@ -43,7 +43,7 @@ extern void saveAddress(FQTermConfig *, int, const FQTermParam &);
 
   const int quickDialog::ports[] = {23, 22, 22, 22};
 
-quickDialog::quickDialog(FQTermConfig * config, QWidget *parent, Qt::WFlags fl)
+quickDialog::quickDialog(FQTermConfig * config, QWidget *parent, Qt::WindowFlags fl)
     : QDialog(parent, fl),
       config_(config) {
   ui_.setupUi(this);

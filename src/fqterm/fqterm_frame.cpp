@@ -1306,7 +1306,7 @@ void FQTermFrame::keyClicked(int id) {
       windowManager_->activeWindow()->runPythonScriptFile(scriptFile);
     else
 #endif
-      windowManager_->activeWindow()->runScript(scriptFile.toAscii());
+      windowManager_->activeWindow()->runScript(scriptFile.toLatin1());
   } else if (strTmp[0] == '2') { // program
     runProgram(strTmp.mid(1));
   }
@@ -2045,7 +2045,7 @@ void FQTermFrame::loadToolBarPosition()
   QString strTmp = config_->getItemValue("global", "toolbarstate");
   if (!strTmp.isEmpty())
   {
-    restoreState(QByteArray::fromHex(strTmp.toAscii()));
+    restoreState(QByteArray::fromHex(strTmp.toLatin1()));
   } else {
     addToolBar(Qt::TopToolBarArea, toolBarMdiConnectTools_);
     insertToolBar(toolBarMdiConnectTools_,toolBarSetupKeys_);

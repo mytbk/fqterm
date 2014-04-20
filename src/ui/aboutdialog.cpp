@@ -37,7 +37,7 @@ namespace FQTerm {
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
  */
-aboutDialog::aboutDialog(QWidget *parent, Qt::WFlags fl)
+aboutDialog::aboutDialog(QWidget *parent, Qt::WindowFlags fl)
     : QDialog(parent, fl) {
   ui_.setupUi(this);
 

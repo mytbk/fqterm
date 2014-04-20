@@ -34,7 +34,8 @@ class addrDialog: public QDialog {
   Q_OBJECT;
  public:
    enum BUTTONS{SAVE = 0x01, APPLY = 0x02};
-  addrDialog(QWidget *parent_ = 0, const FQTermParam& param = FQTermParam(), int buttons = SAVE | APPLY, Qt::WFlags fl = 0);
+  addrDialog(QWidget *parent_ = 0, const FQTermParam& param = FQTermParam(),
+             int buttons = SAVE | APPLY, Qt::WindowFlags fl = 0);
   ~addrDialog();
   void setParam(const FQTermParam& param) {
     param_ = param;

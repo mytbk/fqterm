@@ -26,7 +26,7 @@
 class msgDialog: public QDialog {
   Q_OBJECT; 
 public:
-  msgDialog(QWidget *parent = 0, Qt::WFlags fl = 0);
+  msgDialog(QWidget *parent = 0, Qt::WindowFlags fl = 0);
   ~msgDialog();
   void setMessageText(const QString& message);
   Ui::msgDialog ui_;

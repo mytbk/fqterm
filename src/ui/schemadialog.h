@@ -28,7 +28,7 @@ namespace FQTerm {
 class schemaDialog: public QDialog {
   Q_OBJECT;
  public:
-  schemaDialog(QWidget *parent = 0, Qt::WFlags fl = 0);
+  schemaDialog(QWidget *parent = 0, Qt::WindowFlags fl = 0);
   ~schemaDialog();
 
   static QFileInfoList getSchemaList();

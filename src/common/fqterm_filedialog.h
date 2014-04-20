@@ -30,7 +30,7 @@ class FQTermConfig;
 
 class FQTermFileDialog: public QFileDialog {
 public:
-  FQTermFileDialog(FQTermConfig *config, QWidget *parent_ = 0, Qt::WFlags fl = 0);
+  FQTermFileDialog(FQTermConfig *config, QWidget *parent_ = 0, Qt::WindowFlags fl = 0);
   ~FQTermFileDialog();
 
   QString getSaveName(const QString &filename, const QString &hints, QWidget *widget = 0);
