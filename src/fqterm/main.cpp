@@ -83,10 +83,10 @@
 
 
 int main(int argc, char **argv) {
-#if defined(WIN32)
-#else
-  QApplication::setGraphicsSystem("raster");
-#endif
+//#if defined(WIN32)
+//#else
+//  QApplication::setGraphicsSystem("raster");
+//#endif
   FQTerm::FQTermApplication a(argc, argv);
   // Set trace categories and level.
   FQTerm::setMaxTraceLevel(1);
