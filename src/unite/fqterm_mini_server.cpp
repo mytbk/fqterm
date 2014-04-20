@@ -25,7 +25,7 @@
 #include <QByteArray>
 #include <QTimer>
 #include <QFile>
-#include <QtGui/QApplication>
+#include <QApplication>
 #include <queue>
 namespace FQTerm {
 
