@@ -6,6 +6,13 @@ Any file to be written to or read from should be in the format of UTF-8.
 
 Usage:
 
+//UI functions
+msgBox(msg)
+	no return value
+
+yesnoBox(msg)
+	return boolean value
+
 sessionID=long(sys.argv[0])
 
 formatError(sessionID) 

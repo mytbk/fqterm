@@ -35,6 +35,7 @@
 #include <QString>
 #include <QDir>
 #include <QMessageBox>
+#include <QFileDialog>
 #include <QTime>
 #include <QTimer>
 #include <QFile>
@@ -130,6 +131,18 @@ void FQTermScriptEngine::msgBox( const QString& msg ) {
   QMessageBox::warning(window_, tr("FQTerm"),
     msg,
     QMessageBox::Close);
+}
+
+bool FQTermScriptEngine::yesnoBox( const QString& msg ){
+	return QMessageBox::question(window_, tr("FQTerm"),
+			msg,
+			QMessageBox::Yes|QMessageBox::No,
+			QMessageBox::No)==QMessageBox::Yes;
+}
+
+QString FQTermScriptEngine::FileDialog() {
+  return QFileDialog::getOpenFileName(
+      NULL, "Select a file", QDir::currentPath(), "*");
 }
 
 int FQTermScriptEngine::caretX() {

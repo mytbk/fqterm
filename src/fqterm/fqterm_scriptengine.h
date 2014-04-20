@@ -52,6 +52,7 @@ public:
 public slots: //script apis
   //ui functions.
   void msgBox(const QString& msg);
+  bool yesnoBox(const QString& msg);
 
   //bbs ui functions
   int caretX();
@@ -73,6 +74,7 @@ public slots: //script apis
   bool isConnected();
   void disconnect();
   void reconnect();
+  QString FileDialog();
   QString getBBSCodec();
   QString getAddress();
   int getPort();

@@ -19,3 +19,7 @@
 *.exe
 *.out
 *.app
+
+# Patch and reject
+*.rej
+*.patch
