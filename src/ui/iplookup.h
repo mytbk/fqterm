@@ -28,7 +28,7 @@ namespace FQTerm {
 class IPLookupDialog : public QDialog {
   Q_OBJECT;
 public:
-  IPLookupDialog(QWidget *parent_ = 0, Qt::WFlags fl = 0);
+  IPLookupDialog(QWidget *parent_ = 0, Qt::WindowFlags fl = 0);
   ~IPLookupDialog();
 
 protected slots:

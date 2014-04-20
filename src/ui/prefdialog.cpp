@@ -38,7 +38,7 @@ namespace FQTerm {
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
  */
-prefDialog::prefDialog(FQTermConfig * config, QWidget *parent, Qt::WFlags fl)
+prefDialog::prefDialog(FQTermConfig * config, QWidget *parent, Qt::WindowFlags fl)
     : QDialog(parent, fl),
       soundButtonGroup_(this),
       verticalSettingButtonGroup_(this),

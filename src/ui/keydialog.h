@@ -30,7 +30,7 @@ class FQTermConfig;
 class keyDialog: public QDialog {
   Q_OBJECT;
  public:
-  keyDialog(FQTermConfig *, QWidget *parent_ = 0, Qt::WFlags fl = 0);
+  keyDialog(FQTermConfig *, QWidget *parent_ = 0, Qt::WindowFlags fl = 0);
   ~keyDialog();
 
  protected:

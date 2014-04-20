@@ -22,7 +22,7 @@
 
 #include "msgdialog.h"
 
-msgDialog::msgDialog(QWidget *parent, Qt::WFlags fl)
+msgDialog::msgDialog(QWidget *parent, Qt::WindowFlags fl)
     : QDialog(parent, fl) {
   ui_.setupUi(this);
   // signals and slots connections

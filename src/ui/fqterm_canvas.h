@@ -44,7 +44,7 @@ class FQTermFileDialog;
 class FQTermCanvas: public QScrollArea {
   Q_OBJECT;
  public:
-  FQTermCanvas(FQTermConfig *, QWidget *parent_ = NULL, Qt::WFlags f = Qt::Window);
+  FQTermCanvas(FQTermConfig *, QWidget *parent_ = NULL, Qt::WindowFlags f = Qt::Window);
   ~FQTermCanvas();
 
   enum AdjustMode{Origin, Fit, Stretch, MaxFit};

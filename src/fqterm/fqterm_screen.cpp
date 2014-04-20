@@ -912,7 +912,7 @@ void FQTermScreen::repaintScreen(QPaintEvent *pe, QPainter &painter) {
   FQ_TRACE("screen", 5) << "Client area: " << pe->rect().width()
                         << "x" << pe->rect().height();
 
-  QRect rect = pe->rect().intersect(clientRectangle_);
+  QRect rect = pe->rect().intersected(clientRectangle_);
   //painter.eraseRect(rect);
   drawBackground(painter, rect, 0);
   QPoint tlPoint = mapToChar(QPoint(rect.left(), rect.top()));
@@ -1446,7 +1446,7 @@ QImage &FQTermScreen::fade(QImage &img, float val, const QColor &color) {
 
   if (img.depth() <= 8) {
     // pseudo color
-    for (int i = 0; i < img.numColors(); i++) {
+    for (int i = 0; i < img.colorCount(); i++) {
       col = img.color(i);
       cr = qRed(col);
       cg = qGreen(col);
@@ -1646,7 +1646,7 @@ void FQTermScreen::updateWidgetRect(QPainter& painter) {
 
   
 
-  QRect rect = widgetRect_.intersect(clientRectangle_);
+  QRect rect = widgetRect_.intersected(clientRectangle_);
   if (rect.isEmpty())
     return;
   drawBackground(painter, rect, 0);

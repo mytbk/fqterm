@@ -27,7 +27,7 @@ DefineEscapeDialog::~DefineEscapeDialog()
 {
 }
 
-DefineEscapeDialog::DefineEscapeDialog(QString& strEsc, QWidget *parent_ /*= 0*/, Qt::WFlags fl /*= 0*/)
+DefineEscapeDialog::DefineEscapeDialog(QString& strEsc, QWidget *parent_ /*= 0*/, Qt::WindowFlags fl /*= 0*/)
 : QDialog(parent_, fl), strEsc_(strEsc)
 {
   ui_.setupUi(this);

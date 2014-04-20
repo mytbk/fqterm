@@ -29,7 +29,7 @@ IPLookupDialog::~IPLookupDialog(){
 
 }
 
-IPLookupDialog::IPLookupDialog( QWidget *parent_ /*= 0*/, Qt::WFlags fl /*= 0*/ )  : QDialog(parent_, fl) {
+IPLookupDialog::IPLookupDialog( QWidget *parent_ /*= 0*/, Qt::WindowFlags fl /*= 0*/ )  : QDialog(parent_, fl) {
   ui_.setupUi(this);
   FQ_VERIFY(connect(ui_.lookupPushButton, SIGNAL(clicked()), this, SLOT(onLookup())));
   FQ_VERIFY(connect(ui_.finishedPushButton, SIGNAL(clicked()), this, SLOT(onFinished())));
@@ -40,9 +40,11 @@ void IPLookupDialog::onLookup() {
   QString ip = ui_.ipLineEdit->text();
   FQTermIPLocation *ipLocation = FQTermIPLocation::getInstance();
   if (ipLocation == NULL) {
-    ui_.addressLineEdit->setText(QApplication::translate("IPLookupDialog", "IP database file does NOT exist", 0, QApplication::UnicodeUTF8));
+    ui_.addressLineEdit->setText(
+        QApplication::translate("IPLookupDialog", "IP database file does NOT exist", 0, 0));
   } else if (!ipLocation->getLocation(ip, country, city)) {
-    ui_.addressLineEdit->setText(QApplication::translate("IPLookupDialog", "Invalid IP", 0, QApplication::UnicodeUTF8));
+    ui_.addressLineEdit->setText(
+        QApplication::translate("IPLookupDialog", "Invalid IP", 0, 0));
   } else {
     ui_.addressLineEdit->setText(country + " " + city);
   }

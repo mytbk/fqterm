@@ -32,7 +32,7 @@ class FQTermConfig;
 class soundConf: public QDialog {
   Q_OBJECT;
  public:
-  soundConf(FQTermConfig *, QWidget *parent_ = 0, Qt::WFlags fl = 0);
+  soundConf(FQTermConfig *, QWidget *parent_ = 0, Qt::WindowFlags fl = 0);
   ~soundConf();
   void loadSetting();
   void saveSetting();

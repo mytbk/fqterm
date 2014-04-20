@@ -156,7 +156,7 @@ void FQTermSSH2Kex::negotiateAlgorithms() {
     if (name_lists_len > 0) {
       name_lists.resize(name_lists_len);
       packet_receiver_->getRawData(&name_lists[0], name_lists_len);
-      FQ_TRACE("ssh2kex", 5) << "Algorithms: " << QString::fromAscii(&name_lists[0], name_lists_len);
+      FQ_TRACE("ssh2kex", 5) << "Algorithms: " << QString::fromLatin1(&name_lists[0], name_lists_len);
     } else {
       FQ_TRACE("ssh2kex", 5) << "None Algorithms";
     }

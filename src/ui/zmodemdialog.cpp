@@ -25,7 +25,7 @@
 
 namespace FQTerm {
 
-zmodemDialog::zmodemDialog(QWidget *parent_, Qt::WFlags fl)
+zmodemDialog::zmodemDialog(QWidget *parent_, Qt::WindowFlags fl)
     : QDialog(parent_, fl) {
   ui_.setupUi(this);
   FQ_VERIFY(connect(ui_.buttonCancel, SIGNAL(clicked()), this, SLOT(slotCancel())));

@@ -104,7 +104,7 @@ void FQTermSSHSocket::init(int ssh_version) {
     socket_buffer_ = new FQTermSSHBuffer(1024);
     packet_receiver_ = new FQTermSSH1PacketReceiver;
     packet_sender_ = new FQTermSSH1PacketSender;
-    key_exchanger_ = new FQTermSSH1Kex(SSH_V1_C, server_name_.toAscii().constData());
+    key_exchanger_ = new FQTermSSH1Kex(SSH_V1_C, server_name_.toLatin1().constData());
     authentication_ = new FQTermSSH1PasswdAuth(init_user_, init_passwd_);
     ssh_channel_ = new FQTermSSH1Channel;
 
@@ -134,7 +134,7 @@ void FQTermSSHSocket::init(int ssh_version) {
     socket_buffer_ = new FQTermSSHBuffer(1024);
     packet_receiver_ = new FQTermSSH2PacketReceiver;
     packet_sender_ = new FQTermSSH2PacketSender;
-    key_exchanger_ = new FQTermSSH2Kex(SSH_V2_C, server_name_.toAscii().constData());
+    key_exchanger_ = new FQTermSSH2Kex(SSH_V2_C, server_name_.toLatin1().constData());
     authentication_ = new FQTermSSH2PasswdAuth(init_user_, init_passwd_);
     ssh_channel_ = new FQTermSSH2Channel;
 

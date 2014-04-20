@@ -1454,7 +1454,7 @@ namespace FQTerm {
     FQ_VERIFY(connect(tree_, SIGNAL(activated(const QModelIndex &)),
         this, SLOT(onChange(const QModelIndex &))));
     FQ_VERIFY(connect(tree_->selectionModel(),
-        SIGNAL(selectionChanged(const QItemSelection&,
+        SIGNAL(selectionChanged(const QIetmSelection&,
             const QItemSelection&)),
         this, SLOT(selectionChanged(const QItemSelection&,
             const QItemSelection&))));
@@ -1711,7 +1711,7 @@ namespace FQTerm {
 
     if (value.isValid()) {
       checkState = static_cast<Qt::CheckState>(value.toInt());
-      checkRect = check(opt, opt.rect, value);
+      checkRect = doCheck(opt, opt.rect, value);
     }
 
     // do the layout

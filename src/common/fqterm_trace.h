@@ -90,7 +90,7 @@ class FQTermTrace {
     (*this) << "[" << category_ << " " << trace_level << " ";
 
 #ifndef NO_FQTERM_TRACE_FILE_LINE_NUM
-    (*this) << QFileInfo(file_name).fileName().toAscii().constData()
+    (*this) << QFileInfo(file_name).fileName().toLatin1().constData()
             << ": " << line_num;
 #endif  // NO_FQTERM_TRACE_FILE_LINE_NUM
 

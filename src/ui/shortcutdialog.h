@@ -41,7 +41,7 @@ class FQTermShortcutDialog : public QDialog
 {
   Q_OBJECT; 
 public:
-  FQTermShortcutDialog(FQTermShortcutHelper* helper, QWidget *parent_ = 0, Qt::WFlags fl = Qt::Dialog);
+  FQTermShortcutDialog(FQTermShortcutHelper* helper, QWidget *parent_ = 0, Qt::WindowFlags fl = Qt::Dialog);
   ~FQTermShortcutDialog();
 private:
   FQTermShortcutHelper* helper_;

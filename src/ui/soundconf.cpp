@@ -37,7 +37,7 @@ namespace FQTerm {
  *  TRUE to construct a modal dialog.
  */
 
-soundConf::soundConf(FQTermConfig * config, QWidget *parent, Qt::WFlags fl)
+soundConf::soundConf(FQTermConfig * config, QWidget *parent, Qt::WindowFlags fl)
     : QDialog(parent, fl),
     buttonGroup_(this),
     config_(config){

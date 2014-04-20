@@ -33,7 +33,7 @@
 
 namespace FQTerm {
 
-FQTermFileDialog::FQTermFileDialog(FQTermConfig *config, QWidget *parent, Qt::WFlags fl)
+FQTermFileDialog::FQTermFileDialog(FQTermConfig *config, QWidget *parent, Qt::WindowFlags fl)
   : QFileDialog(parent, fl) {
 
   configDir = getPath(USER_CONFIG) + "/";

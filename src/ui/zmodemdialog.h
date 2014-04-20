@@ -28,7 +28,7 @@ namespace FQTerm {
 class zmodemDialog: public QDialog {
   Q_OBJECT;
  public:
-  zmodemDialog(QWidget *parent_ = 0, Qt::WFlags fl = 0);
+  zmodemDialog(QWidget *parent_ = 0, Qt::WindowFlags fl = 0);
   ~zmodemDialog();
 
   void setFileInfo(const QString &, int);

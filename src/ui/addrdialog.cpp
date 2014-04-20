@@ -46,7 +46,7 @@ const int addrDialog::ports[3] = {23, 22, 22};
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
  */
-addrDialog::addrDialog(QWidget *parent_, const FQTermParam& parameter, int buttons, Qt::WFlags fl)
+addrDialog::addrDialog(QWidget *parent_, const FQTermParam& parameter, int buttons, Qt::WindowFlags fl)
   : QDialog(parent_, fl),
     menuButtonGroup_(this),
     param_(parameter) {
@@ -242,7 +242,7 @@ void addrDialog::onCancel() {
 
 void addrDialog::onFgcolor() {
   QColor color = QColorDialog::getColor(param_.foregroundColor_);
-  if (color.isValid() == TRUE) {
+  if (color.isValid() == true) {
     param_.foregroundColor_ = color;
     previewFont();
   }
@@ -250,7 +250,7 @@ void addrDialog::onFgcolor() {
 
 void addrDialog::onBgcolor() {
   QColor color = QColorDialog::getColor(param_.backgroundColor_);
-  if (color.isValid() == TRUE) {
+  if (color.isValid() == true) {
     param_.backgroundColor_ = color;
     previewFont();
   }
@@ -300,7 +300,7 @@ void addrDialog::onChooseScript() {
 
 void addrDialog::onMenuColor() {
   QColor color = QColorDialog::getColor(param_.menuColor_);
-  if (color.isValid() == TRUE) {
+  if (color.isValid() == true) {
     param_.menuColor_ = color;
     previewMenu();
   }

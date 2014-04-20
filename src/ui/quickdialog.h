@@ -36,7 +36,7 @@ class FQTermConfig;
 class quickDialog: public QDialog {
   Q_OBJECT;
  public:
-  quickDialog(FQTermConfig *, QWidget *parent_ = 0, Qt::WFlags fl = 0);
+  quickDialog(FQTermConfig *, QWidget *parent_ = 0, Qt::WindowFlags fl = 0);
   ~quickDialog();
 
   FQTermParam param_;
