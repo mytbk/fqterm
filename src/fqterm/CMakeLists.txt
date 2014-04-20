@@ -23,6 +23,8 @@ ELSE(WIN32)
     set(global_shortcut_impl_SRCS 3rdparty/qxtglobalshortcut_mac.cpp)
   ELSE(APPLE)
     set(global_shortcut_impl_SRCS 3rdparty/qxtglobalshortcut_x11.cpp)
+    find_package(Qt5X11Extras REQUIRED)
+    set(QXTLIB Qt5::X11Extras)
   ENDIF(APPLE)
 ENDIF(WIN32)
 
@@ -82,4 +84,11 @@ add_dependencies(fqterm_main
   fqterm_unite
 )
 
-target_link_libraries(fqterm_main Qt5::Core Qt5::Widgets Qt5::Network Qt5::Script)
+target_link_libraries(
+  fqterm_main
+  Qt5::Core
+  Qt5::Widgets
+  Qt5::Network
+  Qt5::Script
+  ${QXTLIB}
+)
