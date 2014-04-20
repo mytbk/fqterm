@@ -181,7 +181,7 @@ FQTermFrame::FQTermFrame()
   statusBar()->addWidget(statusBar_, 0);
 
   installEventFilter(this);
-
+/*
   QDate lastCheckDate = QDate::fromString(config_->getItemValue("global", "lastcheckupdate"));
   QDate currentDate = QDate::currentDate();
   if (!lastCheckDate.isValid() || lastCheckDate.daysTo(currentDate) >= 31) {
@@ -190,7 +190,7 @@ FQTermFrame::FQTermFrame()
     autoUpdater->checkUpdate();  
     config_->setItemValue("global", "lastcheckupdate", currentDate.toString());
   }
-
+*/
   serverThread_ = new FQTermMiniServerThread();
   if (FQTermPref::getInstance()->runServer_)
     serverThread_->start();
