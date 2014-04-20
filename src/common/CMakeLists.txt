@@ -22,15 +22,14 @@ set(fqterm_common_SRCS
   fqterm_shortcuthelper.cpp
 )
 
-qt4_automoc(${fqterm_common_SRCS})
-
-include_directories(
-  ${QT_INCLUDE_DIR}
-  ${QT_QTCORE_INCLUDE_DIR}
-  ${QT_QTGUI_INCLUDE_DIR}
-  ${CMAKE_CURRENT_BINARY_DIR}
-)
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+set(CMAKE_AUTOMOC ON)
+find_package(Qt5Core REQUIRED)
+find_package(Qt5Widgets REQUIRED)
+find_package(Qt5Multimedia REQUIRED)
 
 add_library(fqterm_common
   ${fqterm_common_SRCS}
 )
+
+target_link_libraries(fqterm_common Qt5::Core Qt5::Widgets Qt5::Multimedia)

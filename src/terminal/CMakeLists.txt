@@ -16,6 +16,11 @@ set(internal_SRCS
   internal/fqterm_zmodem.cpp
 )
 
+set(CMAKE_AUTOMOC ON)
+find_package(Qt5Core REQUIRED)
+find_package(Qt5Network REQUIRED)
+find_package(Qt5Widgets REQUIRED)
+
 include_directories(
   ${QT_INCLUDE_DIR}
   ${QT_QTCORE_INCLUDE_DIR}
@@ -29,11 +34,6 @@ include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/../protocol
 )
 
-QT4_AUTOMOC(
-  ${export_SRCS}
-  ${internal_SRCS}
-)
-
 add_library(fqterm_terminal
   ${export_SRCS}
   ${internal_SRCS}
@@ -44,3 +44,5 @@ add_dependencies(fqterm_terminal
   fqterm_protocol
   fqterm_utilities
 )
+
+target_link_libraries(fqterm_terminal Qt5::Core Qt5::Widgets Qt5::Network)

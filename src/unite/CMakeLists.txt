@@ -19,17 +19,14 @@ set(fqunite_internal_SRCS
   internal/statebuilder.cpp
 )
 
-qt4_automoc(
-  ${fqunite_SRCS}
-  ${fqunite_internal_SRCS}
-)
+set(CMAKE_AUTOMOC ON)
+find_package(Qt5Core REQUIRED)
+find_package(Qt5Widgets REQUIRED)
+find_package(Qt5Network REQUIRED)
+find_package(Qt5Xml REQUIRED)
 
 include_directories(
-  ${QT_INCLUDE_DIR}
-  ${QT_QTCORE_INCLUDE_DIR}
-  ${QT_QTNETWORK_INCLUDE_DIR}
   ${QT_QTXML_INCLUDE_DIR}
-  ${QT_QTGUI_INCLUDE_DIR}
   ${OPENSSL_INCLUDE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}/internal
   ${CMAKE_CURRENT_SOURCE_DIR}/../common
@@ -43,4 +40,11 @@ add_library(fqterm_unite
 
 add_dependencies(fqterm_unite
   fqterm_common
+)
+
+target_link_libraries(fqterm_unite
+  Qt5::Core
+  Qt5::Widgets
+  Qt5::Network
+  Qt5::Xml
 )

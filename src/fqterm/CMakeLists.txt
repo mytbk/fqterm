@@ -1,11 +1,9 @@
 set(fqterm_SRCS
   fqterm_app.h
-  fqterm_autoupdate.h
   fqterm_frame.h
   fqterm_screen.h
   fqterm_window.h
   fqterm_wndmgr.h
-  fqterm_autoupdate.cpp
   fqterm_app.cpp
   fqterm_frame.cpp
   fqterm_screen.cpp
@@ -42,11 +40,13 @@ set(3rdparty_SRCS
   ${global_shortcut_impl_SRCS}
 )
 
-qt4_automoc(${fqterm_SRCS}
-            ${3rdparty_SRCS}
-)
+set(CMAKE_AUTOMOC ON)
+find_package(Qt5Core REQUIRED)
+find_package(Qt5Widgets REQUIRED)
+find_package(Qt5Network REQUIRED)
+find_package(Qt5Script REQUIRED)
 
-qt4_create_translation(fqterm_qm_file
+qt5_create_translation(fqterm_qm_file
   ${fqterm_SRCS}
   ${CMAKE_SOURCE_DIR}/res/dict/fqterm_zh_CN.ts
 )
@@ -81,3 +81,5 @@ add_dependencies(fqterm_main
   fqterm_utilities
   fqterm_unite
 )
+
+target_link_libraries(fqterm_main Qt5::Core Qt5::Widgets Qt5::Network Qt5::Script)

@@ -40,10 +40,9 @@ set(internal_SRCS
   internal/fqterm_ssh_channel.cpp
 )
 
-qt4_automoc(
-  ${export_SRCS}
-  ${internal_SRCS}
-)
+set(CMAKE_AUTOMOC ON)
+find_package(Qt5Core REQUIRED)
+find_package(Qt5Network REQUIRED)
 
 include_directories(
   ${QT_INCLUDE_DIR}
@@ -63,3 +62,5 @@ add_library(fqterm_protocol
 add_dependencies(fqterm_protocol
   fqterm_common
 )
+
+target_link_libraries(fqterm_protocol Qt5::Core Qt5::Network)

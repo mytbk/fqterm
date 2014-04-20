@@ -2,7 +2,7 @@ project(fqterm)
 
 set(FQTERM_VERSION "0.9.8")
 
-cmake_minimum_required( VERSION 2.4.2 FATAL_ERROR )
+cmake_minimum_required( VERSION 2.8.11 FATAL_ERROR )
 
 if(COMMAND cmake_policy)
   cmake_policy(SET CMP0003 NEW)
@@ -22,13 +22,13 @@ include(GetGitRevisionDescription)
 git_describe(MCGGIT_WC_REVISION)
 message("Git revision: " ${MCGGIT_WC_REVISION})
 
-find_package(Qt4 COMPONENTS QtCore QtGui QtNetwork QtScript QtXml REQUIRED)
-IF(APPLE)
-ELSE(APPLE)
-include(${QT_USE_FILE})
-ENDIF(APPLE)
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+set(CMAKE_AUTOMOC ON)
+find_package(Qt5Core REQUIRED)
+find_package(Qt5Widgets REQUIRED)
+find_package(Qt5LinguistTools REQUIRED)
 
-qt4_add_translation(fqterm_qm_files
+qt5_add_translation(fqterm_qm_files
   ${CMAKE_SOURCE_DIR}/res/dict/fqterm_zh_CN.ts
   ${CMAKE_SOURCE_DIR}/res/dict/ui_zh_CN.ts
   ${CMAKE_SOURCE_DIR}/res/dict/protocol_zh_CN.ts
@@ -46,22 +46,6 @@ if (PYTHONLIBS_FOUND)
 else (PYTHONLIBS_FOUND)
   SET(PYTHON_LIB)
 endif (PYTHONLIBS_FOUND)
-
-IF(WIN32)
-  FILE(READ ${QT_LIBRARY_DIR}/QtCore.prl FQ_CORE_QT_CONFIG)
-ELSE(WIN32)
-  IF(APPLE)
-    FILE(READ ${QT_LIBRARY_DIR}/QtCore.framework/QtCore.prl FQ_CORE_QT_CONFIG)
-  ELSE(APPLE)
-    FILE(READ ${QT_LIBRARY_DIR}/libQtCore.prl FQ_CORE_QT_CONFIG)
-  ENDIF(APPLE)
-ENDIF(WIN32)
-
-IF(NOT FQ_CORE_QT_CONFIG MATCHES "static")
-  SET(FQTERM_USE_STATIC_QT false)
-ELSE(NOT FQ_CORE_QT_CONFIG MATCHES "static")
-  SET(FQTERM_USE_STATIC_QT true)
-ENDIF(NOT FQ_CORE_QT_CONFIG MATCHES "static")
 
 SET(SUB_CMAKELIST "UNKNOWN")
 
@@ -92,5 +76,3 @@ IF(SUB_CMAKELIST MATCHES "UNKNOWN")
 ELSE(SUB_CMAKELIST MATCHES "UNKNOWN")
   INCLUDE("${SUB_CMAKELIST}")
 ENDIF(SUB_CMAKELIST MATCHES "UNKNOWN")
-
-
