@@ -1453,11 +1453,11 @@ namespace FQTerm {
     */
     FQ_VERIFY(connect(tree_, SIGNAL(activated(const QModelIndex &)),
         this, SLOT(onChange(const QModelIndex &))));
-    FQ_VERIFY(connect(tree_->selectionModel(),
+/*    FQ_VERIFY(connect(tree_->selectionModel(),
         SIGNAL(selectionChanged(const QIetmSelection&,
             const QItemSelection&)),
         this, SLOT(selectionChanged(const QItemSelection&,
-            const QItemSelection&))));
+        const QItemSelection&))));*/
     FQ_VERIFY(connect(exifTable_, SIGNAL(showExifDetails()),
         this, SLOT(showFullExifInfo())));
   }
