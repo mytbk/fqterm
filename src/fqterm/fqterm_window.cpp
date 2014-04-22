@@ -1972,9 +1972,10 @@ void FQTermWindow::sendKey(const int keyCode, const Qt::KeyboardModifiers modifi
 #endif
   bool shift_on = (modifier & Qt::ShiftModifier);
   
-#ifdef __APPLE__
+#if defined(__APPLE__) || defined(_OS_LINUX_)
   // Bullshit! Qt4.4.0 on Mac generates weird key evnets.
   // fix them here.
+  // FIXME: in Qt5.2.1, the QKeyEvent::text() does not recognize Ctrl key
 
   if (ctrl_on) {
     static const char char_map[][2] = {
