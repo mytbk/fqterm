@@ -8,6 +8,7 @@ Now I'm porting FQTerm to Qt5.
 
 TODO
 ====
-- Bug fix: Unable to use Ctrl key
+- ~~Bug fix: Unable to use Ctrl key (FIXED using the code for Mac OS)~~
+- Bug fix: SIGSEGV on exit
 - Maybe something wrong with imageviewer
 - Reconstruct the code
