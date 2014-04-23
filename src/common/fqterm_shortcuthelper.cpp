@@ -109,7 +109,7 @@ void FQTermShortcutHelper::initShortcutDescriptionTable()
   initShortcutDescriptionTableEntry(RUNPYTHONSCRIPT, "runpythonscript", tr("Ctrl+F1"), tr("Run Python Script")); 
 #endif //HAVE_PYTHON
   initShortcutDescriptionTableEntry(ABOUT, "about", tr("Shift+F1"), tr("About"));  
-  initShortcutDescriptionTableEntry(HOMEPAGE, "homepage", tr(""), tr("Homepage"));  
+//  initShortcutDescriptionTableEntry(HOMEPAGE, "homepage", tr(""), tr("Homepage"));  
   initShortcutDescriptionTableEntry(EXIT, "exit", tr(""), tr("Exit FQTerm")); 
   initShortcutDescriptionTableEntry(COLORCTL_NO, "colorctlno", tr(""), tr("Set Color Ctrl to None")); 
   getAction(COLORCTL_NO)->setCheckable(true);

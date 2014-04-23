@@ -224,7 +224,6 @@ FQTermFrame::~FQTermFrame() {
   serverThread_->quit();
   serverThread_->wait(1000);
   delete serverThread_;
-  
 }
 
 //initialize setting from fqterm.cfg
@@ -554,7 +553,7 @@ void FQTermFrame::aboutFQTerm() {
   about.exec();
 }
 
-//slot Help->Homepage
+/*//slot Help->Homepage
 void FQTermFrame::homepage() {
   const QString &httpBrowser = FQTermPref::getInstance()->httpBrowser_;
   const QString homeUrl = "http://code.google.com/p/fqterm";
@@ -565,7 +564,7 @@ void FQTermFrame::homepage() {
 	  runProgram(httpBrowser, homeUrl);
   }
 }
-
+*/
 //slot Windows menu aboutToShow
 void FQTermFrame::windowsMenuAboutToShow() {
   menuWindows_->clear();
@@ -1592,7 +1591,7 @@ void FQTermFrame::addMainMenu() {
   QMenu *help = menuMain_->addMenu(tr("&Help"));
   FQTERM_ADDACTION(help, ABOUT, this, aboutFQTerm);
   getAction(FQTermShortcutHelper::ABOUT)->setMenuRole(QAction::AboutRole);
-  FQTERM_ADDACTION(help, HOMEPAGE, this, homepage);
+//  FQTERM_ADDACTION(help, HOMEPAGE, this, homepage);
 }
 
 void FQTermFrame::updateMenuToolBar() {

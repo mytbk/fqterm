@@ -110,7 +110,7 @@ class FQTermFrame: public QMainWindow {
   void delayedRunScript(); // to avoid activate recursion guard
   void stopScript();
   void runPyScript();
-  void homepage();
+//  void homepage();
 
   void toggleAnsiColor();
 
