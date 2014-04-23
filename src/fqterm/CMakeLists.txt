@@ -1,10 +1,8 @@
 set(fqterm_SRCS
-  fqterm_app.h
   fqterm_frame.h
   fqterm_screen.h
   fqterm_window.h
   fqterm_wndmgr.h
-  fqterm_app.cpp
   fqterm_frame.cpp
   fqterm_screen.cpp
   fqterm_window.cpp

@@ -71,7 +71,7 @@
 #include <QTextCodec>
 
 #include "fqterm.h"
-#include "fqterm_app.h"
+//#include "fqterm_app.h"
 #include "fqterm_frame.h"
 #include "fqterm_path.h"
 #include "fqterm_trace.h"
@@ -87,7 +87,7 @@ int main(int argc, char **argv) {
 //#else
 //  QApplication::setGraphicsSystem("raster");
 //#endif
-  FQTerm::FQTermApplication a(argc, argv);
+  QApplication a(argc, argv);
   // Set trace categories and level.
   FQTerm::setMaxTraceLevel(1);
   for (int i = 1; i < argc; ++i) {
@@ -127,9 +127,10 @@ int main(int argc, char **argv) {
   mw->setWindowTitle("FQTerm " + QString(FQTERM_VERSION_STRING));
   mw->setWindowIcon(QPixmap(getPath(RESOURCE) + "pic/fqterm.png"));
   mw->show();
-  a.setQuitOnLastWindowClosed(false);
-  FQ_VERIFY(a.connect(mw, SIGNAL(destroyed(QObject*)), &a, SLOT(mainWindowDestroyed(QObject*)), Qt::QueuedConnection));
-  FQ_VERIFY(a.connect(&a, SIGNAL(saveData()), mw, SLOT(saveSetting())));
+//  a.setQuitOnLastWindowClosed(false);
+//  FQ_VERIFY(a.connect(mw, SIGNAL(destroyed(QObject*)), &a, SLOT(mainWindowDestroyed(QObject*)), Qt::QueuedConnection));
+//  FQ_VERIFY(a.connect(&a, SIGNAL(saveData()), mw, SLOT(saveSetting())));
   int res = a.exec();
+  delete mw;
   return res;
 }

@@ -24,7 +24,7 @@
 #include <QMainWindow>
 #include <QSystemTrayIcon>
 #include <QMenuBar>
-
+#include <QTranslator>
 #include <vector>
 
 class QWidget;
