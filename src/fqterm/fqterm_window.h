@@ -146,7 +146,7 @@ signals:
   void shareIt();
   void externalEditor();
   void fastPost();
-  void copyArticle();
+//  void copyArticle();
   void setting();
   void setColor();
   void runScript();

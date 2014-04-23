@@ -224,7 +224,6 @@ FQTermFrame::~FQTermFrame() {
   serverThread_->quit();
   serverThread_->wait(1000);
   delete serverThread_;
-  
 }
 
 //initialize setting from fqterm.cfg
@@ -554,7 +553,7 @@ void FQTermFrame::aboutFQTerm() {
   about.exec();
 }
 
-//slot Help->Homepage
+/*//slot Help->Homepage
 void FQTermFrame::homepage() {
   const QString &httpBrowser = FQTermPref::getInstance()->httpBrowser_;
   const QString homeUrl = "http://code.google.com/p/fqterm";
@@ -565,7 +564,7 @@ void FQTermFrame::homepage() {
 	  runProgram(httpBrowser, homeUrl);
   }
 }
-
+*/
 //slot Windows menu aboutToShow
 void FQTermFrame::windowsMenuAboutToShow() {
   menuWindows_->clear();
@@ -747,11 +746,11 @@ void FQTermFrame::copyColor() {
   getAction(FQTermShortcutHelper::COPYWITHCOLOR)->setChecked(
       windowManager_->activeWindow()->getSession()->param().isColorCopy_);
 }
-
+/*
 void FQTermFrame::copyArticle() {
   windowManager_->activeWindow()->copyArticle();
 }
-
+*/
 void FQTermFrame::autoCopy() {
   windowManager_->activeWindow()->getSession()->param().isAutoCopy_
       = !windowManager_->activeWindow()->getSession()->param().isAutoCopy_;
@@ -1406,7 +1405,7 @@ void FQTermFrame::addMainTool() {
   toolBarMdiConnectTools_->addSeparator();
 
   // Spec (5)
-  toolBarMdiConnectTools_->addAction(getAction(FQTermShortcutHelper::COPYARTICLE));
+//  toolBarMdiConnectTools_->addAction(getAction(FQTermShortcutHelper::COPYARTICLE));
   toolBarMdiConnectTools_->addAction(getAction(FQTermShortcutHelper::ANTIIDLE));
   toolBarMdiConnectTools_->addAction(getAction(FQTermShortcutHelper::AUTOREPLY));
   toolBarMdiConnectTools_->addAction(getAction(FQTermShortcutHelper::VIEWMESSAGE));
@@ -1565,7 +1564,7 @@ void FQTermFrame::addMainMenu() {
 
   // Special
   QMenu *spec = menuMain_->addMenu(tr("&Special"));
-  FQTERM_ADDACTION(spec, COPYARTICLE, this, copyArticle);
+//  FQTERM_ADDACTION(spec, COPYARTICLE, this, copyArticle);
   FQTERM_ADDACTION(spec, ANTIIDLE, this, antiIdle);
   FQTERM_ADDACTION(spec, AUTOREPLY, this, autoReply);
   FQTERM_ADDACTION(spec, VIEWMESSAGE, this, viewMessages);
@@ -1592,7 +1591,7 @@ void FQTermFrame::addMainMenu() {
   QMenu *help = menuMain_->addMenu(tr("&Help"));
   FQTERM_ADDACTION(help, ABOUT, this, aboutFQTerm);
   getAction(FQTermShortcutHelper::ABOUT)->setMenuRole(QAction::AboutRole);
-  FQTERM_ADDACTION(help, HOMEPAGE, this, homepage);
+//  FQTERM_ADDACTION(help, HOMEPAGE, this, homepage);
 }
 
 void FQTermFrame::updateMenuToolBar() {
@@ -1686,7 +1685,7 @@ void FQTermFrame::enableMenuToolBar(bool enable) {
   getAction(FQTermShortcutHelper::REFRESHSCREEN)->setEnabled(enable);
   getAction(FQTermShortcutHelper::CURRENTSETTING)->setEnabled(enable);
   getAction(FQTermShortcutHelper::SAVESETTING)->setEnabled(enable);
-  getAction(FQTermShortcutHelper::COPYARTICLE)->setEnabled(enable);
+//  getAction(FQTermShortcutHelper::COPYARTICLE)->setEnabled(enable);
   getAction(FQTermShortcutHelper::ANTIIDLE)->setEnabled(enable);
   getAction(FQTermShortcutHelper::AUTOREPLY)->setEnabled(enable);
   getAction(FQTermShortcutHelper::VIEWMESSAGE)->setEnabled(enable);

@@ -24,7 +24,7 @@
 #include <QMainWindow>
 #include <QSystemTrayIcon>
 #include <QMenuBar>
-
+#include <QTranslator>
 #include <vector>
 
 class QWidget;
@@ -110,7 +110,7 @@ class FQTermFrame: public QMainWindow {
   void delayedRunScript(); // to avoid activate recursion guard
   void stopScript();
   void runPyScript();
-  void homepage();
+//  void homepage();
 
   void toggleAnsiColor();
 
@@ -127,7 +127,7 @@ class FQTermFrame: public QMainWindow {
   void fastPost();
   void copyRect();
   void copyColor();
-  void copyArticle();
+//  void copyArticle();
   void autoCopy();
   void wordWrap();
   void noEsc();

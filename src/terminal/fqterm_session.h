@@ -82,7 +82,7 @@ class FQTermTextLine;
 class FQTermTelnet;
 class FQTermDecode;
 class FQTermZmodem;
-class ArticleCopyThread;
+//class ArticleCopyThread;
 
 class FQTermSession: public QObject {
   Q_OBJECT;
@@ -229,7 +229,7 @@ class FQTermSession: public QObject {
 
   void handleInput(const QString &text);
 
-  void copyArticle();
+//  void copyArticle();
 
  signals:
   void messageAutoReplied();
@@ -306,7 +306,7 @@ private:
   QTimer *autoReplyTimer_;
 
   QWaitCondition waitCondition_;
-  ArticleCopyThread *acThread_;
+//  ArticleCopyThread *acThread_;
 
   std::vector<char> telnet_data_;
   std::vector<char> raw_data_;
@@ -319,7 +319,7 @@ public:
 private:
   FQTermScriptEventListener* scriptListener_;
 };
-
+/*
 class ArticleCopyThread: public QThread {
   Q_OBJECT;
  public:
@@ -338,7 +338,7 @@ class ArticleCopyThread: public QThread {
 
   QReadWriteLock &lock_;
 };
-
+*/
 }  // namespace FQTerm
 
 #endif // FQTERM_SESSION_H

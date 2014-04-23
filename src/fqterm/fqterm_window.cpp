@@ -288,8 +288,8 @@ void FQTermWindow::addMenu() {
   menu_->addAction(QPixmap(resource_dir + "pic/paste.png"), tr("Paste"),
                    this, SLOT(paste()), paste_shortcut);
 
-  menu_->addAction(QPixmap(resource_dir+"pic/get_article_fulltext.png"), tr("Copy Article"),
-                   this, SLOT(copyArticle()));
+//  menu_->addAction(QPixmap(resource_dir+"pic/get_article_fulltext.png"), tr("Copy Article"),
+//                   this, SLOT(copyArticle()));
   menu_->addSeparator();
 
   QMenu *fontMenu = new QMenu(menu_);
@@ -985,7 +985,7 @@ void FQTermWindow::externalEditorDone(const QString& str) {
   session_->write(rawStr, rawStr.length());
 }
 
-
+/*
 void FQTermWindow::copyArticle() {
   if (!isConnected()) {
     return ;
@@ -993,7 +993,7 @@ void FQTermWindow::copyArticle() {
 
   session_->copyArticle();
 }
-
+*/
 void FQTermWindow::setColor() {
   addrDialog set(this, session_->param());
 
