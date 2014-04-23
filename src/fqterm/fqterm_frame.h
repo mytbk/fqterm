@@ -127,7 +127,7 @@ class FQTermFrame: public QMainWindow {
   void fastPost();
   void copyRect();
   void copyColor();
-  void copyArticle();
+//  void copyArticle();
   void autoCopy();
   void wordWrap();
   void noEsc();

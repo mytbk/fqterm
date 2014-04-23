@@ -70,15 +70,15 @@ FQTermScriptEngine::FQTermScriptEngine(FQTermWindow* parent)
 : QObject(parent),
   window_(parent),
   engine_(NULL),
-  articleCopyThread_(NULL),
+//  articleCopyThread_(NULL),
   timerIDCount_(0) {
   FQ_VERIFY(window_);
   session_ = window_->getSession();
   buffer_ = window_->getSession()->getBuffer();
   screen_ = window_->getScreen();
-  articleCopyThread_ = new ArticleCopyThread(*session_, session_->getWaitCondition(), session_->getBufferLock());
-  FQ_VERIFY(connect(articleCopyThread_, SIGNAL(articleCopied(int, const QString)),
-    this, SLOT(articleCopied(int, const QString))));
+//  articleCopyThread_ = new ArticleCopyThread(*session_, session_->getWaitCondition(), session_->getBufferLock());
+//  FQ_VERIFY(connect(articleCopyThread_, SIGNAL(articleCopied(int, const QString)),
+//    this, SLOT(articleCopied(int, const QString))));
   engine_ = new QScriptEngine();
   engine_->globalObject().setProperty(
     "fq_session", engine_->newQObject(session_));
@@ -123,7 +123,7 @@ void FQTermScriptEngine::runScript( const QString& filename ) {
 
 void FQTermScriptEngine::stopScript() {
   //all loops should be stopped here.
-  articleCopied_ = true;
+//  articleCopied_ = true;
   engine_->abortEvaluation();
 }
 
@@ -236,13 +236,13 @@ void FQTermScriptEngine::sleep(int ms) {
   engine_->evaluate(busy_wait);
   engine_->setProcessEventsInterval(originInterval);
 }
-
+/*
 //TODO: flags
 void FQTermScriptEngine::articleCopied(int state, const QString content) {
   if (state == DAE_FINISH) {
     articleCopied_ = true;
     articleText_ = content;
-  } else /*if (state == DAE_TIMEOUT)*/ {
+  } else {//*if (state == DAE_TIMEOUT)
     articleCopied_ = true;
     articleText_ = "";
   }
@@ -258,7 +258,7 @@ QString FQTermScriptEngine::copyArticle() {
   }
   return articleText_;
 }
-
+*/
 void FQTermScriptEngine::finalizeScript() { 
   engine_->setProcessEventsInterval(-1);
   stopScript();

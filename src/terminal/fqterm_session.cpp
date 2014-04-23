@@ -126,7 +126,7 @@ FQTermSession::FQTermSession(FQTermConfig *config, FQTermParam param) {
   idleTimer_ = new QTimer;
   autoReplyTimer_ = new QTimer;
 
-  acThread_ = new ArticleCopyThread(*this, waitCondition_, bufferWriteLock_);
+//  acThread_ = new ArticleCopyThread(*this, waitCondition_, bufferWriteLock_);
 
   FQ_VERIFY(connect(decoder_, SIGNAL(mouseMode(bool)),
                     this, SLOT(setMouseMode(bool))));
@@ -154,8 +154,8 @@ FQTermSession::FQTermSession(FQTermConfig *config, FQTermParam param) {
   FQ_VERIFY(connect(autoReplyTimer_, SIGNAL(timeout()),
                     this, SLOT(onAutoReply())));
 
-  FQ_VERIFY(connect(acThread_, SIGNAL(articleCopied(int, const QString)),
-                    this, SIGNAL(articleCopied(int, const QString))));
+//  FQ_VERIFY(connect(acThread_, SIGNAL(articleCopied(int, const QString)),
+//                    this, SIGNAL(articleCopied(int, const QString))));
 
   setAntiIdle(param_.isAntiIdle_);
 }
@@ -163,7 +163,7 @@ FQTermSession::FQTermSession(FQTermConfig *config, FQTermParam param) {
 FQTermSession::~FQTermSession() {
   delete idleTimer_;
   delete autoReplyTimer_;
-  delete acThread_;
+//  delete acThread_;
   delete termBuffer_;
   delete telnet_;
   delete zmodem_;
@@ -1416,13 +1416,13 @@ void FQTermSession::leaveIdle() {
     idleTimer_->start(param_.maxIdleSeconds_ * 1000);
   }
 }
-
+/*
 void FQTermSession::copyArticle() {
   if (!acThread_->isRunning()) {
     acThread_->start();
   }
 }
-
+*/
 void FQTermSession::getLineColorInfo(const FQTermTextLine * line,
                                      LineColorInfo * colorInfo)
 {
@@ -1489,7 +1489,7 @@ void FQTermSession::updateSetting( const FQTermParam& p ) {
   if (toggleAutoReconnect)
     setAutoReconnect(param_.isAutoReconnect_);
 }
-
+/*
 ArticleCopyThread::ArticleCopyThread(
     FQTermSession &bbs, QWaitCondition &waitCondition, QReadWriteLock &bufferLock)
     : session_(bbs),
@@ -1642,6 +1642,8 @@ void ArticleCopyThread::run() {
   //qApp->postEvent(pWin, new QCustomEvent(DAE_FINISH));
   emit articleCopied(DAE_FINISH, articleText);
 }
+
+*/    
 
 }  // namespace FQTerm
 

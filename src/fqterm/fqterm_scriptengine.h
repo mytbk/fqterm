@@ -36,7 +36,7 @@ class FQTermWindow;
 class FQTermSession;
 class FQTermScreen;
 class FQTermBuffer;
-class ArticleCopyThread;
+//class ArticleCopyThread;
 class FQTermScriptEngine : public QObject {
   Q_OBJECT;
 public:
@@ -84,7 +84,7 @@ public slots: //script apis
   QString getIP();
   void previewImage(const QString& url);
   void sleep(int ms);
-  QString copyArticle();
+//  QString copyArticle();
   void openUrl(const QString & url);
   QString getSelect(bool color_copy);
   QList<int> mapToChar(int screenX, int screenY);
@@ -130,16 +130,16 @@ private:
   void destroyTimer(int id);
 
 private slots:
-  void articleCopied(int state, const QString content);
+//  void articleCopied(int state, const QString content);
 private:
   QScriptEngine* engine_;
   FQTermWindow* window_;
   FQTermSession* session_;
   FQTermScreen* screen_;
   FQTermBuffer* buffer_;
-  ArticleCopyThread* articleCopyThread_;
-  bool articleCopied_;
-  QString articleText_;
+//  ArticleCopyThread* articleCopyThread_;
+//  bool articleCopied_;
+//  QString articleText_;
   std::map<int, QTimer*> timerTable_;
   int timerIDCount_;
 };

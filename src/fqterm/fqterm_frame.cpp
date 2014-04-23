@@ -746,11 +746,11 @@ void FQTermFrame::copyColor() {
   getAction(FQTermShortcutHelper::COPYWITHCOLOR)->setChecked(
       windowManager_->activeWindow()->getSession()->param().isColorCopy_);
 }
-
+/*
 void FQTermFrame::copyArticle() {
   windowManager_->activeWindow()->copyArticle();
 }
-
+*/
 void FQTermFrame::autoCopy() {
   windowManager_->activeWindow()->getSession()->param().isAutoCopy_
       = !windowManager_->activeWindow()->getSession()->param().isAutoCopy_;
@@ -1405,7 +1405,7 @@ void FQTermFrame::addMainTool() {
   toolBarMdiConnectTools_->addSeparator();
 
   // Spec (5)
-  toolBarMdiConnectTools_->addAction(getAction(FQTermShortcutHelper::COPYARTICLE));
+//  toolBarMdiConnectTools_->addAction(getAction(FQTermShortcutHelper::COPYARTICLE));
   toolBarMdiConnectTools_->addAction(getAction(FQTermShortcutHelper::ANTIIDLE));
   toolBarMdiConnectTools_->addAction(getAction(FQTermShortcutHelper::AUTOREPLY));
   toolBarMdiConnectTools_->addAction(getAction(FQTermShortcutHelper::VIEWMESSAGE));
@@ -1564,7 +1564,7 @@ void FQTermFrame::addMainMenu() {
 
   // Special
   QMenu *spec = menuMain_->addMenu(tr("&Special"));
-  FQTERM_ADDACTION(spec, COPYARTICLE, this, copyArticle);
+//  FQTERM_ADDACTION(spec, COPYARTICLE, this, copyArticle);
   FQTERM_ADDACTION(spec, ANTIIDLE, this, antiIdle);
   FQTERM_ADDACTION(spec, AUTOREPLY, this, autoReply);
   FQTERM_ADDACTION(spec, VIEWMESSAGE, this, viewMessages);
@@ -1685,7 +1685,7 @@ void FQTermFrame::enableMenuToolBar(bool enable) {
   getAction(FQTermShortcutHelper::REFRESHSCREEN)->setEnabled(enable);
   getAction(FQTermShortcutHelper::CURRENTSETTING)->setEnabled(enable);
   getAction(FQTermShortcutHelper::SAVESETTING)->setEnabled(enable);
-  getAction(FQTermShortcutHelper::COPYARTICLE)->setEnabled(enable);
+//  getAction(FQTermShortcutHelper::COPYARTICLE)->setEnabled(enable);
   getAction(FQTermShortcutHelper::ANTIIDLE)->setEnabled(enable);
   getAction(FQTermShortcutHelper::AUTOREPLY)->setEnabled(enable);
   getAction(FQTermShortcutHelper::VIEWMESSAGE)->setEnabled(enable);
