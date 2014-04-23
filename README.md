@@ -12,3 +12,16 @@ TODO
 - Bug fix: SIGSEGV on exit
 - Maybe something wrong with imageviewer
 - Reconstruct the code
+
+Install
+=======
+First clone the code, assume it's in fqterm/ directory, then run the following.
+
+```
+mkdir build
+cd build
+cmake ../fqterm
+make
+as-root make install
+```
+
