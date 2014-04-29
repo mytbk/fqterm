@@ -59,7 +59,7 @@
 #include "fqterm.h"
 
 #include "fqterm_path.h"
-#include "fqterm_autoupdate.h"
+//#include "fqterm_autoupdate.h"
 #include "fqterm_config.h"
 #include "fqterm_frame.h"
 #include "fqterm_param.h"
