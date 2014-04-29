@@ -1,11 +1,9 @@
 set(fqterm_SRCS
   fqterm_app.h
-  fqterm_autoupdate.h
   fqterm_frame.h
   fqterm_screen.h
   fqterm_window.h
   fqterm_wndmgr.h
-  fqterm_autoupdate.cpp
   fqterm_app.cpp
   fqterm_frame.cpp
   fqterm_screen.cpp
