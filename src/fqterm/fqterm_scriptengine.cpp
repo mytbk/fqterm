@@ -496,6 +496,20 @@ bool FQTermScriptEngine::isAntiIdle() {
 bool FQTermScriptEngine::isAutoReply() {
   return session_->isAutoReply();
 }
+
+    void FQTermScriptEngine::artDialog(const QString &content) 
+    {
+        articleDialog article(NULL, NULL, 0);
+        
+        article.resize(QSize(300, 500));
+        article.move(20,20);
+        
+        article.articleText_ = content;
+
+        article.ui_.textBrowser->setPlainText(article.articleText_);
+        article.exec();
+    }
+
 } // namespace FQTerm
 
 #include "fqterm_scriptengine.moc"
