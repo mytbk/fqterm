@@ -116,4 +116,5 @@ toUTF8(str, codec)
 decode from string in specified codec to utf8
 return string
 
-
+artDialog(content)
+open a dialog with content denoted in the argument

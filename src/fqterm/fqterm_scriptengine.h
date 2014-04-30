@@ -22,6 +22,7 @@
 #define FQTERM_SCRIPTENGINE_H
 
 #include "fqterm.h"
+#include "articledialog.h"
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -113,6 +114,7 @@ public slots: //script apis
   void appendFile(const QString& filename, const QString& str);
   QString readFile(const QString& filename);
   QStringList readFolder(const QString& path);
+  void artDialog(const QString &content);
   QString platform();
   bool makePath(const QString& path);
   QString newLine();

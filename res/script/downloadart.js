@@ -1,6 +1,6 @@
 fqterm.importFile("utils.js");
 
-var saveFile = "/tmp/save.txt";
+// var saveFile = "/tmp/save.txt";
 var LastLine = 23;
 var timeout = 300;
 var retries = 5;
@@ -8,6 +8,7 @@ var retries = 5;
 // there'll be a 'XX%' at the last line
 var r = new RegExp("%");
 var esc = new RegExp('\x1b\x1b','g');
+var content = "";
 
 getAnsiLine = function(i){
     var line = fqterm.getAttrText(i).replace(esc, "\x1b[");
@@ -16,7 +17,8 @@ getAnsiLine = function(i){
     
 // first copy the previous lines
 for (var i=0; i<LastLine; ++i){
-    fqterm.appendFile(saveFile, getAnsiLine(i));
+//    fqterm.appendFile(saveFile, getAnsiLine(i));
+    content += getAnsiLine(i);
 }
 
 // then copy until article ends
@@ -34,7 +36,9 @@ while (1){
             sleep(timeout);
         }
     }
-    fqterm.appendFile(saveFile, cur);
+//    fqterm.appendFile(saveFile, cur);
+    content += cur;
 }
 
+fqterm.artDialog(content);
 

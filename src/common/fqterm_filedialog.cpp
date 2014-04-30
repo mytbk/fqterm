@@ -58,7 +58,7 @@ QString FQTermFileDialog::getSaveName(const QString &fileToSave, const QString &
   QString strPrevSave, saveName;
   QFileDialog fileDialog(widget);
 
-  if (config_->load(userConfig)) {
+  if (config_!=NULL && config_->load(userConfig)) {
     strPrevSave = config_->getItemValue(strSection, strSave);
   }
 
@@ -82,7 +82,7 @@ QString FQTermFileDialog::getSaveName(const QString &fileToSave, const QString &
 
   QFileInfo fi(saveName);
 
-  if (!saveName.isEmpty()) {
+  if (config_!=NULL && !saveName.isEmpty()) {
     config_->setItemValue(strSection, strSave, fi.absolutePath());
     config_->save(userConfig);
   }
@@ -95,13 +95,15 @@ QString FQTermFileDialog::getOpenName(const QString &title, const QString &hints
   QString openName;
   QFileDialog fileDialog(widget);
 
-  strPrevOpen = (config_->load(userConfig) ? config_->getItemValue(strSection, strOpen) : "./");
-
+  if (config_!=NULL){
+      strPrevOpen = (config_->load(userConfig) ? config_->getItemValue(strSection, strOpen) : "./");
+  }
+  
   QString realHints = (hints.isEmpty() ? "*" : hints);
   QString realTitle = (title.isEmpty() ? "Choose a file to open" : title);
   openName = fileDialog.getOpenFileName(widget, realTitle, strPrevOpen, realHints);
 
-  if (!openName.isEmpty()) {
+  if (config_!=NULL && !openName.isEmpty()) {
     config_->setItemValue(strSection, strOpen, QFileInfo(openName).absolutePath());
     config_->save(userConfig);
   }
@@ -114,13 +116,15 @@ QStringList FQTermFileDialog::getOpenNames(const QString &title, const QString &
   QStringList openNames;
   QFileDialog fileDialog(widget);
 
-  strPrevOpen = (config_->load(userConfig) ? config_->getItemValue(strSection, strOpen) : "./");
-
+  if (config_!=NULL){
+      strPrevOpen = (config_->load(userConfig) ? config_->getItemValue(strSection, strOpen) : "./");
+  }
+  
   QString realHints = (hints.isEmpty() ? "*" : hints);
   QString realTitle = (title.isEmpty() ? "Choose files to open" : title);
   openNames = fileDialog.getOpenFileNames(widget, realTitle, strPrevOpen, realHints);
 
-  if (!openNames.isEmpty() && !openNames.at(0).isEmpty()) {
+  if (config_!=NULL && !openNames.isEmpty() && !openNames.at(0).isEmpty()) {
     openDir = QFileInfo(openNames.at(0)).absolutePath();
     config_->setItemValue(strSection, strOpen, openDir);
     config_->save(userConfig);
@@ -134,7 +138,7 @@ QString FQTermFileDialog::getExistingDirectory(const QString &title, const QStri
   QString strPrevOpen;
   QFileDialog fileDialog(widget);
 
-  if (hints.isEmpty()) {
+  if (config_!=NULL && hints.isEmpty()) {
     strPrevOpen = (config_->load(userConfig) ? config_->getItemValue(strSection, strOpen) : "./");
   } else {
     strPrevOpen = hints;
@@ -146,7 +150,7 @@ QString FQTermFileDialog::getExistingDirectory(const QString &title, const QStri
                                                 strPrevOpen,
                                                 QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
 
-  if (!dir.isEmpty()) {
+  if (config_!=NULL && !dir.isEmpty()) {
     config_->setItemValue(strSection, strOpen, QFileInfo(dir).absolutePath());
     config_->save(userConfig);
   }
