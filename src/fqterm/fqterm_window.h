@@ -118,6 +118,8 @@ class FQTermWindow : public QMainWindow,
 
   FQTermSession * getSession() const { return session_; }
   FQTermScreen * getScreen() const {return screen_;}
+  FQTermConfig * getConfig() const { return config_; }
+        
   QPoint getUrlStartPoint() const { return urlStartPoint_; }
   QPoint getUrlEndPoint() const { return urlEndPoint_; }
 

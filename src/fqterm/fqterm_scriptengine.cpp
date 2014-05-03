@@ -499,11 +499,23 @@ bool FQTermScriptEngine::isAutoReply() {
 
     void FQTermScriptEngine::artDialog(const QString &content) 
     {
-        articleDialog article(NULL, NULL, 0);
+        FQTermConfig *config_ = window_->getConfig();
+        articleDialog article(config_, window_, 0);
+
+        QByteArray dlgSize =
+            config_->getItemValue("global", "articledialog").toLatin1();
         
-        article.resize(QSize(300, 500));
-        article.move(20,20);
-        
+        if (!dlgSize.isEmpty()) {
+            int x, y, cx, cy;
+            const char *dsize = dlgSize.constData();
+            sscanf(dsize, "%d %d %d %d", &x, &y, &cx, &cy);
+            article.resize(QSize(cx, cy));
+            article.move(QPoint(x, y));
+        } else {
+            article.resize(QSize(300, 500));
+            article.move(20,20);
+        }
+
         article.articleText_ = content;
 
         article.ui_.textBrowser->setPlainText(article.articleText_);
