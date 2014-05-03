@@ -123,12 +123,12 @@ int main(int argc, char **argv) {
     return -1;
   }
 
-  FQTermFrame mw;
-  mw.setWindowTitle("FQTerm " + QString(FQTERM_VERSION_STRING));
-  mw.setWindowIcon(QPixmap(getPath(RESOURCE) + "pic/fqterm.png"));
-  mw.show();
+  FQTermFrame *mw = new FQTermFrame();
+  mw->setWindowTitle("FQTerm " + QString(FQTERM_VERSION_STRING));
+  mw->setWindowIcon(QPixmap(getPath(RESOURCE) + "pic/fqterm.png"));
+  mw->show();
 //  a.setQuitOnLastWindowClosed(false);
-//  FQ_VERIFY(a.connect(&mw, SIGNAL(destroyed(QObject*)), &a, SLOT(mainWindowDestroyed(QObject*)), Qt::QueuedConnection));
-//  FQ_VERIFY(a.connect(&a, SIGNAL(saveData()), &mw, SLOT(saveSetting())));
+//  FQ_VERIFY(a.connect(mw, SIGNAL(destroyed(QObject*)), &a, SLOT(mainWindowDestroyed(QObject*)), Qt::QueuedConnection));
+//  FQ_VERIFY(a.connect(&a, SIGNAL(saveData()), mw, SLOT(saveSetting())));
   return a.exec();
 }
