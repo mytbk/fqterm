@@ -20,7 +20,7 @@
 
 #include <string>
 
-#ifdef WIN32
+#ifdef _MSC_VER
 #include <hash_set>
 #else
 #include <set>
@@ -47,10 +47,10 @@ void setMaxTraceLevel(int max_trace_level) {
                       << max_trace_level;
 }
 
-#ifdef WIN32
+#ifdef _MSC_VER
 typedef stdext::hash_set<std::string> CategorySet;
 #else
-typedef std::set<std::string> CategorySet;
+typedef typename std::set<std::string> CategorySet;
 #endif
 
 CategorySet *getAllowedCategories() {
@@ -279,7 +279,7 @@ const char *getEventName(unsigned int type) {
  * This assumes all Win32 compilers have 64-bit support.
  */
 
-#include <Windows.h>
+#include <windows.h>
 
 #if defined(_MSC_VER) || defined(_MSC_EXTENSIONS) || defined(__WATCOMC__)
   #define DELTA_EPOCH_IN_USEC  11644473600000000Ui64

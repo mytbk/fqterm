@@ -21,7 +21,7 @@
 #ifndef FQTERM_FQWCWIDTH_H
 #define FQTERM_FQWCWIDTH_H
 
-#ifdef WIN32
+#ifdef _MSC_VER
 #define uint32_t unsigned __int32
 #define uint16_t unsigned __int16
 typedef wchar_t UTF16;

@@ -59,9 +59,13 @@ int isAllowedCategory(const char *category, int trace_level);
 
 void addAllowedCategory(const char *category);
 
-static inline void soft_break() {
-#if defined(WIN32)
-  __asm int 03h;
+static void soft_break() {
+#ifdef WIN32
+#ifdef _MSC_VER
+    __asm int 03h;
+#else
+    asm("int $0x03");
+#endif
 #else
   pause();
 #endif
