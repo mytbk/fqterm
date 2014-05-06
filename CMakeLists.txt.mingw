@@ -1,23 +1,10 @@
-#set(OPENSSL_INCLUDE_DIR
-#"C:/openssl/include"
-#)
+find_package(OpenSSL REQUIRED)
 
-#set(OPENSSL_LIBRARIES
-#"C:/openssl/lib/libeay32.lib"
-#"C:/openssl/lib/ssleay32.lib"
-#)
-
-#set(NETWORK_LIBRARIES
-#"ws2_32.lib"
-#)
-
-#SET(CMAKE_CXX_FLAGS_RELWITHDEBINFO "/Zi /Od /MD")
-
-#ADD_DEFINITIONS(/D USE_DOTNET_STYLE)
-#ADD_DEFINITIONS(-D_CRT_SECURE_NO_DEPRECATE)
+#ADD_DEFINITIONS(-DUSE_DOTNET_STYLE)
 ADD_DEFINITIONS(-D "FQTERM_VERSION_STRING=\\\"${FQTERM_VERSION}\\\"")
 
 if(FQTERM_USE_STATIC_QT)
+  message("Will use static Qt.")
   ADD_DEFINITIONS(-DFQTERM_USE_STATIC_QT)
   REMOVE_DEFINITIONS(-DQT_DLL)
 endif(FQTERM_USE_STATIC_QT)
@@ -38,7 +25,6 @@ include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/src/utilities
   ${CMAKE_CURRENT_SOURCE_DIR}/src/ui
   ${CMAKE_CURRENT_SOURCE_DIR}/src/unite
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/unite
 )
 
 link_directories(
@@ -50,11 +36,15 @@ ADD_EXECUTABLE(fqterm
   src/fqterm/main.cpp
 )
 
-#if(FQTERM_USE_STATIC_QT)
-  set(FQ_QT_STATIC_PLUGINS
-    qcncodecs qjpcodecs qkrcodecs qtwcodecs
-    qjpeg qgif qmng)
-#endif(FQTERM_USE_STATIC_QT)
+if(FQTERM_USE_STATIC_QT)
+  if (QT_VERSION_MINOR LESS 8)
+    message("Qt<4.8")
+    set(FQ_QT_STATIC_PLUGINS
+      qcncodecs qjpcodecs qkrcodecs qtwcodecs
+      qjpeg qgif qmng
+    )
+  endif(QT_VERSION_MINOR LESS 8)
+endif(FQTERM_USE_STATIC_QT)
 
 target_link_libraries(fqterm 
   fqterm_main
@@ -64,12 +54,17 @@ target_link_libraries(fqterm
   fqterm_ui
   fqterm_common
   fqterm_unite
-  ${QT_LIBRARIES}
   ${QT_QTNETWORK_LIBRARIES}
+  ${QT_QTXML_LIBRARIES}
   ${QT_QTSCRIPT_LIBRARIES}  
-  ${QT_QTXML_LIBRARIES}  
   ${FQ_QT_STATIC_PLUGINS}
+  ${QT_LIBRARIES}
+  ${OPENSSL_LIBRARIES}
   ${PYTHON_LIB}
+  crypto
+  jpeg
+  lzma
+  lcms2
 )
 
 add_dependencies(fqterm
