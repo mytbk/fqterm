@@ -10,15 +10,15 @@ var r = new RegExp("%");
 var esc = new RegExp('\x1b\x1b','g');
 var content = "";
 
-getAnsiLine = function(i){
-    var line = fqterm.getAttrText(i).replace(esc, "\x1b[");
+getLine = function(i){
+    var line = fqterm.getText(i);
     return line+"\n";
 }
     
 // first copy the previous lines
 for (var i=0; i<LastLine; ++i){
 //    fqterm.appendFile(saveFile, getAnsiLine(i));
-    content += getAnsiLine(i);
+    content += getLine(i);
 }
 
 // then copy until article ends
@@ -27,11 +27,11 @@ while (1){
     if (!r.exec(line)){ // article ends
         break;
     }
-    var prev = getAnsiLine(LastLine-1);
+    var prev = getLine(LastLine-1);
     var cur;
     fqterm.sendString("j");
     for (var i=0; i<retries; i++){
-        var cur = getAnsiLine(LastLine-1);
+        var cur = getLine(LastLine-1);
         if (prev == cur){
             sleep(timeout);
         }
