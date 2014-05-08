@@ -1,4 +1,4 @@
-fqterm
+FQTerm
 ======
 This is a terminal simulator developed for telnet based online forum.
 
@@ -35,3 +35,8 @@ make
 as-root make install
 ```
 
+Windows Builds
+==============
+- Cross compile on Linux with MXE: builds but fails at runtime
+- MinGW on Windows: builds and runs with shared Qt 4.8.6
+- MSVC: not tested
