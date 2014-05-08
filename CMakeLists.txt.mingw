@@ -1,5 +1,5 @@
 find_package(OpenSSL REQUIRED)
-
+set(CMAKE_VERBOSE_MAKEFILE ON)
 #ADD_DEFINITIONS(-DUSE_DOTNET_STYLE)
 ADD_DEFINITIONS(-D "FQTERM_VERSION_STRING=\\\"${FQTERM_VERSION}\\\"")
 
@@ -64,7 +64,7 @@ target_link_libraries(fqterm
   crypto
   jpeg
   lzma
-  lcms2
+  wsock
 )
 
 add_dependencies(fqterm
