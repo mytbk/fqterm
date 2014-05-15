@@ -37,13 +37,16 @@ ADD_EXECUTABLE(fqterm
 )
 
 if(FQTERM_USE_STATIC_QT)
-  if (QT_VERSION_MINOR LESS 8)
-    message("Qt<4.8")
-    set(FQ_QT_STATIC_PLUGINS
-      qcncodecs qjpcodecs qkrcodecs qtwcodecs
-      qjpeg qgif qmng
-    )
-  endif(QT_VERSION_MINOR LESS 8)
+  set(FQ_QT_STATIC_PLUGINS
+    qcncodecs qjpcodecs qkrcodecs qtwcodecs
+  )
+  set(OPENSSL_LINK_LIBS
+    crypto ssl
+  )
+else(FQTERM_USE_STATIC_QT)
+  set(OPENSSL_LINK_LIBS
+    ${OPENSSL_LIBS}
+  )
 endif(FQTERM_USE_STATIC_QT)
 
 target_link_libraries(fqterm 
@@ -59,12 +62,9 @@ target_link_libraries(fqterm
   ${QT_QTSCRIPT_LIBRARIES}  
   ${FQ_QT_STATIC_PLUGINS}
   ${QT_LIBRARIES}
-  ${OPENSSL_LIBRARIES}
   ${PYTHON_LIB}
-  crypto
-  jpeg
-  lzma
-  wsock
+  ${OPENSSL_LINK_LIBS}
+  ws2_32
 )
 
 add_dependencies(fqterm

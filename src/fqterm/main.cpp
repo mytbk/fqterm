@@ -36,11 +36,11 @@
   // static link Qt4 plugins.
   void loadNecessaryQtPlugins() {}
   #include <QtPlugin>
-#if QT_VERSION < QT_VERSION_CHECK(4,8,5)
   Q_IMPORT_PLUGIN(qkrcodecs)
   Q_IMPORT_PLUGIN(qcncodecs)
   Q_IMPORT_PLUGIN(qjpcodecs)
   Q_IMPORT_PLUGIN(qtwcodecs)
+#if QT_VERSION < QT_VERSION_CHECK(4,8,5)
   Q_IMPORT_PLUGIN(qjpeg)
   Q_IMPORT_PLUGIN(qgif)
   Q_IMPORT_PLUGIN(qmng)
