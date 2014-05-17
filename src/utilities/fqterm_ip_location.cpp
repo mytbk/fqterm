@@ -245,10 +245,10 @@ bool FQTermIPLocation::getLocation(QString &url, QByteArray &country,
 FQTermIPLocation* FQTermIPLocation::getInstance() {
   if (instance_ == NULL) {
     instance_ = new FQTermIPLocation(getPath(USER_CONFIG));
-    if (instance_->isFileExiting_ == NULL) {
+    if (instance_->isFileExiting_ == false) {
       delete instance_;
       instance_ = new FQTermIPLocation(getPath(RESOURCE));
-      if (instance_->isFileExiting_ == NULL) {
+      if (instance_->isFileExiting_ == false) {
         delete instance_;
         instance_ = NULL;
       }
