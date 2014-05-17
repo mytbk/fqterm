@@ -15,7 +15,7 @@ set(fqterm_SRCS
   fqterm_scriptengine.cpp
 )
 
-
+IF(GLOBAL_HOTKEY EQUAL 1)
 IF(WIN32)
   set(global_shortcut_impl_SRCS 3rdparty/qxtglobalshortcut_win.cpp)
 ELSE(WIN32)
@@ -25,19 +25,23 @@ ELSE(WIN32)
     set(global_shortcut_impl_SRCS 3rdparty/qxtglobalshortcut_x11.cpp)
   ENDIF(APPLE)
 ENDIF(WIN32)
-
+set(GLOBAL_SHORTCUT_SRC
+  ${global_shortcut_impl_SRCS}
+  3rdparty/qxtglobalshortcut.cpp
+  3rdparty/qxtglobalshortcut.h
+  3rdparty/qxtglobalshortcut_p.h
+  3rdparty/qxtglobal.h
+)
+ADD_DEFINITIONS(-DUSE_GLOBAL_HOTKEY)
+ENDIF(GLOBAL_HOTKEY EQUAL 1)
   
 
 set(3rdparty_SRCS
   3rdparty/dotnetstyle.cpp
   3rdparty/dotnetstyle.h
-  3rdparty/qxtglobalshortcut.cpp
-  3rdparty/qxtglobalshortcut.h
-  3rdparty/qxtglobalshortcut_p.h
-  3rdparty/qxtglobal.h
   3rdparty/uaocodec.h
   3rdparty/uaocodec.cpp
-  ${global_shortcut_impl_SRCS}
+  ${GLOBAL_SHORTCUT_SRC}
 )
 
 qt4_automoc(${fqterm_SRCS}

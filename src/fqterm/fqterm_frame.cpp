@@ -2092,7 +2092,7 @@ void FQTermFrame::schemaUpdated() {
   }
 }
 
-
+#ifdef USE_GLOBAL_HOTKEY
 void FQTermFrame::globalHotkeyTriggered() {
   if (isActiveWindow() && !isMinimized() && isVisible())
   {
@@ -2112,12 +2112,9 @@ void FQTermFrame::globalHotkeyTriggered() {
 
 void FQTermFrame::globalHotkeyChanged()
 {
-#ifdef USE_GLOBAL_HOTKEY
   globalHotkey_->setShortcut(shortcutHelper_->getAction(FQTermShortcutHelper::GLOBAL_SHOW_FQTERM)->shortcut());
-#endif //USE_GLOBAL_HOTKEY
 }
-
-
+#endif //USE_GLOBAL_HOTKEY
 
 TranslatorInstaller::TranslatorInstaller(const QString& language,
                                          FQTermFrame* frame)

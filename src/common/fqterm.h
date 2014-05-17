@@ -42,8 +42,6 @@ namespace FQTerm {
 //#define HAVE_PYTHON
 #endif //FOUND_PYTHON
 
-#define USE_GLOBAL_HOTKEY
-
 //code convert
 enum EncodingID {FQTERM_ENCODING_GBK = 0, FQTERM_ENCODING_BIG5 = 1, 
                  FQTERM_ENCODING_UTF8 = 2, FQTERM_ENCODING_HKSCS = 3, 
