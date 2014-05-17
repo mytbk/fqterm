@@ -813,7 +813,7 @@ int FQTermZmodem::ZmodemRInit(ZModem *info) {
 
 int FQTermZmodem::ZmodemRcv(uchar *str, int len, ZModem *info,
                             int &consumed_bytes) {
-  register uchar c;
+  uchar c;
   int err;
 
   zmodemlog("zmodemRcv called");
@@ -1374,7 +1374,7 @@ ulong FQTermZmodem::ZDec4(const uchar buf[4]) {
 
 
 
-int FQTermZmodem::YrcvChar(char c, register ZModem *info) {
+int FQTermZmodem::YrcvChar(char c, ZModem *info) {
   int err;
 
   if (info->canCount >= 2) {
@@ -1469,7 +1469,7 @@ void FQTermZmodem::ZIdleStr(uchar *buffer, int len, ZModem *info) {
 }
 
 
-int FQTermZmodem::FinishChar(char c, register ZModem *info) {
+int FQTermZmodem::FinishChar(char c, ZModem *info) {
   if (c == 'O') {
     if (++info->chrCount >= 2) {
       return ZmDone;
@@ -1482,7 +1482,7 @@ int FQTermZmodem::FinishChar(char c, register ZModem *info) {
 
 
 
-int FQTermZmodem::DataChar(uchar c, register ZModem *info) {
+int FQTermZmodem::DataChar(uchar c, ZModem *info) {
   if (c == ZDLE) {
     info->escape = 1;
     return 0;
@@ -1550,7 +1550,7 @@ int FQTermZmodem::DataChar(uchar c, register ZModem *info) {
 }
 
 
-int FQTermZmodem::HdrChar(uchar c, register ZModem *info) {
+int FQTermZmodem::HdrChar(uchar c, ZModem *info) {
   int i;
   int crc = 0;
 
@@ -1665,7 +1665,7 @@ int FQTermZmodem::HdrChar(uchar c, register ZModem *info) {
 
 
 
-int FQTermZmodem::IdleChar(uchar c, register ZModem *info) {
+int FQTermZmodem::IdleChar(uchar c, ZModem *info) {
   if (info->chrCount == 0) {
     if (c == ZPAD) {
       ++info->chrCount;
@@ -1821,8 +1821,8 @@ int FQTermZmodem::YsendChar(char c, ZModem *info) {
 
 
 
-int FQTermZmodem::ZProtocol(register ZModem *info) {
-  register StateTable *table;
+int FQTermZmodem::ZProtocol(ZModem *info) {
+  StateTable *table;
 
   zmodemlog("received %s: %2.2x %2.2x %2.2x %2.2x = %lx\n",
             hdrnames[info->hdrData[0]], info->hdrData[1], info->hdrData[2],
@@ -1856,7 +1856,7 @@ int FQTermZmodem::ZProtocol(register ZModem *info) {
 }
 
 
-int FQTermZmodem::ZDataReceived(register ZModem *info, int crcGood) {
+int FQTermZmodem::ZDataReceived(ZModem *info, int crcGood) {
   switch (info->state) {
     case RSinitWait:
       return GotSinitData(info, crcGood);
@@ -1886,12 +1886,12 @@ int FQTermZmodem::Ignore(ZModem *info) {
 }
 
 
-int FQTermZmodem::AnswerChallenge(register ZModem *info) {
+int FQTermZmodem::AnswerChallenge(ZModem *info) {
   return ZXmitHdrHex(ZACK, info->hdrData + 1, info);
 }
 
 
-int FQTermZmodem::GotAbort(register ZModem *info) {
+int FQTermZmodem::GotAbort(ZModem *info) {
   ZStatus(RmtCancel, 0, NULL);
   return ZXmitHdrHex(ZFIN, zeros, info);
 }
@@ -1914,7 +1914,7 @@ int FQTermZmodem::GotCommand(ZModem *info) {
   return ZXmitHdrHex(ZCOMPL, rbuf, info);
 }
 
-int FQTermZmodem::GotStderr(register ZModem *info) {
+int FQTermZmodem::GotStderr(ZModem *info) {
   info->InputState = Indata;
   info->chrCount = 0;
   return 0;
@@ -1928,13 +1928,13 @@ int FQTermZmodem::RetDone(ZModem *info) {
 }
 
 
-int FQTermZmodem::GotCommandData(register ZModem *info, int crcGood) {
+int FQTermZmodem::GotCommandData(ZModem *info, int crcGood) {
   /* TODO */
   return 0;
 }
 
 
-int FQTermZmodem::GotStderrData(register ZModem *info, int crcGood) {
+int FQTermZmodem::GotStderrData(ZModem *info, int crcGood) {
   info->buffer[info->chrCount] = '\0';
   ZStatus(RemoteMessage, info->chrCount, (char*)info->buffer);
   return 0;
@@ -2311,7 +2311,7 @@ uint FQTermZmodem::rcvHex(uint i, char c) {
 }
 
 
-int FQTermZmodem::dataSetup(register ZModem *info) {
+int FQTermZmodem::dataSetup(ZModem *info) {
   info->InputState = Indata;
   info->chrCount = 0;
   info->crcCount = 0;
