@@ -295,10 +295,10 @@ private:
 
 #ifdef USE_GLOBAL_HOTKEY
   QxtGlobalShortcut* globalHotkey_;
-#endif //USE_GLOBAL_HOTKEY
 private slots:
   void globalHotkeyTriggered();
   void globalHotkeyChanged();
+#endif //USE_GLOBAL_HOTKEY
 };
 
 class TranslatorInstaller : public QObject
