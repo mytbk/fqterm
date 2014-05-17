@@ -502,7 +502,7 @@ void FQTermFrame::initAdditionalActions()
 
 //addressbook
 void FQTermFrame::addressBook() {
-  siteDialog siteManager(this, false);
+  siteDialog siteManager(this, 0);
   if (siteManager.exec() == 1) {
     newWindow(siteManager.currentParameter(), siteManager.currentSiteIndex());
   }
