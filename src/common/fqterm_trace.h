@@ -59,7 +59,7 @@ int isAllowedCategory(const char *category, int trace_level);
 
 void addAllowedCategory(const char *category);
 
-static void soft_break() {
+static inline void soft_break() {
 #ifdef WIN32
 #ifdef _MSC_VER
     __asm int 03h;
