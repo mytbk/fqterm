@@ -186,22 +186,5 @@
   <tabstop>closePushButton</tabstop>
  </tabstops>
  <resources/>
- <connections>
-  <connection>
-   <sender>portCheck</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>portEdit</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>151</x>
-     <y>54</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>203</x>
-     <y>54</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>

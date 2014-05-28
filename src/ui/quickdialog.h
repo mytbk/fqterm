@@ -51,6 +51,7 @@ class quickDialog: public QDialog {
   void onConnect(); //
   void onClose();
   void onSelectProtocol(int index);
+  void portCheckToggled(bool);
 
  private:
 
