@@ -99,6 +99,18 @@ void quickDialog::connectSlots() {
   FQ_VERIFY(connect(ui_.advPushButton, SIGNAL(clicked()), this, SLOT(onAdvance())));
   FQ_VERIFY(connect(ui_.connectPushButton, SIGNAL(clicked()), this, SLOT(onConnect())));
   FQ_VERIFY(connect(ui_.closePushButton, SIGNAL(clicked()), this, SLOT(onClose())));
+  FQ_VERIFY(connect(ui_.portCheck, SIGNAL(toggled(bool)), this, SLOT(portCheckToggled(bool))));
+}
+
+void quickDialog::portCheckToggled(bool checked)
+{
+  if (checked){
+    ui_.portEdit->setEnabled(true);
+  }else{
+    ui_.portEdit->setEnabled(false);
+    int index = ui_.protocolComboBox->currentIndex();
+    ui_.portEdit->setText(QString("%1").arg(ports[index]));
+  }
 }
 
 void quickDialog::listChanged(int index) {
