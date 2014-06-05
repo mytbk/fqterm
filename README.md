@@ -1,6 +1,6 @@
 FQTerm
 ======
-FQTerm是为Telnet BBS设计的终端模拟器，支持Telnet,SSH协议。
+FQTerm是为Telnet BBS设计的终端模拟器(俗称Term)，支持Telnet,SSH协议。
 
 本项目源自QTerm-Qt3,从2008年起，由Curvlet和dp2重写并移植至Qt4.
 
@@ -9,7 +9,7 @@ FQTerm是为Telnet BBS设计的终端模拟器，支持Telnet,SSH协议。
 
 如何贡献源码
 ============
-在fork本项目，然后自己开发，提交自己的更改，再创建pull request.
+fork本项目，然后自己开发，提交自己的更改，再创建pull request.
 详情请看GitHub的帮助:
 - https://help.github.com/articles/fork-a-repo
 - https://help.github.com/articles/using-pull-requests
@@ -24,6 +24,18 @@ TODO
 
 安装
 =======
+ArchLinux用户可以直接从AUR安装，如
+```
+yaourt -S fqterm-git
+```
+或
+```
+# Qt5分支
+yaourt -S fqterm-qt5-git
+```
+
+其他用户可手动编译，大致步骤如下:    
+解决依赖: Qt, OpenSSL, alsa-lib(Linux)    
 获取代码：      
 ```
 git clone https://github.com/mytbk/fqterm.git
