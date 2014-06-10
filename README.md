@@ -59,5 +59,13 @@ sudo make install
 Windows版本
 ==============
 - 在Linux下用MXE交叉编译，运行时错误，可能原因是MXE的Qt缺少语言Codec
-- MinGW: 正常编译及运行
+- MinGW: 正常编译及运行，编译方法如下  
+```
+REM 假设源码在C:\fqterm, OpenSSL在C:\openssl, Qt在C:\Qt\4.8.6.static
+mkdir build
+cd build
+cmake -G "MinGW Makefiles" -DOPENSSL_ROOT_DIR=C:\openssl -DCMAKE_CXX_FLAGS=-mwindows -DCMAKE_BUILD_TYPE=Release -DQT_QMAKE_EXECUTABLE=C:\Qt\4.8.6.static\bin\qmake.exe C:\fqterm
+mingw32-make
+REM 生成的fqterm.exe即为程序文件
+```
 - MSVC: 未测试
