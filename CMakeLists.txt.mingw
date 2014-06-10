@@ -4,7 +4,6 @@ set(CMAKE_VERBOSE_MAKEFILE ON)
 ADD_DEFINITIONS(-D "FQTERM_VERSION_STRING=\\\"${FQTERM_VERSION}\\\"")
 
 if(FQTERM_USE_STATIC_QT)
-  message("Will use static Qt.")
   ADD_DEFINITIONS(-DFQTERM_USE_STATIC_QT)
   REMOVE_DEFINITIONS(-DQT_DLL)
 endif(FQTERM_USE_STATIC_QT)
@@ -30,6 +29,7 @@ include_directories(
 link_directories(
   ${QT_PLUGINS_DIR}/codecs
   ${QT_PLUGINS_DIR}/imageformats
+  ${OPENSSL_ROOT_DIR}/lib
 )
 
 ADD_EXECUTABLE(fqterm
