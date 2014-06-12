@@ -4,7 +4,7 @@ FQTerm是为Telnet BBS设计的终端模拟器(俗称Term)，支持Telnet,SSH协
 现在FQTerm的原开发组成员已经停止了该项目的维护，现由ArchLinux@newsmth维护并进行Qt5的移植。    
 
 ## 文档
-目前FQTerm还没有特别完整的文档，现在正在进行文档编写。用Markdown编写的文档请见[doc目录](doc/README.md).
+目前FQTerm还没有特别完整的文档，现在正在进行文档编写。用Markdown编写的文档请见[doc目录](doc/).
 
 ## 如何贡献源码
 fork本项目，然后自己开发，提交自己的更改，再创建pull request.    
