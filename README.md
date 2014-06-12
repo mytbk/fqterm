@@ -1,29 +1,25 @@
-FQTerm
-======
-FQTerm是为Telnet BBS设计的终端模拟器(俗称Term)，支持Telnet,SSH协议。
+## FQTerm
+FQTerm是为Telnet BBS设计的终端模拟器(俗称Term)，支持Telnet,SSH协议。    
+本项目源自QTerm-Qt3,从2008年起，由Curvlet和dp2重写并移植至Qt4.    
+现在FQTerm的原开发组成员已经停止了该项目的维护，现由ArchLinux@newsmth维护并进行Qt5的移植。    
 
-本项目源自QTerm-Qt3,从2008年起，由Curvlet和dp2重写并移植至Qt4.
+## 文档
+目前FQTerm还没有特别完整的文档，现在正在进行文档编写。用Markdown编写的文档请见[doc目录](doc/README.md).
 
-现在FQTerm的原开发组成员已经停止了该项目的维护，现由ArchLinux@newsmth
-维护并进行Qt5的移植。
-
-如何贡献源码
-============
-fork本项目，然后自己开发，提交自己的更改，再创建pull request.
+## 如何贡献源码
+fork本项目，然后自己开发，提交自己的更改，再创建pull request.    
 详情请看GitHub的帮助:
 - https://help.github.com/articles/fork-a-repo
 - https://help.github.com/articles/using-pull-requests
 
-TODO
-====
+## TODO
 - ~~Bug: Qt5分支中Ctrl按键异常 (暂时使用Mac OS的处理方法解决)~~
 - Bug: Qt5分支中退出时SIGSEGV
 - ~~Maybe something wrong with imageviewer (Qt5)~~
 - 考虑代码重构
 - Bug: 处理不完整GBK字符时存在一些异常，特别是在Qt5分支
 
-安装
-=======
+## 安装
 ArchLinux用户可以直接从AUR安装，如
 ```
 yaourt -S fqterm-git
@@ -56,8 +52,7 @@ make
 sudo make install
 ```
 
-Windows版本
-==============
+## Windows版本
 - 在Linux下用MXE交叉编译，运行时错误，可能原因是MXE的Qt缺少语言Codec
 - MinGW: 正常编译及运行，编译方法如下  
 ```
