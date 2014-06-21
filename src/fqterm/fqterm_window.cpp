@@ -2500,7 +2500,11 @@ void FQTermExternalEditor::start() {
 
 
 QString FQTermExternalEditor::getTempFilename() {
-  return getPath(USER_CONFIG) + "tmp_do_not_use.txt";
+    #ifndef WIN32
+    return "/tmp/.fqterm_tmp.txt";
+    #else
+    return getPath(USER_CONFIG) + "tmp_do_not_use.txt";
+    #endif
 }
 
 void FQTermExternalEditor::clearTempFileContent() {
