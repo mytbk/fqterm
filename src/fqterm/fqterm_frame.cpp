@@ -545,7 +545,7 @@ void FQTermFrame::aboutFQTerm() {
 /*//slot Help->Homepage
 void FQTermFrame::homepage() {
   const QString &httpBrowser = FQTermPref::getInstance()->httpBrowser_;
-  const QString homeUrl = "http://code.google.com/p/fqterm";
+  const QString homeUrl = "https://github.com/mytbk/fqterm/";
 
   if (httpBrowser.isNull() || httpBrowser.isEmpty()) {
 	QDesktopServices::openUrl(homeUrl);
