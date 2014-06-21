@@ -188,7 +188,7 @@ FQTermTelnet::FQTermTelnet(const QString &strTermType, int rows, int columns,
       hostType_(hostType),
       protocolType_(protocolType) {
   term = new char[21];
-  memset(term, 0, sizeof(term));
+  memset(term, 0, 21*sizeof(char));
   // TODO: clean up, need???
 #ifdef WIN32
   _snprintf(term, sizeof(term), "%s", strTermType.toLatin1().constData());

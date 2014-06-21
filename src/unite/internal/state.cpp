@@ -157,7 +157,7 @@ int FQTermUniteDecode::processInput(const QByteArray& input) {
 
     lastState = current_state_ + i; 
 
-    bool stopDecode;
+    bool stopDecode=false;
     if (lastState->action != 0) {
       stopDecode = (this->*(lastState->action))();
     } 
