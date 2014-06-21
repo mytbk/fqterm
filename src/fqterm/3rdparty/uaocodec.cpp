@@ -2485,7 +2485,7 @@ static const ushort big5_to_ucs[] =
 33325, 33326, 33342, 33378, 33386, 33416
 };
 
-static const uchar ucs_to_big5[][2] =
+static const char ucs_to_big5[][2] =
 {
     {'\x00','\x00'},{'\x00','\x01'},{'\x00','\x02'},{'\x00','\x03'},{'\x00','\x04'},
     {'\x00','\x05'},{'\x00','\x06'},{'\x00','\x07'},{'\x00','\x08'},{'\x00','\x09'},
@@ -15632,7 +15632,7 @@ static int qt_UnicodeToBig5(uint wc, uchar *r)
     }
     else {
         if (wc >= 0 && wc <= 65535){
-            c = ucs_to_big5[wc];
+            c = (uchar*)ucs_to_big5[wc];
             if (c [0] == '\0')
                 return 0;
             if (c [1] != 0) {

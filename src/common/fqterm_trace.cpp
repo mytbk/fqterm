@@ -50,7 +50,7 @@ void setMaxTraceLevel(int max_trace_level) {
 #ifdef _MSC_VER
 typedef stdext::hash_set<std::string> CategorySet;
 #else
-typedef typename std::set<std::string> CategorySet;
+typedef std::set<std::string> CategorySet;
 #endif
 
 CategorySet *getAllowedCategories() {
