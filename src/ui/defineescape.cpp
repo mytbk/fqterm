@@ -46,6 +46,13 @@ void DefineEscapeDialog::onCancel()
 {
   done(0);
 }
+
+    void DefineEscapeDialog::setTitleAndText(const QString &title, const QString &text)
+    {
+        ui_.lblEscape->setText(text);
+        this->setWindowTitle(title);
+    }
+    
 } //namespace FQTerm
 
 #include "defineescape.moc"
