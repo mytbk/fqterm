@@ -522,11 +522,14 @@ bool FQTermScriptEngine::isAutoReply() {
         article.exec();
     }
 
-    QString FQTermScriptEngine::askDialog(const QString& title, const QString& question)
+    QString FQTermScriptEngine::askDialog(const QString& title,
+                                          const QString& question,
+                                          const QString& defText)
     {
         QString ans;
         DefineEscapeDialog dlg(ans, window_);
         dlg.setTitleAndText(title, question);
+        dlg.setEditText(defText);
         if (dlg.exec()==1){
             return ans;
         }else{
@@ -537,3 +540,8 @@ bool FQTermScriptEngine::isAutoReply() {
 } // namespace FQTerm
 
 #include "fqterm_scriptengine.moc"
+
+
+
+
+

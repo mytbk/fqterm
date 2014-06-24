@@ -55,7 +55,8 @@ public slots: //script apis
   //ui functions.
   void msgBox(const QString& msg);
   bool yesnoBox(const QString& msg);
-  QString askDialog(const QString& title, const QString& question);
+  QString askDialog(const QString& title, const QString& question,
+                    const QString& defText);
   
   //bbs ui functions
   int caretX();
