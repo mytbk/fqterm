@@ -38,6 +38,7 @@ antialias=1
 beep=1
 blinktab=1
 clearpool=0
+displayoffset=50
 http=
 image=
 logmsg=1
