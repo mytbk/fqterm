@@ -12,14 +12,9 @@ fork本项目，然后自己开发，提交自己的更改，再创建pull reque
 - https://help.github.com/articles/fork-a-repo
 - https://help.github.com/articles/using-pull-requests
 
-## TODO
-- ~~Bug: Qt5分支中Ctrl按键异常 (暂时使用Mac OS的处理方法解决)~~
-- Bug: Qt5分支中退出时SIGSEGV
-- ~~Maybe something wrong with imageviewer (Qt5)~~
-- 考虑代码重构
-- Bug: 处理不完整GBK字符时存在一些异常，特别是在Qt5分支
-
 ## 安装
+Windows用户可以直接到[SourceForge页面](http://sourceforge.net/projects/fqterm/files/windows/)下载预编译的包。
+
 ArchLinux用户可以直接从AUR安装，如
 ```
 yaourt -S fqterm-git
@@ -54,7 +49,7 @@ sudo make install
 
 ## Windows版本
 - 在Linux下用MXE交叉编译，运行时错误，可能原因是MXE的Qt缺少语言Codec
-- MinGW: 正常编译及运行，编译方法如下  
+- MinGW: 在[SourceForge](http://sourceforge.net/projects/fqterm/files/windows/)上的Windows预编译包是在MinGW下编译的(静态连接的OpenSSL,Qt4,TDM GCC),编译方法如下  
 ```
 REM 假设源码在C:\fqterm, OpenSSL在C:\openssl, Qt在C:\Qt\4.8.6.static
 mkdir build
@@ -64,3 +59,11 @@ mingw32-make
 REM 生成的fqterm.exe即为程序文件
 ```
 - MSVC: 未测试
+
+## TODO
+- ~~Bug: Qt5分支中Ctrl按键异常 (暂时使用Mac OS的处理方法解决)~~
+- Bug: Qt5分支中退出时SIGSEGV
+- ~~Maybe something wrong with imageviewer (Qt5)~~
+- 考虑代码重构
+- Bug: 处理不完整GBK字符时存在一些异常，特别是在Qt5分支
+

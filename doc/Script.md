@@ -4,6 +4,11 @@
 ### 脚本执行方法
 点击菜单中的**脚本->运行**可运行脚本，快捷键为```F7```.**脚本->停止**可停止脚本的运行，快捷键为```F8```.
 
+### FQTerm的样例脚本
+FQTerm的包中自带部分脚本，可以作为参考，当然也可以使用。这些脚本位于```res/script```目录，Linux用户安装后会放在```/usr/share/FQTerm/script```.
+- downloadart.js: 下载BBS上的文章，如果需要连ANSI控制字符一起下载，可以用downloadart_ansi.js
+- simpleBatch.js: 简单的批处理，可以用于发送重复的按键序列
+
 ### FQTerm函数列表
 除JavaScript自身的函数外，FQTerm的脚本引擎中提供了一些函数供用户使用。使用时需要增加**fqterm**前缀，如```fqterm.msgBox```.
 
@@ -15,6 +20,7 @@
 - yesnoBox(msg): 弹出窗口，并有选择按钮，选择Yes时返回true,否则返回false
 - artDialog(content): 弹出一个窗口，内有文本框，其内容为content指定的串，有保存按钮用于将里面的内容存为文件
 - FileDialog(): 弹出文件选择窗口，返回选择的文件的文件名
+- askDialog(title,question,default): 弹出一个问答框，标题为title,问题为question,默认回答为default
 
 #### 获取窗口内容
 - caretX(): 返回光标列坐标(最左一列为第0列)
