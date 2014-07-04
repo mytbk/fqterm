@@ -73,7 +73,8 @@ class FQTermDecode: public QObject {
 
   void setAttr();
   void setMargins();
-
+  void termReset();
+  
   // char screen functions
   void deleteStr();
   void deleteLine();

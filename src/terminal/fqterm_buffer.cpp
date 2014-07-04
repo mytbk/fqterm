@@ -359,6 +359,26 @@ void FQTermBuffer::setMargins(int top, int bottom) {
   }
 }
 
+    // termReset(): deal with ANSI sequence <ESC> c
+    // initialize the terminal property
+    void FQTermBuffer::termReset()
+    {
+        FQ_TRACE("term", 3) << "Resetting terminal (<ESC> c)";
+        top_row_ = 0;
+        bottom_row_ = num_rows_ - 1;
+
+        is_g0_used_ = true;
+        is_insert_mode_ = false;
+        is_ansi_mode_ = true;
+        is_newline_mode_ = false;
+        is_cursor_mode_ = false;
+        is_numeric_mode_ = true;
+        is_origin_mode_ = false;
+        is_autowrap_mode_ = false;
+        is_autorepeat_mode_ = true;
+        is_lightbg_mode_ = false;
+    }
+    
 void FQTermBuffer::moveCaretTo(int column, int row, bool scroll_if_necessary) {
   if (row != caret_.row_)
     emit caretChangeRow();

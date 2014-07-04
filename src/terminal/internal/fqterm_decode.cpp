@@ -96,6 +96,8 @@ StateOption FQTermDecode::VT100StateMachine::esc_state_[] =  {
   }, {
     '<', &FQTermDecode::test, normal_state_
   }, {
+    'c', &FQTermDecode::termReset, normal_state_
+  }, {
     '#', 0, sharp_state_
   }, {
     CHAR_NORMAL, 0, normal_state_
@@ -685,6 +687,12 @@ void FQTermDecode::setMargins() {
   }
 }
 
+    void FQTermDecode::termReset()
+    {
+        FQ_FUNC_TRACE("ansi", 8);
+        termBuffer_->termReset();
+    }
+    
 // parameters functions
 void FQTermDecode::clearParam() {
   FQ_FUNC_TRACE("ansi", 9);

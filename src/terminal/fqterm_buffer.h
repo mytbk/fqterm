@@ -119,6 +119,9 @@ class FQTermBuffer: public QObject {
   // restrictied in [top_row_, bottom_row_] of terminal.)
   void setMargins(int top_row, int bottom_row);
 
+  // reset terminal
+  void termReset();
+  
   // the caret's coordinate in term or buffer.
   int getCaretColumn() const;
   int getCaretRow() const;
