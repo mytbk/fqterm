@@ -118,7 +118,7 @@ FQTermFrame::FQTermFrame()
 /*#ifndef __APPLE__
   setWindowFlags(Qt::CustomizeWindowHint);
 #endif*/
-  uaoCodec_ = new UAOCodec;
+//  uaoCodec_ = new UAOCodec;
   
   config_ = new FQTermConfig(getPath(USER_CONFIG) + "fqterm.cfg");
 
@@ -207,7 +207,7 @@ FQTermFrame::~FQTermFrame() {
   delete imageViewer_;
   delete shortcutHelper_;
   delete config_;
-  delete uaoCodec_;
+  //  delete uaoCodec_;
   delete windowManager_;
   FQTermIPLocation::Destroy();
   serverThread_->quit();
