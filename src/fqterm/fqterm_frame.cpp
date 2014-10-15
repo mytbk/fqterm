@@ -207,7 +207,9 @@ FQTermFrame::~FQTermFrame() {
   delete imageViewer_;
   delete shortcutHelper_;
   delete config_;
-  delete uaoCodec_;
+  // should not delete yourself!!
+  // http://qt-project.org/doc/qt-5/qtextcodec.html#dtor.QTextCodec
+  //  delete uaoCodec_;
   delete windowManager_;
   FQTermIPLocation::Destroy();
   serverThread_->quit();
