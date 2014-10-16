@@ -62,7 +62,7 @@ REM 生成的fqterm.exe即为程序文件
 
 ## TODO
 - ~~Bug: Qt5分支中Ctrl按键异常 (暂时使用Mac OS的处理方法解决)~~
-- Bug: Qt5分支中退出时SIGSEGV
+- ~~Bug: Qt5分支中退出时SIGSEGV(resolved)~~
 - ~~Maybe something wrong with imageviewer (Qt5)~~
 - 考虑代码重构
 - Bug: 处理不完整GBK字符时存在一些异常，特别是在Qt5分支
