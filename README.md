@@ -61,6 +61,10 @@ REM 生成的fqterm.exe即为程序文件
 - MSVC: 未测试
 
 ## TODO
+以下是FQTerm日后需要改进和修复的地方，希望大家参与开发。
+- SSH: 增加host key记录和认证机制
+- SSH: public key auth
+- 改善终端渲染
 - ~~Bug: Qt5分支中Ctrl按键异常 (暂时使用Mac OS的处理方法解决)~~
 - ~~Bug: Qt5分支中退出时SIGSEGV(resolved)~~
 - ~~Maybe something wrong with imageviewer (Qt5)~~
