@@ -27,6 +27,8 @@
 #include "fqterm.h"
 #include "fqterm_telnet.h"
 #include "fqterm_socket.h"
+#include "fqterm_telnet_socket.h"
+#include "fqterm_local_socket.h"
 
 #ifndef _NO_SSH_COMPILED
 #include "fqterm_ssh_socket.h"

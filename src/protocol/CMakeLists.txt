@@ -1,6 +1,10 @@
 set(export_SRCS
   fqterm_socket.cpp
   fqterm_socket.h
+  fqterm_telnet_socket.cpp
+  fqterm_telnet_socket.h
+  fqterm_local_socket.cpp
+  fqterm_local_socket.h
   fqterm_ssh_socket.h
   fqterm_ssh_socket.cpp
 )
