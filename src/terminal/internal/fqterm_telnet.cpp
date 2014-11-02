@@ -218,7 +218,7 @@ FQTermTelnet::FQTermTelnet(const QString &strTermType, int rows, int columns,
     FQ_VERIFY(connect(socket, SIGNAL(sshAuthOK()),
 		      this, SIGNAL(onSSHAuthOK())));
   } else if (protocolType == 3) {
-    socket = new FQTermLocalSocket("");
+    socket = new FQTermLocalSocket("/bin/bash");
   } else {
     socket = new FQTermTelnetSocket();
   }

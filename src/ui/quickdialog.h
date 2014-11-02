@@ -41,7 +41,7 @@ class quickDialog: public QDialog {
 
   FQTermParam param_;
 
-  static const int ports[3];
+  static const int ports[];
 
  protected slots:
   void listChanged(int);  //

@@ -24,7 +24,8 @@ FQTermLocalSocket::~FQTermLocalSocket()
 
 void FQTermLocalSocket::connectToHost( const QString &host, quint16 port )
 {
-  shell_process_->start("", QIODevice::ReadWrite | QIODevice::Unbuffered);
+  shell_process_->start("/bin/bash",
+                        QIODevice::ReadWrite | QIODevice::Unbuffered);
 }
 
 void FQTermLocalSocket::close()
