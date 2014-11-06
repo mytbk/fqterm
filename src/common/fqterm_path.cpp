@@ -33,9 +33,10 @@
 #include "fqterm_param.h"
 #include "fqterm_path.h"
 #include "fqterm_font.h"
+#include "../protocol/fqterm_local_socket.h"
 
 namespace FQTerm {
-
+QString* FQTermLocalSocket::shell_bin_ = NULL;
 static QString getUserDataDir();
 static QString getInstallPrefix();
 static QString getResourceDir(const QString &prefix);
@@ -192,6 +193,12 @@ bool iniSettings() {
 
   if (!checkPath(pathPool) || !checkPath(pathCache)) {
     return false;
+  }
+
+  // fqterm local socket cmdline
+  QString externSSH = conf->getItemValue("global", "externSSH");
+  if (!externSSH.isEmpty()) {
+    FQTermLocalSocket::shell_bin_ = new QString(externSSH);
   }
 
   delete conf;

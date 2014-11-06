@@ -3,7 +3,7 @@
 
 namespace FQTerm {
 
-FQTermLocalSocket::FQTermLocalSocket( const QString& shell_bin ) : shell_bin_(shell_bin)
+FQTermLocalSocket::FQTermLocalSocket()
 {
   shell_process_ = new QProcess();
   shell_process_->setProcessChannelMode(QProcess::MergedChannels);
@@ -24,7 +24,12 @@ FQTermLocalSocket::~FQTermLocalSocket()
 
 void FQTermLocalSocket::connectToHost( const QString &host, quint16 port )
 {
-  shell_process_->start("", QIODevice::ReadWrite | QIODevice::Unbuffered);
+  if (shell_bin_!=NULL) {
+    shell_process_->start(FQTermLocalSocket::shell_bin_->arg(QString::number(port), host),
+                          QIODevice::ReadWrite | QIODevice::Unbuffered);
+  } else {
+    emit connectionClosed();
+  }
 }
 
 void FQTermLocalSocket::close()
