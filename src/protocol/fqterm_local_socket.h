@@ -8,10 +8,11 @@ namespace FQTerm {
 class FQTermLocalSocket: public FQTermSocket {
   Q_OBJECT;
 private:
-  QString shell_bin_;
   QProcess* shell_process_;
 public:
-  FQTermLocalSocket(const QString& shell_bin);
+  static QString *shell_bin_;
+
+  FQTermLocalSocket();
   ~FQTermLocalSocket();
   void flush(){}
   void setProxy(int nProxyType, bool bAuth, const QString &strProxyHost,

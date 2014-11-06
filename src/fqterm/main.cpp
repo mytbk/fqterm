@@ -83,7 +83,6 @@
 
 
 
-
 int main(int argc, char **argv) {
 #if defined(WIN32)
 #else
@@ -120,7 +119,7 @@ int main(int argc, char **argv) {
   //                     << dumpNormalString << "\nucs2 " << ucs2.size() << " " << ucs2.at(0).unicode()
   //                     << dumpNormalString << "\nutf8   " << dumpHexString << utf8c;
   //return 0;
-  
+
   if (!iniSettings()) {
     return -1;
   }
