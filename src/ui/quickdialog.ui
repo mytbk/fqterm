@@ -149,11 +149,6 @@
        </item>
        <item>
         <property name="text">
-         <string>SSH</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
          <string>Local</string>
         </property>
        </item>
