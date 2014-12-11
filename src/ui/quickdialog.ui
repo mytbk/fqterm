@@ -147,6 +147,11 @@
          <string>SSH</string>
         </property>
        </item>
+       <item>
+        <property name="text">
+         <string>Local</string>
+        </property>
+       </item>
       </widget>
      </item>
      <item>

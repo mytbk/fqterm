@@ -41,7 +41,7 @@ namespace FQTerm {
 
 extern void saveAddress(FQTermConfig *, int, const FQTermParam &);
 
-const int quickDialog::ports[3] = {23, 22, 22};
+  const int quickDialog::ports[] = {23, 22, 22, 22};
 
 quickDialog::quickDialog(FQTermConfig * config, QWidget *parent, Qt::WindowFlags fl)
     : QDialog(parent, fl),

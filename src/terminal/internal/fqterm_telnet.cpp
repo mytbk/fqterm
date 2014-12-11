@@ -213,11 +213,11 @@ FQTermTelnet::FQTermTelnet(const QString &strTermType, int rows, int columns,
   raw_size = 0;
 
 #ifndef _NO_SSH_COMPILED
-  if (protocolType == 1 || protocolType == 2) {
+  if (protocolType == 1) {
     socket = new FQTermSSHSocket(columns, rows, strTermType, sshuser, sshpasswd);
     FQ_VERIFY(connect(socket, SIGNAL(sshAuthOK()),
 		      this, SIGNAL(onSSHAuthOK())));
-  } else if (protocolType == 3) {
+  } else if (protocolType == 2) {
     socket = new FQTermLocalSocket();
   } else {
     socket = new FQTermTelnetSocket();
