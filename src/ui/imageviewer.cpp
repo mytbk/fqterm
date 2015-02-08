@@ -1454,7 +1454,7 @@ namespace FQTerm {
     FQ_VERIFY(connect(tree_, SIGNAL(activated(const QModelIndex &)),
         this, SLOT(onChange(const QModelIndex &))));
     FQ_VERIFY(connect(tree_->selectionModel(),
-        SIGNAL(selectionChanged(const QIetmSelection&,
+        SIGNAL(selectionChanged(const QItemSelection&,
             const QItemSelection&)),
         this, SLOT(selectionChanged(const QItemSelection&,
             const QItemSelection&))));
