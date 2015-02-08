@@ -1711,7 +1711,11 @@ namespace FQTerm {
 
     if (value.isValid()) {
       checkState = static_cast<Qt::CheckState>(value.toInt());
+#if QT_VERSION >= 0x050000
       checkRect = doCheck(opt, opt.rect, value);
+#else
+      checkRect = check(opt, opt.rect, value);
+#endif
     }
 
     // do the layout
