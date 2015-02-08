@@ -21,6 +21,13 @@
 #include "iplookup.h"
 #include "fqterm_ip_location.h"
 #include "fqterm.h"
+
+#if QT_VERSION >= 0x050000
+#define FQ_UTF8 0
+#else
+#define FQ_UTF8 QCoreApplication::UnicodeUTF8
+#endif
+
 namespace FQTerm {
 
 
@@ -41,10 +48,10 @@ void IPLookupDialog::onLookup() {
   FQTermIPLocation *ipLocation = FQTermIPLocation::getInstance();
   if (ipLocation == NULL) {
     ui_.addressLineEdit->setText(
-        QApplication::translate("IPLookupDialog", "IP database file does NOT exist", 0, 0));
+        QApplication::translate("IPLookupDialog", "IP database file does NOT exist", 0, FQ_UTF8));
   } else if (!ipLocation->getLocation(ip, country, city)) {
     ui_.addressLineEdit->setText(
-        QApplication::translate("IPLookupDialog", "Invalid IP", 0, 0));
+        QApplication::translate("IPLookupDialog", "Invalid IP", 0, FQ_UTF8));
   } else {
     ui_.addressLineEdit->setText(country + " " + city);
   }
