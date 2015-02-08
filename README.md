@@ -1,7 +1,7 @@
 ## FQTerm
 FQTerm是为Telnet BBS设计的终端模拟器(俗称Term)，支持Telnet,SSH协议。    
 本项目源自QTerm-Qt3,从2008年起，由Curvlet和dp2重写并移植至Qt4.    
-现在FQTerm的原开发组成员已经停止了该项目的维护，现由ArchLinux@newsmth维护并进行Qt5的移植。    
+现在FQTerm的原开发组成员已经停止了该项目的维护，现由archlinux网友维护。    
 
 ## 文档
 目前FQTerm还没有特别完整的文档，现在正在进行文档编写。用Markdown编写的文档请见[doc目录](doc/).
@@ -49,7 +49,7 @@ sudo make install
 
 ## Windows版本
 - 在Linux下用MXE交叉编译，运行时错误，可能原因是MXE的Qt缺少语言Codec
-- MinGW: 在[SourceForge](http://sourceforge.net/projects/fqterm/files/windows/)上的Windows预编译包是在MinGW下编译的(静态连接的OpenSSL,Qt4,TDM GCC),编译方法如下  
+- MinGW: 在[SourceForge](http://sourceforge.net/projects/fqterm/files/windows/)上的Windows预编译包是在MinGW下编译的(静态连接的OpenSSL,Qt4,TDM GCC,构建方式请见项目wiki),编译方法如下  
 ```
 REM 假设源码在C:\fqterm, OpenSSL在C:\openssl, Qt在C:\Qt\4.8.6.static
 mkdir build
@@ -62,9 +62,11 @@ REM 生成的fqterm.exe即为程序文件
 
 ## TODO
 以下是FQTerm日后需要改进和修复的地方，希望大家参与开发。
+- wip: Qt4和Qt5分支的合并
 - SSH: 增加host key记录和认证机制
 - SSH: public key auth
 - 改善终端渲染
+- 使用矢量UI
 - ~~Bug: Qt5分支中Ctrl按键异常 (暂时使用Mac OS的处理方法解决)~~
 - ~~Bug: Qt5分支中退出时SIGSEGV(resolved)~~
 - ~~Maybe something wrong with imageviewer (Qt5)~~
