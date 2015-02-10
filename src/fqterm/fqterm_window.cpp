@@ -614,6 +614,8 @@ void FQTermWindow::keyPressEvent(QKeyEvent *keyevent) {
   if (!isConnected()) {
     if (keyevent->key() == Qt::Key_Return || keyevent->key() == Qt::Key_Enter) {
       session_->reconnect();
+    } else if (keyevent->key() == Qt::Key_Space) {
+        emit(connectionClosed(this));
     }
     return ;
   }

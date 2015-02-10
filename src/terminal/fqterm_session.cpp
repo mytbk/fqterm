@@ -1133,9 +1133,10 @@ void FQTermSession::finalizeConnection() {
     QString strMsg = "";
     strMsg += "\n\n\n\r\n\r";
     strMsg += "\x1b[17C\x1b[0m===========================================\n\r";
-    strMsg +=
-        "\x1b[17C Connection Closed, Press \x1b[1m\x1b[31;40mEnter\x1b[m\x1b[0m To Connect\n\r";
-    strMsg += "\x1b[17C===========================================\n";
+    strMsg += "\x1b[17C Connection Closed, Press \x1b[1;31;40mEnter\x1b[0m To Connect\n\r";
+    strMsg += "\x1b[17C===========================================\n\r";
+    strMsg += "\x1b[17C            Press \x1b[1;31;40mSpace\x1b[0m To Close\n\r";
+    strMsg += "\x1b[17C===========================================\n\r";
     decoder_->decode(strMsg.toLatin1(), strMsg.length());
   }
   isConnected_ = false;
