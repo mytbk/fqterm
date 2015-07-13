@@ -87,6 +87,22 @@ set(fqterm_ui_UIS
   defineescape.ui
 )
 
+if(USE_QT5)
+qt5_wrap_ui(fqterm_ui_UIS_H
+  ${fqterm_ui_UIS} 
+)
+
+set(CMAKE_AUTOMOC ON)
+find_package(Qt5Core REQUIRED)
+find_package(Qt5Widgets REQUIRED)
+find_package(Qt5Network REQUIRED)
+
+qt5_create_translation(fqterm_ui_qm_file
+  ${fqterm_ui_UIS}
+  ${fqterm_ui_SRCS}
+  ${CMAKE_SOURCE_DIR}/res/dict/ui_zh_CN.ts
+)
+else(USE_QT5)
 qt4_wrap_ui(fqterm_ui_UIS_H
   ${fqterm_ui_UIS} 
 )
@@ -101,6 +117,7 @@ qt4_create_translation(fqterm_ui_qm_file
   ${fqterm_ui_SRCS}
   ${CMAKE_SOURCE_DIR}/res/dict/ui_zh_CN.ts
 )
+endif(USE_QT5)
 
 include_directories(
   ${QT_INCLUDE_DIR}
@@ -122,3 +139,7 @@ add_dependencies(fqterm_ui
 )
 
 ADD_DEFINITIONS(-D "FQTERM_GIT_REVISION=\\\"${MCGGIT_WC_REVISION}\\\"")
+
+if(USE_QT5)
+  target_link_libraries(fqterm_ui Qt5::Core Qt5::Widgets)
+endif(USE_QT5)
