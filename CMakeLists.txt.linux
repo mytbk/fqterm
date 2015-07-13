@@ -23,6 +23,7 @@ endif(ALSA_FOUND)
 ADD_DEFINITIONS(-Wall)
 ADD_DEFINITIONS(-D_OS_LINUX_)
 ADD_DEFINITIONS(-D "FQTERM_VERSION_STRING=\\\"${FQTERM_VERSION}\\\"")
+ADD_DEFINITIONS(--std=c++11)
 
 add_subdirectory(src)
 
@@ -30,10 +31,24 @@ ADD_EXECUTABLE(fqterm.bin
   src/fqterm/main.cpp
 )
 
+IF(USE_QT5)
+  find_package(Qt5Core REQUIRED)
+  find_package(Qt5Widgets REQUIRED)
+  find_package(Qt5Network REQUIRED)
+  find_package(Qt5Script REQUIRED)
+  find_package(Qt5Multimedia REQUIRED)
+  find_package(Qt5Xml REQUIRED)
+ELSE(USE_QT5)
+ENDIF(USE_QT5)
+
+IF(NOT USE_QT5)
+  include_directories(
+    ${QT_INCLUDE_DIR}
+    ${QT_QTCORE_INCLUDE_DIR}
+    ${QT_QTGUI_INCLUDE_DIR}
+    )
+ENDIF(NOT USE_QT5)
 include_directories(
-  ${QT_INCLUDE_DIR}
-  ${QT_QTCORE_INCLUDE_DIR}
-  ${QT_QTGUI_INCLUDE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}/src/common
   ${CMAKE_CURRENT_SOURCE_DIR}/src/protocol
   ${CMAKE_CURRENT_SOURCE_DIR}/src/terminal
@@ -68,7 +83,7 @@ target_link_libraries(fqterm.bin
   fqterm_utilities 
   fqterm_ui
   fqterm_common
-  fqterm_unite 
+  fqterm_unite
   ${QT_QTNETWORK_LIBRARIES}
   ${QT_QTXML_LIBRARIES}
   ${QT_QTSCRIPT_LIBRARIES}  
@@ -80,6 +95,10 @@ target_link_libraries(fqterm.bin
   crypto
   X11
 )
+
+IF(USE_QT5)
+  target_link_libraries(fqterm.bin Qt5::Core Qt5::Widgets)
+ENDIF(USE_QT5)
 
 add_dependencies(fqterm.bin
   fqterm_main
