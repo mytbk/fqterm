@@ -20,6 +20,7 @@
 
 #include "fqterm_param.h"
 #include "fqterm_font.h"
+#include <QObject>
 
 namespace FQTerm {
 
