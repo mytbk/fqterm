@@ -1170,6 +1170,21 @@ void FQTermFrame::ipLookup() {
   ipLookupDialog_.exec();
 }
 
+    void FQTermFrame::logRaw() 
+	{
+		FQTermSession *s = windowManager_->activeWindow()->getSession();
+
+		if (!s->isLogging()) {
+			s->startLogging();
+		}
+		else {
+			s->stopLogging(true);
+		}
+
+		getAction(FQTermShortcutHelper::LOGRAW)->setChecked(
+				s->isLogging());
+	}
+    
 void FQTermFrame::antiIdle() {
   windowManager_->activeWindow()->toggleAntiIdle();
   getAction(FQTermShortcutHelper::ANTIIDLE)->setChecked(
@@ -1404,6 +1419,7 @@ void FQTermFrame::addMainTool() {
 
   // Spec (5)
   toolBarMdiConnectTools_->addAction(getAction(FQTermShortcutHelper::COPYARTICLE));
+  toolBarMdiConnectTools_->addAction(getAction(FQTermShortcutHelper::LOGRAW));
   toolBarMdiConnectTools_->addAction(getAction(FQTermShortcutHelper::ANTIIDLE));
   toolBarMdiConnectTools_->addAction(getAction(FQTermShortcutHelper::AUTOREPLY));
   toolBarMdiConnectTools_->addAction(getAction(FQTermShortcutHelper::VIEWMESSAGE));
@@ -1563,6 +1579,7 @@ void FQTermFrame::addMainMenu() {
   // Special
   QMenu *spec = menuMain_->addMenu(tr("&Special"));
   FQTERM_ADDACTION(spec, COPYARTICLE, this, copyArticle);
+  FQTERM_ADDACTION(spec, LOGRAW, this, logRaw);
   FQTERM_ADDACTION(spec, ANTIIDLE, this, antiIdle);
   FQTERM_ADDACTION(spec, AUTOREPLY, this, autoReply);
   FQTERM_ADDACTION(spec, VIEWMESSAGE, this, viewMessages);
@@ -1607,6 +1624,7 @@ void FQTermFrame::updateMenuToolBar() {
   getAction(FQTermShortcutHelper::PASTEWORDWRAP)->setChecked(window->getSession()->param().isAutoWrap_);
   getAction(FQTermShortcutHelper::FULLSCREEN)->setChecked(windowState() & Qt::WindowFullScreen);
   getAction(FQTermShortcutHelper::ANSICOLOR)->setChecked(window->getSession()->param().isAnsiColor_);
+  getAction(FQTermShortcutHelper::LOGRAW)->setChecked(window->getSession()->isLogging());
   getAction(FQTermShortcutHelper::ANTIIDLE)->setChecked(window->getSession()->isAntiIdle());
   getAction(FQTermShortcutHelper::AUTOREPLY)->setChecked(window->getSession()->isAutoReply());
   getAction(FQTermShortcutHelper::BEEP)->setChecked(window->getSession()->param().isBeep_);
@@ -1684,6 +1702,7 @@ void FQTermFrame::enableMenuToolBar(bool enable) {
   getAction(FQTermShortcutHelper::CURRENTSETTING)->setEnabled(enable);
   getAction(FQTermShortcutHelper::SAVESETTING)->setEnabled(enable);
   getAction(FQTermShortcutHelper::COPYARTICLE)->setEnabled(enable);
+  getAction(FQTermShortcutHelper::LOGRAW)->setEnabled(enable);
   getAction(FQTermShortcutHelper::ANTIIDLE)->setEnabled(enable);
   getAction(FQTermShortcutHelper::AUTOREPLY)->setEnabled(enable);
   getAction(FQTermShortcutHelper::VIEWMESSAGE)->setEnabled(enable);

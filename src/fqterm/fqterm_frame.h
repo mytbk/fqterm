@@ -151,6 +151,7 @@ class FQTermFrame: public QMainWindow {
   void bosscolor();
   void toggleServer(bool on);
   void uiFont();
+  void logRaw();
   void antiIdle();
   void autoReply();
   void setting();

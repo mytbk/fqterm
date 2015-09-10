@@ -49,6 +49,8 @@
 #include <QReadLocker>
 #include <QWriteLocker>
 #include <QReadWriteLock>
+#include <QFileDialog>
+#include <QFile>
 
 namespace FQTerm {
 
@@ -126,6 +128,9 @@ FQTermSession::FQTermSession(FQTermConfig *config, FQTermParam param) {
   idleTimer_ = new QTimer;
   autoReplyTimer_ = new QTimer;
 
+  isLogging_ = false;
+  logData = NULL;
+  
   acThread_ = new ArticleCopyThread(*this, waitCondition_, bufferWriteLock_);
 
   FQ_VERIFY(connect(decoder_, SIGNAL(mouseMode(bool)),
@@ -974,6 +979,10 @@ void FQTermSession::readReady(int size, int raw_size) {
   raw_data_.resize(raw_size);
   telnet_->read_raw(&raw_data_[0], raw_size);
 
+  if (isLogging_) {
+	  logData->append(&raw_data_[0], raw_size);
+  }
+  
   // read raw buffer
   int zmodem_consumed;
   if (param_.enableZmodem_)
@@ -1149,6 +1158,10 @@ void FQTermSession::finalizeConnection() {
     idleTimer_->stop();
   }
 
+  if (isLogging_) {
+      stopLogging(false);
+  }
+  
   emit connectionClosed();
 }
 
@@ -1491,6 +1504,39 @@ void FQTermSession::updateSetting( const FQTermParam& p ) {
     setAutoReconnect(param_.isAutoReconnect_);
 }
 
+    void FQTermSession::startLogging()
+	{
+		logData = new QByteArray();
+		if (logData!=NULL) {
+			isLogging_ = true;
+		}
+		else {
+			return;
+		}
+	}
+
+    void FQTermSession::stopLogging(bool savedata)
+	{
+		if (savedata) {
+			QString fileName = QFileDialog::getSaveFileName(NULL, 
+					tr("Save logged data to file"));
+			if (!fileName.isNull()) {
+				QFile f(fileName);
+				if (f.open(QIODevice::WriteOnly)) {
+					f.write(*logData);
+					f.close();
+				}
+			}
+		}
+		delete logData;
+		isLogging_ = false;
+	}
+
+    bool FQTermSession::isLogging()
+	{
+		return isLogging_;
+    }
+        
 ArticleCopyThread::ArticleCopyThread(
     FQTermSession &bbs, QWaitCondition &waitCondition, QReadWriteLock &bufferLock)
     : session_(bbs),

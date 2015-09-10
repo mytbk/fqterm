@@ -92,8 +92,12 @@ void FQTermShortcutHelper::initShortcutDescriptionTable()
   initShortcutDescriptionTableEntry(EDITSCHEMA, "schema", tr(""), tr("Edit Schema"));
   initShortcutDescriptionTableEntry(SHORTCUTSETTING, "shortcut", tr(""), tr("Shorcut Setting"));
   initShortcutDescriptionTableEntry(COPYARTICLE, "copyarticle", tr("F9"), tr("Copy Article"), "get_article_fulltext");  
-  initShortcutDescriptionTableEntry(ANTIIDLE, "antiidle", tr(""), tr("Toggle Anti Idle"), "anti_idle");  
+  initShortcutDescriptionTableEntry(LOGRAW, "lograw", tr(""), tr("Toggle Raw Data Logging"), "log_raw");
+  getAction(LOGRAW)->setCheckable(true);
+  
+  initShortcutDescriptionTableEntry(ANTIIDLE, "antiidle", tr(""), tr("Toggle Anti Idle"), "anti_idle");
   getAction(ANTIIDLE)->setCheckable(true);
+  
   initShortcutDescriptionTableEntry(AUTOREPLY, "autoreply", tr(""), tr("Toggle Auto Reply"), "auto_reply");  
   getAction(AUTOREPLY)->setCheckable(true);
   initShortcutDescriptionTableEntry(VIEWMESSAGE, "viewmessage", tr("F10"), tr("View Messages"), "view_messages");  
@@ -194,6 +198,7 @@ void FQTermShortcutHelper::retranslateActions() {
   retranslateAction(SHORTCUTSETTING, tr("Short&cut Setting"));
   retranslateAction(EDITSCHEMA, tr("&Edit Schema"));
   retranslateAction(COPYARTICLE, tr("&Copy article"));
+  retranslateAction(LOGRAW, tr("Log Raw"));
   retranslateAction(ANTIIDLE, tr("Anti &idle"));
   retranslateAction(AUTOREPLY, tr("Auto &reply"));
   retranslateAction(VIEWMESSAGE, tr("&View messages"));

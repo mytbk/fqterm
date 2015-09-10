@@ -215,6 +215,11 @@ class FQTermSession: public QObject {
   void updateSetting(const FQTermParam& p);
   QReadWriteLock& getBufferLock() {return bufferWriteLock_;}
 
+  // raw data logging
+  void startLogging();
+  void stopLogging(bool);
+  bool isLogging();
+
  public:
 
 
@@ -310,7 +315,10 @@ private:
 
   std::vector<char> telnet_data_;
   std::vector<char> raw_data_;
-
+  // raw data logging
+  bool isLogging_;
+  QByteArray *logData;
+  
   int reconnectRetry_;
 public:
   void setScriptListener(FQTermScriptEventListener* pythonListener) {
