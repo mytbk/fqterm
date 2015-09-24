@@ -15,6 +15,11 @@ set(fqterm_SRCS
   fqterm_scriptengine.cpp
 )
 
+IF(IMAGE_USE_PICFLOW)
+  ADD_DEFINITIONS(-DIMAGE_USE_PICFLOW)
+ELSE(IMAGE_USE_PICFLOW)
+ENDIF(IMAGE_USE_PICFLOW)
+  
 IF(GLOBAL_HOTKEY EQUAL 1)
 IF(WIN32)
   set(global_shortcut_impl_SRCS 3rdparty/qxtglobalshortcut_win.cpp)

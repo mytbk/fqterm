@@ -67,7 +67,13 @@
 #include "fqterm_tool_button.h"
 #include "fqterm_window.h"
 #include "fqterm_wndmgr.h"
+
+#ifdef IMAGE_USE_PICFLOW
 #include "imageviewer.h"
+#else
+#include "imageviewer_origin.h"
+#endif
+
 #include "quickdialog.h"
 #include "statusBar.h"
 #include "sitemanager.h"

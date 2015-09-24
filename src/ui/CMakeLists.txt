@@ -1,4 +1,16 @@
+if(IMAGE_USE_PICFLOW)
+  set(IMGVIEW_SRCS
+    imageviewer.h
+    imageviewer.cpp)
+else(IMAGE_USE_PICFLOW)
+  set(IMGVIEW_SRCS
+    imageviewer_origin.cpp
+    imageviewer_origin.h)
+endif(IMAGE_USE_PICFLOW)
+
 set(fqterm_ui_SRCS
+  fqtermimage.cpp
+  ${IMGVIEW_SRCS}
   aboutdialog.h
   addrdialog.h
   articledialog.h
@@ -37,8 +49,6 @@ set(fqterm_ui_SRCS
   fqterm_time_label.cpp
   fqterm_tool_button.h
   fqterm_tool_button.cpp
-  imageviewer.h
-  imageviewer.cpp
   shortcutdialog.h
   shortcutdialog.cpp
   statusBar.h
