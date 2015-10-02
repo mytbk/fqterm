@@ -9,3 +9,12 @@ FQTerm自带SSH连接功能，但是它在公钥交换时没有认证服务器�
 
 ### 注意事项
 如果使用公钥认证登录方式，一般不需要额外的设置，如果在登录过程中需要输入密码，请安装```x11-ssh-askpass```,因为FQTerm没有模拟pty.
+
+### 其他
+OpenSSH 7.0p1开始默认禁用了一些不太安全的功能，可以在`~/.ssh/config`中强制打开，比如对未名BBS可做如下设置。
+
+```
+Host bdwm.net
+HostName bdwm.net
+  KexAlgorithms +diffie-hellman-group1-sha1
+```
