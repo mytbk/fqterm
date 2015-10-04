@@ -13,9 +13,9 @@ fork本项目，然后自己开发，提交自己的更改，再创建pull reque
 - https://help.github.com/articles/using-pull-requests
 
 ## 安装
-~~Windows用户可以直接到[SourceForge页面](http://sourceforge.net/projects/fqterm/files/windows/)下载预编译的包。~~
+Windows用户可以直接到[fosshub页面](http://code.fosshub.com/FQTerm/downloads)下载预编译的包。
 
-鉴于此前SourceForge的一些事件，本项目的预编译包将迁移至FossHub，原有的SourceForge上的包会保留。
+鉴于此前SourceForge的一些事件，本项目的Windows预编译包已迁移至FossHub，原有的[SourceForge](http://sourceforge.net/projects/fqterm/files/windows/)上的包会保留。
 
 ArchLinux用户可以直接从AUR安装，如
 ```
