@@ -18,6 +18,7 @@
 #include <QItemDelegate>
 #include <QItemSelection>
 #include <QTreeView>
+#include <QMenuBar>
 
 #include "pictureflow.h"
 #include "fqtermimage.h"
