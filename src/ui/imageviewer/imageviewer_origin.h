@@ -19,6 +19,7 @@
 #include <QItemSelection>
 #include <QTreeView>
 #include <QMenuBar>
+#include <QComboBox>
 
 #include "pictureflow.h"
 #include "fqtermimage.h"
@@ -32,13 +33,12 @@ namespace FQTerm
     class ItemDelegate : public QItemDelegate {
     public:
         static QSize size_;
-        
+
         ItemDelegate() {
             size_ = QSize(250,200);
         }
 
         QSize sizeHint (const QStyleOptionViewItem & option, const QModelIndex & index) const {
-//if (index.column() == 0) return QSize(1, 1);
             return size_;
         }
 

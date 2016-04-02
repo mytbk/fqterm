@@ -1,18 +1,8 @@
 set(CMAKE_AUTOMOC ON)
 
-if(IMAGE_USE_PICFLOW)
-  set(IMGVIEW_SRCS
-    imageviewer.h
-    imageviewer.cpp)
-else(IMAGE_USE_PICFLOW)
-  set(IMGVIEW_SRCS
-    imageviewer_origin.cpp
-    imageviewer_origin.h)
-endif(IMAGE_USE_PICFLOW)
+add_subdirectory(imageviewer)
 
 set(fqterm_ui_SRCS
-  fqtermimage.cpp
-  ${IMGVIEW_SRCS}
   aboutdialog.h
   addrdialog.h
   articledialog.h
@@ -39,8 +29,6 @@ set(fqterm_ui_SRCS
   osdmessage.cpp
   overlayWidget.h
   overlayWidget.cpp
-  pictureflow.h
-  pictureflow.cpp
   popupMessage.h
   popupMessage.cpp
   popwidget.h
@@ -55,8 +43,6 @@ set(fqterm_ui_SRCS
   shortcutdialog.cpp
   statusBar.h
   statusBar.cpp
-  fqterm_canvas.h
-  fqterm_canvas.cpp
   sitemanager.h
   sitemanager.cpp
   iplookup.h

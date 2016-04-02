@@ -87,8 +87,9 @@ set(FQTERM_LIBS
   fqterm_protocol
   fqterm_utilities
   fqterm_ui
-  fqterm_common
   fqterm_unite
+  fqterm_imageviewer
+  fqterm_common
   )
 
 IF(WIN32)

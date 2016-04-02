@@ -4,7 +4,6 @@
 #include <QAction>
 #include <QBuffer>
 #include <QCursor>
-#include <QComboBox>
 #include <QDateTime>
 #include <QDataStream>
 #include <QDir>
