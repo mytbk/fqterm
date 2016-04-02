@@ -1,3 +1,5 @@
+set(CMAKE_AUTOMOC ON)
+
 set(fqunite_SRCS
   fqterm_mini_server.h
   fqterm_mini_server.cpp
@@ -32,7 +34,6 @@ add_library(fqterm_unite
 )
 
 if(USE_QT5)
-  set(CMAKE_AUTOMOC ON)
   find_package(Qt5Core REQUIRED)
   find_package(Qt5Widgets REQUIRED)
   find_package(Qt5Network REQUIRED)
@@ -44,14 +45,9 @@ if(USE_QT5)
     Qt5::Xml
     )
 else(USE_QT5)
-  qt4_automoc(
-    ${fqunite_SRCS}
-    ${fqunite_internal_SRCS}
-    )
 endif(USE_QT5)
 
 add_dependencies(fqterm_unite
   fqterm_common
 )
 
-  

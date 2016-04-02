@@ -1,3 +1,5 @@
+set(CMAKE_AUTOMOC ON)
+
 if(IMAGE_USE_PICFLOW)
   set(IMGVIEW_SRCS
     imageviewer.h
@@ -99,10 +101,9 @@ set(fqterm_ui_UIS
 
 if(USE_QT5)
 qt5_wrap_ui(fqterm_ui_UIS_H
-  ${fqterm_ui_UIS} 
+  ${fqterm_ui_UIS}
 )
 
-set(CMAKE_AUTOMOC ON)
 find_package(Qt5Core REQUIRED)
 find_package(Qt5Widgets REQUIRED)
 find_package(Qt5Network REQUIRED)
@@ -114,12 +115,7 @@ qt5_create_translation(fqterm_ui_qm_file
 )
 else(USE_QT5)
 qt4_wrap_ui(fqterm_ui_UIS_H
-  ${fqterm_ui_UIS} 
-)
-
-qt4_automoc(
-  ${fqterm_ui_SRCS}
-  ${fqterm_ui_gen_HS}
+  ${fqterm_ui_UIS}
 )
 
 qt4_create_translation(fqterm_ui_qm_file

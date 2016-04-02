@@ -1,3 +1,5 @@
+set(CMAKE_AUTOMOC ON)
+
 set(fqterm_utilities_SRCS
   fqterm_convert.h
   fqterm_http.h
@@ -27,11 +29,9 @@ add_dependencies(fqterm_utilities
 )
 
 if(USE_QT5)
-  set(CMAKE_AUTOMOC ON)
   find_package(Qt5Core REQUIRED)
   find_package(Qt5Widgets REQUIRED)
   find_package(Qt5Network REQUIRED)
   target_link_libraries(fqterm_utilities Qt5::Core Qt5::Widgets Qt5::Network)
 else(USE_QT5)
-  qt4_automoc(${fqterm_utilities_SRCS})
 endif(USE_QT5)

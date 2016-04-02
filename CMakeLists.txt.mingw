@@ -1,17 +1,13 @@
 find_package(OpenSSL REQUIRED)
-set(CMAKE_VERBOSE_MAKEFILE ON)
 #ADD_DEFINITIONS(-DUSE_DOTNET_STYLE)
-ADD_DEFINITIONS(-D "FQTERM_VERSION_STRING=\\\"${FQTERM_VERSION}\\\"")
 
 if(FQTERM_USE_STATIC_QT)
   ADD_DEFINITIONS(-DFQTERM_USE_STATIC_QT)
   REMOVE_DEFINITIONS(-DQT_DLL)
 endif(FQTERM_USE_STATIC_QT)
 
-add_subdirectory(src)
-
 set(fqterm_RCS
-  fqterm.rc    
+  fqterm.rc
 )
 
 include_directories(
@@ -49,17 +45,11 @@ else(FQTERM_USE_STATIC_QT)
   )
 endif(FQTERM_USE_STATIC_QT)
 
-target_link_libraries(fqterm 
-  fqterm_main
-  fqterm_terminal
-  fqterm_protocol
-  fqterm_utilities
-  fqterm_ui
-  fqterm_common
-  fqterm_unite
+target_link_libraries(fqterm
+  ${FQTERM_LIBS}
   ${QT_QTNETWORK_LIBRARIES}
   ${QT_QTXML_LIBRARIES}
-  ${QT_QTSCRIPT_LIBRARIES}  
+  ${QT_QTSCRIPT_LIBRARIES}
   ${FQ_QT_STATIC_PLUGINS}
   ${QT_LIBRARIES}
   ${PYTHON_LIB}

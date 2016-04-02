@@ -2,8 +2,6 @@ find_package(OpenSSL REQUIRED)
 find_package(ALSA)
 find_package(OSS)
 
-set(CMAKE_VERBOSE_MAKEFILE ON)
-
 if (FQTERM_USE_STATIC_QT)
   ADD_DEFINITIONS(-DFQTERM_USE_STATIC_QT)
 endif(FQTERM_USE_STATIC_QT)
@@ -22,10 +20,7 @@ endif(ALSA_FOUND)
 
 ADD_DEFINITIONS(-Wall)
 ADD_DEFINITIONS(-D_OS_LINUX_)
-ADD_DEFINITIONS(-D "FQTERM_VERSION_STRING=\\\"${FQTERM_VERSION}\\\"")
 ADD_DEFINITIONS(--std=c++11)
-
-add_subdirectory(src)
 
 ADD_EXECUTABLE(fqterm.bin
   src/fqterm/main.cpp
@@ -65,28 +60,22 @@ link_directories(
 
 if (FQTERM_USE_STATIC_QT)
   set(FQ_QT_STATIC_PLUGINS
-  ${QT_PLUGINS_DIR}/imageformats/libqgif.a    
-  ${QT_PLUGINS_DIR}/imageformats/libqjpeg.a    
-  ${QT_PLUGINS_DIR}/imageformats/libqmng.a    
-  ${QT_PLUGINS_DIR}/codecs/libqcncodecs.a   
-  ${QT_PLUGINS_DIR}/codecs/libqjpcodecs.a   
-  ${QT_PLUGINS_DIR}/codecs/libqkrcodecs.a   
+  ${QT_PLUGINS_DIR}/imageformats/libqgif.a
+  ${QT_PLUGINS_DIR}/imageformats/libqjpeg.a
+  ${QT_PLUGINS_DIR}/imageformats/libqmng.a
+  ${QT_PLUGINS_DIR}/codecs/libqcncodecs.a
+  ${QT_PLUGINS_DIR}/codecs/libqjpcodecs.a
+  ${QT_PLUGINS_DIR}/codecs/libqkrcodecs.a
   ${QT_PLUGINS_DIR}/codecs/libqtwcodecs.a
   jpeg
   )
 endif(FQTERM_USE_STATIC_QT)
 
 target_link_libraries(fqterm.bin
-  fqterm_main
-  fqterm_terminal 
-  fqterm_protocol 
-  fqterm_utilities 
-  fqterm_ui
-  fqterm_common
-  fqterm_unite
+  ${FQTERM_LIBS}
   ${QT_QTNETWORK_LIBRARIES}
   ${QT_QTXML_LIBRARIES}
-  ${QT_QTSCRIPT_LIBRARIES}  
+  ${QT_QTSCRIPT_LIBRARIES}
   ${FQ_QT_STATIC_PLUGINS}
   ${QT_LIBRARIES}
   ${OPENSSL_LIBRARIES}

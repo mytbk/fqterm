@@ -1,3 +1,5 @@
+set(CMAKE_AUTOMOC ON)
+
 set(fqterm_SRCS
   fqterm_app.h
   fqterm_frame.h
@@ -19,7 +21,7 @@ IF(IMAGE_USE_PICFLOW)
   ADD_DEFINITIONS(-DIMAGE_USE_PICFLOW)
 ELSE(IMAGE_USE_PICFLOW)
 ENDIF(IMAGE_USE_PICFLOW)
-  
+
 IF(GLOBAL_HOTKEY EQUAL 1)
 IF(WIN32)
   set(global_shortcut_impl_SRCS 3rdparty/qxtglobalshortcut_win.cpp)
@@ -54,7 +56,6 @@ set(3rdparty_SRCS
 )
 
 if(USE_QT5)
-  set(CMAKE_AUTOMOC ON)
   find_package(Qt5Core REQUIRED)
   find_package(Qt5Widgets REQUIRED)
   find_package(Qt5Network REQUIRED)
@@ -65,10 +66,6 @@ if(USE_QT5)
     ${CMAKE_SOURCE_DIR}/res/dict/fqterm_zh_CN.ts
     )
 else(USE_QT5)
-  qt4_automoc(${fqterm_SRCS}
-    ${3rdparty_SRCS}
-    )
-
   qt4_create_translation(fqterm_qm_file
     ${fqterm_SRCS}
     ${CMAKE_SOURCE_DIR}/res/dict/fqterm_zh_CN.ts
@@ -87,6 +84,7 @@ include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/../utilities
   ${CMAKE_CURRENT_SOURCE_DIR}/../unite
   ${CMAKE_CURRENT_SOURCE_DIR}/../ui
+  ${CMAKE_CURRENT_SOURCE_DIR}/../ui/imageviewer
   ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty
   ${CMAKE_CURRENT_BINARY_DIR}/../ui
   ${CMAKE_CURRENT_BINARY_DIR}

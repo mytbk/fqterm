@@ -1,8 +1,8 @@
 project(fqterm)
 
 set(FQTERM_VERSION "0.9.8")
-
-cmake_minimum_required( VERSION 2.8.11 FATAL_ERROR )
+set(CMAKE_VERBOSE_MAKEFILE ON)
+cmake_minimum_required(VERSION 3.0.0 FATAL_ERROR)
 
 if(COMMAND cmake_policy)
   cmake_policy(SET CMP0003 NEW)
@@ -11,10 +11,6 @@ endif(COMMAND cmake_policy)
 set(CMAKE_MODULE_PATH
   ${CMAKE_SOURCE_DIR}/cmake
 )
-
-IF(NOT CMAKE_BUILD_TYPE) 
-    SET(CMAKE_BUILD_TYPE "MinsizeRel") 
-ENDIF(NOT CMAKE_BUILD_TYPE)
 
 set(CMAKE_COLOR_MAKEFILE ON)
 
@@ -46,14 +42,14 @@ ELSE(USE_QT5)
     ${CMAKE_SOURCE_DIR}/res/dict/common_zh_CN.ts
     )
 ENDIF(USE_QT5)
-  
+
 add_custom_target(fqterm_qm_target
   DEPENDS ${fqterm_qm_files}
 )
-FIND_PACKAGE(PythonLibs) 
+FIND_PACKAGE(PythonLibs)
 if (PYTHONLIBS_FOUND)
-  SET(PYTHON_LIB ${PYTHON_LIBRARIES}) 
-  INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_PATH}) 
+  SET(PYTHON_LIB ${PYTHON_LIBRARIES})
+  INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_PATH})
   ADD_DEFINITIONS(-DFOUND_PYTHON)
 else (PYTHONLIBS_FOUND)
   SET(PYTHON_LIB)
@@ -78,6 +74,22 @@ if (NOT USE_QT5)
 endif(NOT USE_QT5)
 
 SET(SUB_CMAKELIST "UNKNOWN")
+
+ADD_DEFINITIONS(-D "FQTERM_VERSION_STRING=\\\"${FQTERM_VERSION}\\\"")
+
+# Before adding src directory, make sure all the necessary definitions
+# are added
+add_subdirectory(src)
+
+set(FQTERM_LIBS
+  fqterm_main
+  fqterm_terminal
+  fqterm_protocol
+  fqterm_utilities
+  fqterm_ui
+  fqterm_common
+  fqterm_unite
+  )
 
 IF(WIN32)
   IF(MINGW)
@@ -110,5 +122,3 @@ IF(SUB_CMAKELIST MATCHES "UNKNOWN")
 ELSE(SUB_CMAKELIST MATCHES "UNKNOWN")
   INCLUDE("${SUB_CMAKELIST}")
 ENDIF(SUB_CMAKELIST MATCHES "UNKNOWN")
-
-

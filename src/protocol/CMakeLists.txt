@@ -1,3 +1,5 @@
+set(CMAKE_AUTOMOC ON)
+
 set(export_SRCS
   fqterm_socket.cpp
   fqterm_socket.h
@@ -45,14 +47,9 @@ set(internal_SRCS
 )
 
 if(USE_QT5)
-  set(CMAKE_AUTOMOC ON)
   find_package(Qt5Core REQUIRED)
   find_package(Qt5Network REQUIRED)
 else(USE_QT5)
-  qt4_automoc(
-    ${export_SRCS}
-    ${internal_SRCS}
-    )
 endif(USE_QT5)
 
 include_directories(

@@ -6,7 +6,6 @@ set(CMAKE_VERBOSE_MAKEFILE ON)
 ADD_DEFINITIONS(-Wall)
 ADD_DEFINITIONS(-DQT_SHARED)
 ADD_DEFINITIONS(-D_OS_FREEBSD_)
-ADD_DEFINITIONS(-DFQTERM_VERSION_STRING="\\"${FQTERM_VERSION}\\"")
 
 IF(OSS_FOUND)
   ADD_DEFINITIONS(-DAUDIO_OSS)
@@ -14,8 +13,6 @@ IF(OSS_FOUND)
 ELSE(OSS_FOUND)
   SET(AUDIO_INCLUDE_DIR)
 ENDIF(OSS_FOUND)
-
-add_subdirectory(src)
 
 ADD_EXECUTABLE(fqterm.bin
   src/fqterm/main.cpp
@@ -40,17 +37,11 @@ link_directories(
 )
 
 target_link_libraries(fqterm.bin
-  fqterm_main
-  fqterm_terminal 
-  fqterm_protocol 
-  fqterm_utilities 
-  fqterm_ui
-  fqterm_common 
-  fqterm_unite
+  ${FQTERM_LIBS}
   ${QT_QTNETWORK_LIBRARIES}
-  ${QT_QTSCRIPT_LIBRARIES}  
+  ${QT_QTSCRIPT_LIBRARIES}
   ${QT_LIBRARIES}
-  ${QT_QTXML_LIBRARIES}  
+  ${QT_QTXML_LIBRARIES}
   ${OPENSSL_LIBRARIES}
   ${PYTHON_LIB}
 )

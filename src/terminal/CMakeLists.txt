@@ -1,3 +1,5 @@
+set(CMAKE_AUTOMOC ON)
+
 set(export_SRCS
   fqterm_buffer.h
   fqterm_session.h
@@ -41,14 +43,9 @@ add_dependencies(fqterm_terminal
 )
 
 if(USE_QT5)
-  set(CMAKE_AUTOMOC ON)
   find_package(Qt5Core REQUIRED)
   find_package(Qt5Network REQUIRED)
   find_package(Qt5Widgets REQUIRED)
   target_link_libraries(fqterm_terminal Qt5::Core Qt5::Widgets Qt5::Network)
 else(USE_QT5)
-  QT4_AUTOMOC(
-    ${export_SRCS}
-    ${internal_SRCS}
-    )
 endif(USE_QT5)

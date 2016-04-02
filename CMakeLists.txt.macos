@@ -1,16 +1,10 @@
 find_package(OpenSSL REQUIRED)
 
-set(CMAKE_VERBOSE_MAKEFILE ON)
-
 ADD_DEFINITIONS(-Wall)
-ADD_DEFINITIONS(-DFQTERM_VERSION_STRING="\\"${FQTERM_VERSION}\\"")
-
 
 if(FQTERM_USE_STATIC_QT)
   ADD_DEFINITIONS(-DFQTERM_USE_STATIC_QT)
 endif(FQTERM_USE_STATIC_QT)
-
-add_subdirectory(src)
 
 find_library(APPKIT_LIBRARY AppKit)
 
@@ -57,6 +51,7 @@ if(FQTERM_USE_STATIC_QT)
 endif(FQTERM_USE_STATIC_QT)
 
 target_link_libraries(fqterm
+  ${FQTERM_LIBS}
   ${QT_LIBRARIES}
   ${QT_QTCORE_LIBRARY}
   ${QT_QTGUI_LIBRARY}
@@ -67,16 +62,9 @@ target_link_libraries(fqterm
   ${FQ_QT_STATIC_PLUGINS}
   ${PYTHON_LIB}
   ${ZLIB_LIBRARIES}
-  ${QT_QTXML_LIBRARIES}  
-  ssl 
+  ${QT_QTXML_LIBRARIES}
+  ssl
   crypto
-  fqterm_common 
-  fqterm_protocol 
-  fqterm_terminal 
-  fqterm_utilities 
-  fqterm_ui
-  fqterm_main
-  fqterm_unite
 )
 
 add_dependencies(fqterm
