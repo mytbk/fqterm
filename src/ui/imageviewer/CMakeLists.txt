@@ -30,3 +30,7 @@ include_directories(
 
 add_library(fqterm_imageviewer
   ${fqterm_imageviewer_SRCS})
+
+if(USE_QT5)
+  target_link_libraries(fqterm_imageviewer Qt5::Core Qt5::Widgets)
+endif(USE_QT5)
