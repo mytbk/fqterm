@@ -139,6 +139,16 @@ INSTALL(
 )
 
 INSTALL(
+	FILES ${CMAKE_SOURCE_DIR}/res/pic/fqterm_256x256.png
+	DESTINATION share/pixmaps/
+	PERMISSIONS
+		OWNER_WRITE OWNER_READ
+		GROUP_READ
+		WORLD_READ
+	RENAME fqterm.png
+)
+
+INSTALL(
   FILES ${fqterm_qm_files}
   DESTINATION share/FQTerm/dict/
   PERMISSIONS
