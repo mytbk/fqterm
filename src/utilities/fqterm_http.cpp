@@ -97,13 +97,12 @@ void FQTermHttp::getLink(const QUrl& url, bool preview) {
 
 void FQTermHttp::httpResponse() {
   if (netreply_->hasRawHeader("Location")) {
-    //FIXME: according to RC, this code still could not work
-    //if the server send the relative location.
-    QString realLocation = netreply_->header(QNetworkRequest::LocationHeader).toString();
-    QUrl u = realLocation;
+    // use rawHeader("Location") instead of header(QNetworkRequest::LocationHeader)
+    // it works for both absolute and relative redirection
+    QUrl u(netreply_->rawHeader("Location"));
     if (u.isRelative() ) {
       u=netreply_->url().resolved(u);
-    } 
+    }
     cacheFileName_ = QFileInfo(u.path()).fileName(); // update filename
     getLink(u,isPreview_);
     return;
