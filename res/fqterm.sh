@@ -21,8 +21,14 @@ if [ -x "$base_name".bin ]; then
   cd "$current_directory"
   export FQTERM_PREFIX=`dirname "$bin_directory"`
   export FQTERM_RESOURCE="$FQTERM_PREFIX/share/FQTerm"
-  "$bin_directory/$base_name.bin" "$@"
-  exit $?
+  # use setsid to run it so that programs such as
+  # ssh(1) does not have a terminal
+  if type setsid >/dev/null 2>/dev/null; then
+    SETSID="setsid -w"
+  else
+    SETSID=""
+  fi
+  exec $SETSID "$bin_directory/$base_name.bin" "$@"
 else
   cd "$current_directory"
   echo "Error, cannot find $base_name."
