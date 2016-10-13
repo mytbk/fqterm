@@ -17,18 +17,10 @@ Windows用户可以直接到[fosshub页面](http://code.fosshub.com/FQTerm/downl
 
 鉴于此前SourceForge的一些事件，本项目的Windows预编译包已迁移至FossHub，原有的[SourceForge](http://sourceforge.net/projects/fqterm/files/windows/)上的包会保留。
 
-ArchLinux用户可以直接从AUR安装，如
-```
-yaourt -S fqterm-git
-```
-或
-```
-# Qt5分支
-yaourt -S fqterm-qt5-git
-```
+ArchLinux用户可以使用[archlinuxcn仓库](https://wiki.archlinux.org/index.php/Unofficial_user_repositories#archlinuxcn)安装``fqterm-git``包，或者从AUR安装[fqterm-git](https://aur.archlinux.org/packages/fqterm-git/)或Qt5版本[fqterm-qt5-git](https://aur.archlinux.org/packages/fqterm-qt5-git/).
 
-其他用户可手动编译，大致步骤如下:    
-解决依赖: Qt, OpenSSL, alsa-lib(Linux)    
+手动编译大致步骤如下:    
+解决依赖: Qt(Qt5版本需要qt5-script,qt5-multimedia,qt5-tools), alsa(Linux)    
 获取代码：      
 ```
 git clone https://github.com/mytbk/fqterm.git
@@ -54,7 +46,7 @@ mkdir build
 cd build
 CMAKE_PREFIX_PATH=/usr/local/opt/qt5/lib/cmake \
 OPENSSL_ROOT_DIR=/usr/local/opt/openssl \
-cmake ../fqterm
+cmake ../fqterm -DUSE_QT5=1
 make
 make install
 ```
