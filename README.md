@@ -52,6 +52,18 @@ make
 sudo make install
 ```
 
+在 macOS (Sierra) 中编译建议使用 Qt5 分支，利用 HomeBrew 安装依赖。目前支持并不完善。
+```shell
+brew install openssl qt5
+mkdir build
+cd build
+CMAKE_PREFIX_PATH=/usr/local/opt/qt5/lib/cmake \
+OPENSSL_ROOT_DIR=/usr/local/opt/openssl \
+cmake ../fqterm
+make
+make install
+```
+
 ## Windows版本
 - 在Linux下用MXE交叉编译，运行时错误，可能原因是MXE的Qt缺少语言Codec
 - MinGW: 正常编译及运行，编译方法如下  
