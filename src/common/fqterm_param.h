@@ -23,6 +23,7 @@
 
 #include <QString>
 #include <QColor>
+#include <QObject>
 
 namespace FQTerm {
 
