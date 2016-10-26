@@ -132,7 +132,7 @@ void FQTermSSHBuffer::putSSH1BN(BIGNUM *bignum) {
 void FQTermSSHBuffer::putSSH2BN(BIGNUM *bignum) {
   // FIXME: support negative number and add error handling.
 
-  FQ_VERIFY(!bignum->neg);  // currently we don't support negative big number.
+  FQ_VERIFY(!BN_is_negative(bignum));  // currently we don't support negative big number.
 
   if (BN_is_zero(bignum)) {
     this->putInt(0);
