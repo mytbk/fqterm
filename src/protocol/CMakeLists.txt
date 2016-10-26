@@ -1,3 +1,4 @@
+find_package(OpenSSL REQUIRED)
 set(CMAKE_AUTOMOC ON)
 
 set(export_SRCS
