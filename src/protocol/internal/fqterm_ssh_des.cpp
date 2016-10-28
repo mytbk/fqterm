@@ -102,7 +102,7 @@ FQTermSSH2TripleDESCBC::FQTermSSH2TripleDESCBC() {
 FQTermSSH2TripleDESCBC::~FQTermSSH2TripleDESCBC() {
   if (ctx_ != NULL) {
     EVP_CIPHER_CTX_cleanup(ctx_);
-    delete ctx_;
+    EVP_CIPHER_CTX_free(ctx_);
   }
 }
 
@@ -135,7 +135,7 @@ void FQTermSSH2TripleDESCBC::encrypt(const u_char *source, u_char *dest, int len
   int ret = 0;
   if (ctx_ == NULL) {
     // Lazy initialization.
-    ctx_ = new EVP_CIPHER_CTX;
+    ctx_ = EVP_CIPHER_CTX_new();
     EVP_CIPHER_CTX_init(ctx_);
     ret = EVP_CipherInit(ctx_, EVP_des_ede3_cbc(), key_, IV_, 1);
     FQ_VERIFY(ret == 1);
@@ -160,7 +160,7 @@ void FQTermSSH2TripleDESCBC::decrypt(const u_char *source, u_char *dest, int len
   int ret = 0;
   if (ctx_ == NULL) {
     // Lazy initialization.
-    ctx_ = new EVP_CIPHER_CTX;
+    ctx_ = EVP_CIPHER_CTX_new();
     EVP_CIPHER_CTX_init(ctx_);
     ret = EVP_CipherInit(ctx_, EVP_des_ede3_cbc(), key_, IV_, 0);
     FQ_VERIFY(ret == 1);
