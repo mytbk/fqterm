@@ -25,9 +25,9 @@
 #include <QObject>
 
 #include "fqterm_ssh_types.h"
-#include "fqterm_ssh_rsa.h"
 #include "fqterm_ssh_packet.h"
 #include "fqterm_ssh_const.h"
+#include "ssh_pubkey_crypto.h"
 
 namespace FQTerm {
 
@@ -75,8 +75,8 @@ private:
 
   bool is_first_kex_;
 
-  FQTermSSHRSA *host_key_;
-  FQTermSSHRSA *server_key_;
+  struct ssh_pubkey_t *host_key_;
+  struct ssh_pubkey_t *server_key_;
 
   u_char cookie_[8];
   int server_flag_, ciphers_, auth_;

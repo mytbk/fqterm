@@ -82,7 +82,11 @@ void FQTermSSH1Kex::handlePacket(int type) {
 
 void FQTermSSH1Kex::makeSessionKey() {
   int i;
-  BIGNUM *key;
+  BIGNUM *key = BN_new();
+  BIGNUM *host_rsa_e = BN_new();
+  BIGNUM *host_rsa_n = BN_new();
+  BIGNUM *server_rsa_e = BN_new();
+  BIGNUM *server_rsa_n = BN_new();
   u_int32_t rand_val;
   int bits;
   int rbits;
@@ -94,12 +98,13 @@ void FQTermSSH1Kex::makeSessionKey() {
   packet_receiver_->getRawData((char*)cookie_, 8);
 
   // Get the public key.
-  server_key_ = new FQTermSSHRSA;
+  server_key_ = ssh_pubkey_new(SSH_RSA);
   bits = packet_receiver_->getInt();
-  packet_receiver_->getBN(server_key_->d_rsa->e);
-  packet_receiver_->getBN(server_key_->d_rsa->n);
+  packet_receiver_->getBN(server_rsa_e);
+  packet_receiver_->getBN(server_rsa_n);
+  ssh_pubkey_setrsa(server_key_, server_rsa_n, server_rsa_e, NULL);
+  rbits = BN_num_bits(server_rsa_n);
 
-  rbits = BN_num_bits(server_key_->d_rsa->n);
   if (bits != rbits) {
     FQ_TRACE("sshkex", 0) << "Warning: Server lies about "
                           << "size of server public key: "
@@ -110,12 +115,13 @@ void FQTermSSH1Kex::makeSessionKey() {
   }
 
   // Get the host key.
-  host_key_ = new FQTermSSHRSA;
+  host_key_ = ssh_pubkey_new(SSH_RSA);
   bits = packet_receiver_->getInt();
-  packet_receiver_->getBN(host_key_->d_rsa->e);
-  packet_receiver_->getBN(host_key_->d_rsa->n);
+  packet_receiver_->getBN(host_rsa_e);
+  packet_receiver_->getBN(host_rsa_n);
+  ssh_pubkey_setrsa(host_key_, host_rsa_n, host_rsa_e, NULL);
+  rbits = BN_num_bits(host_rsa_n);
 
-  rbits = BN_num_bits(host_key_->d_rsa->n);
   if (bits != rbits) {
     FQ_TRACE("sshkex", 0) << "Warning: Server lies about "
                           << "size of server public key: "
@@ -149,8 +155,6 @@ void FQTermSSH1Kex::makeSessionKey() {
     rand_val >>= 8;
   }
 
-  key = BN_new();
-
   BN_set_word(key, 0);
   for (i = 0; i < 32; i++) {
     BN_lshift(key, key, 8);
@@ -161,16 +165,16 @@ void FQTermSSH1Kex::makeSessionKey() {
     } 
   }
 
-  if (BN_cmp(server_key_->d_rsa->n, host_key_->d_rsa->n) < 0) {
-    server_key_->publicEncrypt(key, key);
-    host_key_->publicEncrypt(key, key);
+  if (BN_cmp(server_rsa_n, host_rsa_n) < 0) {
+	  ssh_pubkey_encrypt(server_key_, key, key);
+	  ssh_pubkey_encrypt(host_key_, key, key);
   } else {
-    host_key_->publicEncrypt(key, key);
-    server_key_->publicEncrypt(key, key);
+	  ssh_pubkey_encrypt(host_key_, key, key);
+	  ssh_pubkey_encrypt(server_key_, key, key);
   }
 
-  delete host_key_;
-  delete server_key_;
+  ssh_pubkey_free(host_key_);
+  ssh_pubkey_free(server_key_);
 
   packet_sender_->startPacket(SSH1_CMSG_SESSION_KEY);
   packet_sender_->putByte(SSH_CIPHER_3DES);
@@ -189,15 +193,21 @@ void FQTermSSH1Kex::makeSessionId() {
   u_char *p;
   FQTermSSHMD5 *md5;
   int servlen, hostlen;
+  const BIGNUM *host_n;
+  const BIGNUM *server_n;
+  const BIGNUM *e, *d;
 
   md5 = new FQTermSSHMD5;
-  servlen = BN_num_bytes(server_key_->d_rsa->n);
-  hostlen = BN_num_bytes(host_key_->d_rsa->n);
+  ssh_pubkey_getrsa(server_key_, &server_n, &e, &d);
+  ssh_pubkey_getrsa(host_key_, &host_n, &e, &d);
+  servlen = BN_num_bytes(server_n);
+  hostlen = BN_num_bytes(host_n);
 
   p = new u_char[servlen + hostlen];
 
-  BN_bn2bin(host_key_->d_rsa->n, p);
-  BN_bn2bin(server_key_->d_rsa->n, p + hostlen);
+  BN_bn2bin(host_n, p);
+  BN_bn2bin(server_n, p+hostlen);
+
   md5->update(p, servlen + hostlen);
   md5->update(cookie_, 8);
   md5->final(session_id_);

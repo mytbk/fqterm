@@ -73,8 +73,8 @@ private:
 
   bool is_first_kex_;
 
-  FQTermSSHRSA *host_key_;
-  FQTermSSHRSA *server_key_;
+  ssh_pubkey_t *host_key_;
+  ssh_pubkey_t *server_key_;
 
   u_char cookie_[16];
   int server_flag_, ciphers_, auth_;
