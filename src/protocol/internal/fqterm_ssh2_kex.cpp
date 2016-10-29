@@ -29,6 +29,7 @@
 #include "fqterm_ssh2_kex.h"
 #include "fqterm_ssh_md5.h"
 #include "fqterm_trace.h"
+#include "ssh_pubkey_crypto.h"
 
 namespace FQTerm {
 
@@ -259,7 +260,7 @@ bool FQTermSSH2Kex::verifyKey() {
 
 static RSA *CreateRSAContext(unsigned char *host_key, int len) {
   FQTermSSHBuffer buffer(len);
-  
+
   buffer.putRawData((char *)host_key, len);
 
   int algo_len = -1;
@@ -275,12 +276,18 @@ static RSA *CreateRSAContext(unsigned char *host_key, int len) {
 
 
   RSA *rsa = RSA_new();
-  rsa->e = BN_new();
-  BN_bin2bn(e, e_len, rsa->e);
+  BIGNUM *rsa_e = BN_new();
+  BIGNUM *rsa_n = BN_new();
 
-  rsa->n = BN_new();
-  BN_bin2bn(n, n_len, rsa->n);
+  BN_bin2bn(e, e_len, rsa_e);
+  BN_bin2bn(n, n_len, rsa_n);
 
+#ifdef HAVE_OPAQUE_STRUCTS
+  RSA_set0_key(rsa, rsa_n, rsa_e, NULL);
+#else
+  rsa->n = rsa_n;
+  rsa->e = rsa_e;
+#endif
   delete[] algo;
   delete[] e;
   delete[] n;
