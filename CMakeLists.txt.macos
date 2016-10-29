@@ -61,8 +61,7 @@ target_link_libraries(fqterm
   ${PYTHON_LIB}
   ${ZLIB_LIBRARIES}
   ${QT_QTXML_LIBRARIES}
-  ssl
-  crypto
+  ${OPENSSL_CRYPTO_LIBRARY}
 )
 
 add_dependencies(fqterm

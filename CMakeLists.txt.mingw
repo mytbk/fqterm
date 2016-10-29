@@ -35,13 +35,6 @@ if(FQTERM_USE_STATIC_QT)
   set(FQ_QT_STATIC_PLUGINS
     qcncodecs qjpcodecs qkrcodecs qtwcodecs
   )
-  set(OPENSSL_LINK_LIBS
-    crypto ssl
-  )
-else(FQTERM_USE_STATIC_QT)
-  set(OPENSSL_LINK_LIBS
-    ${OPENSSL_LIBS}
-  )
 endif(FQTERM_USE_STATIC_QT)
 
 target_link_libraries(fqterm
@@ -52,7 +45,7 @@ target_link_libraries(fqterm
   ${FQ_QT_STATIC_PLUGINS}
   ${QT_LIBRARIES}
   ${PYTHON_LIB}
-  ${OPENSSL_LINK_LIBS}
+  ${OPENSSL_CRYPTO_LIBRARY}
   ws2_32
 )
 

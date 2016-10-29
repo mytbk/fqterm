@@ -77,10 +77,9 @@ target_link_libraries(fqterm.bin
   ${QT_QTSCRIPT_LIBRARIES}
   ${FQ_QT_STATIC_PLUGINS}
   ${QT_LIBRARIES}
-  ${OPENSSL_LIBRARIES}
   ${AUDIO_LIBRARY}
   ${PYTHON_LIB}
-  crypto
+  ${OPENSSL_CRYPTO_LIBRARY}
   X11
 )
 

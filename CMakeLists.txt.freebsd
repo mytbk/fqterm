@@ -41,7 +41,7 @@ target_link_libraries(fqterm.bin
   ${QT_QTSCRIPT_LIBRARIES}
   ${QT_LIBRARIES}
   ${QT_QTXML_LIBRARIES}
-  ${OPENSSL_LIBRARIES}
+  ${OPENSSL_CRYPTO_LIBRARY}
   ${PYTHON_LIB}
 )
 
