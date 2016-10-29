@@ -32,7 +32,6 @@ set(internal_SRCS
   internal/fqterm_ssh2_packet.h
   internal/fqterm_ssh_channel.h
   internal/fqterm_ssh_types.h
-  internal/fqterm_ssh_pubkey.h
   internal/crc32.cpp
   internal/fqterm_ssh_auth.cpp
   internal/fqterm_ssh_buffer.cpp

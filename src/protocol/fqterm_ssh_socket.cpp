@@ -23,7 +23,6 @@
 #include "fqterm_ssh1_packet.h"
 #include "fqterm_ssh2_packet.h"
 #include "fqterm_ssh_buffer.h"
-#include "fqterm_ssh_rsa.h"
 #include "fqterm_ssh_kex.h"
 #include "fqterm_ssh2_kex.h"
 #include "fqterm_ssh_const.h"
