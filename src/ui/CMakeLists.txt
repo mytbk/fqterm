@@ -130,7 +130,9 @@ add_dependencies(fqterm_ui
   fqterm_utilities
 )
 
-ADD_DEFINITIONS(-D "FQTERM_GIT_REVISION=\\\"${MCGGIT_WC_REVISION}\\\"")
+IF(NOT MCGGIT_WC_REVISION MATCHES "NOTFOUND")
+  ADD_DEFINITIONS(-D "FQTERM_GIT_REVISION=\\\"${MCGGIT_WC_REVISION}\\\"")
+ENDIF(NOT MCGGIT_WC_REVISION MATCHES "NOTFOUND")
 
 if(USE_QT5)
   target_link_libraries(fqterm_ui Qt5::Core Qt5::Widgets)

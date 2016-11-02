@@ -1,6 +1,6 @@
 project(fqterm)
 
-set(FQTERM_VERSION "0.9.8")
+set(FQTERM_VERSION "0.9.8.4")
 set(CMAKE_VERBOSE_MAKEFILE ON)
 cmake_minimum_required(VERSION 3.0.0 FATAL_ERROR)
 
@@ -16,7 +16,11 @@ set(CMAKE_COLOR_MAKEFILE ON)
 
 include(GetGitRevisionDescription)
 git_describe(MCGGIT_WC_REVISION)
-message("Git revision: " ${MCGGIT_WC_REVISION})
+IF(MCGGIT_WC_REVISION MATCHES "NOTFOUND")
+  message("Version: " ${FQTERM_VERSION})
+ELSE(MCGGIT_WC_REVISION MATCHES "NOTFOUND")
+  message("Git revision: " ${MCGGIT_WC_REVISION})
+ENDIF(MCGGIT_WC_REVISION MATCHES "NOTFOUND")
 
 SET(USE_QT5 OFF CACHE PATH "Do the Qt5 build")
 

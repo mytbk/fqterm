@@ -52,7 +52,11 @@ aboutDialog::aboutDialog(QWidget *parent, Qt::WindowFlags fl)
     ui_.TextBrowser->setPlainText(line);
     file.close();
   }
-  QString aboutText = "FQTerm "  + QString(FQTERM_VERSION_STRING) + QString("\ngit revision ") + QString(FQTERM_GIT_REVISION) + QString("\n Built with Qt") + QT_VERSION_STR + QString("\n Running with Qt ") + qVersion();
+  QString aboutText = "FQTerm "  + QString(FQTERM_VERSION_STRING)
+#ifdef FQTERM_GIT_REVISION
+	  + QString("\ngit revision ") + QString(FQTERM_GIT_REVISION)
+#endif
+	  + QString("\n Built with Qt") + QT_VERSION_STR + QString("\n Running with Qt ") + qVersion();
    ui_.TextLabel->setText(aboutText);
 }
 
