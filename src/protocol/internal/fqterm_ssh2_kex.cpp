@@ -33,27 +33,6 @@
 
 namespace FQTerm {
 
-static const int g = 2;
-static const int q = 128;
-static const unsigned char p[q]={
-  0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 
-  0xC9, 0x0F, 0xDA, 0xA2, 0x21, 0x68, 0xC2, 0x34,
-  0xC4, 0xC6, 0x62, 0x8B, 0x80, 0xDC, 0x1C, 0xD1,
-  0x29, 0x02, 0x4E, 0x08, 0x8A, 0x67, 0xCC, 0x74,
-  0x02, 0x0B, 0xBE, 0xA6, 0x3B, 0x13, 0x9B, 0x22,
-  0x51, 0x4A, 0x08, 0x79, 0x8E, 0x34, 0x04, 0xDD,
-  0xEF, 0x95, 0x19, 0xB3, 0xCD, 0x3A, 0x43, 0x1B,
-  0x30, 0x2B, 0x0A, 0x6D, 0xF2, 0x5F, 0x14, 0x37,
-  0x4F, 0xE1, 0x35, 0x6D, 0x6D, 0x51, 0xC2, 0x45,
-  0xE4, 0x85, 0xB5, 0x76, 0x62, 0x5E, 0x7E, 0xC6,
-  0xF4, 0x4C, 0x42, 0xE9, 0xA6, 0x37, 0xED, 0x6B,
-  0x0B, 0xFF, 0x5C, 0xB6, 0xF4, 0x06, 0xB7, 0xED,
-  0xEE, 0x38, 0x6B, 0xFB, 0x5A, 0x89, 0x9F, 0xA5,
-  0xAE, 0x9F, 0x24, 0x11, 0x7C, 0x4B, 0x1F, 0xE6,
-  0x49, 0x28, 0x66, 0x51, 0xEC, 0xE6, 0x53, 0x81,
-  0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF
-};
-
 FQTermSSH2Kex::FQTermSSH2Kex(const char *V_C, const char *V_S) 
     : FQTermSSHKex(V_C, V_S) {
   is_first_kex_ = true;
@@ -66,15 +45,10 @@ FQTermSSH2Kex::FQTermSSH2Kex(const char *V_C, const char *V_S)
 
   bn_x_ = BN_new();
   bn_e_ = BN_new();
-  bn_g_ = BN_new();
-  bn_p_ = BN_new();
   ctx_ = BN_CTX_new();
 
   bn_K_ = BN_new();
   bn_f_ = BN_new();
-
-  BN_set_word(bn_g_, g);
-  BN_bin2bn(p, q, bn_p_);
 
   session_id_ = NULL;
 }
@@ -85,8 +59,7 @@ FQTermSSH2Kex::~FQTermSSH2Kex() {
 
   BN_clear_free(bn_x_);
   BN_clear_free(bn_e_);
-  BN_clear_free(bn_g_);
-  BN_clear_free(bn_p_);
+  ssh_dh_free(dh);
   BN_CTX_free(ctx_);
 
   BN_clear_free(bn_K_);
@@ -151,8 +124,20 @@ void FQTermSSH2Kex::negotiateAlgorithms() {
   // 1. Parse server kex init packet
   packet_receiver_->getRawData((char*)cookie_, 16);
 
+  // select KEX algorithm
+  size_t kl_len = packet_receiver_->getInt();
+  char kex_algos[kl_len+1];
+  packet_receiver_->getRawData(kex_algos, kl_len);
+  kex_algos[kl_len] = '\0';
+  NEW_DH dh = search_dh(kex_algos);
+  if (dh==NULL) {
+	  emit kexError(tr("No matching KEX algorithms!"));
+	  return;
+  }
+  this->dh = dh();
+
   std::vector<char> name_lists;
-  for (int i = 0; i < 10; ++i) {
+  for (int i = 1; i < 10; ++i) {
     int name_lists_len = packet_receiver_->getInt();
     if (name_lists_len > 0) {
       name_lists.resize(name_lists_len);
@@ -171,7 +156,7 @@ void FQTermSSH2Kex::negotiateAlgorithms() {
   // 2. compose a kex init packet.
   packet_sender_->startPacket(SSH2_MSG_KEXINIT);
   packet_sender_->putRawData((const char*)cookie_, 16);    // FIXME: generate new cookie_;
-  packet_sender_->putString("diffie-hellman-group1-sha1");
+  packet_sender_->putString(all_dh_list);
   packet_sender_->putString("ssh-rsa");
   packet_sender_->putString("3des-cbc");
   packet_sender_->putString("3des-cbc");
@@ -196,8 +181,8 @@ void FQTermSSH2Kex::negotiateAlgorithms() {
 }
 
 void FQTermSSH2Kex::exchangeKey() {
-  BN_rand(bn_x_, q, 0, -1);
-  BN_mod_exp(bn_e_, bn_g_, bn_x_, bn_p_, ctx_);
+  BN_pseudo_rand_range(bn_x_, dh->p);
+  BN_mod_exp(bn_e_, dh->g, bn_x_, dh->p, ctx_);
 
   packet_sender_->startPacket(SSH2_MSG_KEXDH_INIT);
   packet_sender_->putBN2(bn_e_);
@@ -222,7 +207,7 @@ bool FQTermSSH2Kex::verifyKey() {
   int s_len = -1;
   unsigned char *s = (unsigned char *)packet_receiver_->getString(&s_len);
 
-  BN_mod_exp(bn_K_, bn_f_, bn_x_, bn_p_, ctx_);
+  BN_mod_exp(bn_K_, bn_f_, bn_x_, dh->p, ctx_);
 
   FQTermSSHBuffer *buffer = packet_sender_->output_buffer_;
 
@@ -236,11 +221,11 @@ bool FQTermSSH2Kex::verifyKey() {
   buffer->putSSH2BN(bn_f_);
   buffer->putSSH2BN(bn_K_);
 
-  SHA1(buffer->data(), buffer->len(), H_);
+  dh->hash(buffer->data(), buffer->len(), H_);
 
   // Start verify
   unsigned char s_H[SHA_DIGEST_LENGTH];
-  SHA1(H_, SHA_DIGEST_LENGTH, s_H);
+  SHA1(H_, dh->hashlen, s_H);
 
   // Ignore the first 15 bytes of the signature of H sent from server:
   // algorithm_name_length[4], algorithm_name[7]("ssh-rsa") and signature_length[4].

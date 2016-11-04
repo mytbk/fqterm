@@ -15,6 +15,8 @@ set(export_SRCS
 set(internal_SRCS
   internal/ssh_pubkey_crypto.h
   internal/ssh_pubkey_crypto.c
+  internal/ssh_diffie-hellman.h
+  internal/ssh_diffie-hellman.c
   internal/crc32.h
   internal/fqterm_serialization.h
   internal/fqterm_ssh_auth.h

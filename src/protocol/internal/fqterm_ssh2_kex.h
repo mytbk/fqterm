@@ -24,6 +24,7 @@
 #include <openssl/sha.h>
 
 #include "fqterm_ssh_kex.h"
+#include "ssh_diffie-hellman.h"
 
 namespace FQTerm {
 
@@ -55,16 +56,15 @@ private:
   int I_S_len_;
   char *I_S_;
 
+  SSH_DH *dh;
   BIGNUM *bn_x_;
   BIGNUM *bn_e_;
-  BIGNUM *bn_g_;
-  BIGNUM *bn_p_;
   BN_CTX *ctx_;
 
   BIGNUM *bn_K_;
   BIGNUM *bn_f_;
 
-  unsigned char H_[SHA_DIGEST_LENGTH];
+  unsigned char H_[SHA512_DIGEST_LENGTH];
 
   unsigned char *session_id_;
 
