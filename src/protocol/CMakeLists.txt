@@ -2,7 +2,7 @@ find_package(OpenSSL REQUIRED)
 set(CMAKE_AUTOMOC ON)
 
 set(export_SRCS
-  fqterm_socket.cpp
+  fqterm_socket_private.cpp
   fqterm_socket.h
   fqterm_telnet_socket.cpp
   fqterm_telnet_socket.h

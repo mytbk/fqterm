@@ -29,22 +29,159 @@
 #include "fqterm_socket.h"
 #include "fqterm_trace.h"
 
-#if !defined(Q_OS_BSD4) && !defined(_OS_FREEBSD_)   \
-  && !defined(Q_OS_MACX) && !defined(Q_OS_DARWIN)
-#include <malloc.h>
-#endif
-
-namespace FQTerm {
-
 /* hack from wget/http.c */
 #define BASE64_LENGTH(len) (4 * (((len) + 2) / 3))
-static void base64_encode(const char *s, char *store, int length);
-static char *basic_authentication_encode(const char *user, const char *passwd,
-                                         const char *header);
+
+/* Encode the octets in DATA of length LENGTH to base64 format,
+   storing the result to DEST.  The output will be zero-terminated,
+   and must point to a writable buffer of at least
+   1+BASE64_LENGTH(length) bytes.  The function returns the length of
+   the resulting base64 data, not counting the terminating zero.
+
+   This implementation does not emit newlines after 76 characters of
+   base64 data.  */
+
+size_t
+base64_encode (const void *data, size_t length, char *dest)
+{
+	/* Conversion table.  */
+	static const char tbl[64] = {
+		'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P',
+		'Q','R','S','T','U','V','W','X','Y','Z','a','b','c','d','e','f',
+		'g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v',
+		'w','x','y','z','0','1','2','3','4','5','6','7','8','9','+','/'
+	};
+	/* Access bytes in DATA as unsigned char, otherwise the shifts below
+		don't work for data with MSB set. */
+	const unsigned char *s = (const unsigned char *)data;
+	/* Theoretical ANSI violation when length < 3. */
+	const unsigned char *end = (const unsigned char *) data + length - 2;
+	char *p = dest;
+
+	/* Transform the 3x8 bits to 4x6 bits, as required by base64.  */
+	for (; s < end; s += 3)
+	{
+      *p++ = tbl[s[0] >> 2];
+      *p++ = tbl[((s[0] & 3) << 4) + (s[1] >> 4)];
+      *p++ = tbl[((s[1] & 0xf) << 2) + (s[2] >> 6)];
+      *p++ = tbl[s[2] & 0x3f];
+	}
+
+	/* Pad the result if necessary...  */
+	switch (length % 3)
+	{
+	case 1:
+      *p++ = tbl[s[0] >> 2];
+      *p++ = tbl[(s[0] & 3) << 4];
+      *p++ = '=';
+      *p++ = '=';
+      break;
+	case 2:
+      *p++ = tbl[s[0] >> 2];
+      *p++ = tbl[((s[0] & 3) << 4) + (s[1] >> 4)];
+      *p++ = tbl[((s[1] & 0xf) << 2)];
+      *p++ = '=';
+      break;
+	}
+	/* ...and zero-terminate it.  */
+	*p = '\0';
+
+	return p - dest;
+}
+
+/* Create the authentication header contents for the `Basic' scheme.
+   This is done by encoding the string `USER:PASS' in base64 and
+   prepending `HEADER: Basic ' to it.  */
+static char *
+basic_authentication_encode(const char *user, const char *passwd,
+									 const char *header)
+{
+	char *res;
+	int len1 = strlen(user) + 1 +strlen(passwd);
+	int len2 = BASE64_LENGTH(len1);
+
+	char t1[len1+1], t2[len2+1];
+	sprintf(t1, "%s:%s", user, passwd);
+	base64_encode(t1, len1, t2);
+	res = (char*)malloc(len2 + 11 + strlen(header));
+	sprintf(res, "%s: Basic %s\r\n", header, t2);
+
+	return res;
+}
+
+/* Parse the HTTP status line, which is of format:
+
+   HTTP-Version SP Status-Code SP Reason-Phrase
+
+   The function returns the status-code, or -1 if the status line is
+   malformed.  The pointer to reason-phrase is returned in RP.  */
 static int parse_http_status_line(const char *line, const char
-                                  **reason_phrase_ptr);
+                                  **reason_phrase_ptr) {
+	/* (the variables must not be named `major' and `minor', because
+		that breaks compilation with SunOS4 cc.)  */
+	int mjr, mnr, statcode;
+	const char *p;
+
+	*reason_phrase_ptr = NULL;
+
+	/* The standard format of HTTP-Version is: `HTTP/X.Y', where X is
+		major version, and Y is minor version.  */
+	if (strncmp(line, "HTTP/", 5) != 0) {
+		return -1;
+	}
+	line += 5;
+
+	/* Calculate major HTTP version.  */
+	p = line;
+	for (mjr = 0; isdigit(*line); line++) {
+		mjr = 10 * mjr + (*line - '0');
+	}
+	if (*line != '.' || p == line) {
+		return -1;
+	}
+	++line;
+
+	/* Calculate minor HTTP version.  */
+	p = line;
+	for (mnr = 0; isdigit(*line); line++) {
+		mnr = 10 * mnr + (*line - '0');
+	}
+	if (*line != ' ' || p == line) {
+		return -1;
+	}
+	/* Wget will accept only 1.0 and higher HTTP-versions.  The value of
+		minor version can be safely ignored.  */
+	if (mjr < 1) {
+		return -1;
+	}
+	++line;
+
+	/* Calculate status code.  */
+	if (!(isdigit(*line) && isdigit(line[1]) && isdigit(line[2]))) {
+		return -1;
+	}
+	statcode = 100 *(*line - '0') + 10 *(line[1] - '0') + (line[2] - '0');
+
+	/* Set up the reason phrase pointer.  */
+	line += 3;
+	/* RFC2068 requires SPC here, but we allow the string to finish
+		here, in case no reason-phrase is present.  */
+	if (*line != ' ') {
+		if (! *line) {
+			*reason_phrase_ptr = line;
+		} else {
+			return -1;
+		}
+	} else {
+		*reason_phrase_ptr = line + 1;
+	}
+
+	return statcode;
+}
 
 const char wingate_enter = 'J' &0x1f;
+
+namespace FQTerm {
 
 //==============================================================================
 //FQTermSocketPrivate
@@ -410,134 +547,7 @@ void FQTermSocketPrivate::socks5_reply(const QByteArray &from_socket, int nread)
   }
 }
 
-/* hack from wget/http.c */
-/* How many bytes it will take to store LEN bytes in base64.  */
-#define BASE64_LENGTH(len) (4 * (((len) + 2) / 3))
-
-/* Encode the string S of length LENGTH to base64 format and place it
-   to STORE.  STORE will be 0-terminated, and must point to a writable
-   buffer of at least 1+BASE64_LENGTH(length) bytes.  */
-static void base64_encode(const char *s, char *store, int length) {
-  /* Conversion table.  */
-  static char tbl[64] =  {
-    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O',
-	'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd',
-	'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's',
-	't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7',
-	'8', '9', '+', '/'
-  };
-  int i;
-  unsigned char *p = (unsigned char*)store;
-
-  /* Transform the 3x8 bits to 4x6 bits, as required by base64.  */
-  for (i = 0; i < length; i += 3) {
-    *p++ = tbl[s[0] >> 2];
-    *p++ = tbl[((s[0] &3) << 4) + (s[1] >> 4)];
-    *p++ = tbl[((s[1] &0xf) << 2) + (s[2] >> 6)];
-    *p++ = tbl[s[2] &0x3f];
-    s += 3;
-  }
-  /* Pad the result if necessary...  */
-  if (i == length + 1) {
-    *(p - 1) = '=';
-  } else if (i == length + 2) {
-    *(p - 1) = *(p - 2) = '=';
-  }
-  /* ...and zero-terminate it.  */
-  *p = '\0';
-}
-
-/* Create the authentication header contents for the `Basic' scheme.
-   This is done by encoding the string `USER:PASS' in base64 and
-   prepending `HEADER: Basic ' to it.  */
-static char *basic_authentication_encode(const char *user, const char *passwd,
-                                         const char *header) {
-  char *t1,  *t2,  *res;
-  int len1 = strlen(user) + 1+strlen(passwd);
-  int len2 = BASE64_LENGTH(len1);
-
-  t1 = (char*)alloca(len1 + 1);
-  sprintf(t1, "%s:%s", user, passwd);
-  t2 = (char*)alloca(1+len2);
-  base64_encode(t1, t2, len1);
-  res = (char*)malloc(len2 + 11+strlen(header));
-  sprintf(res, "%s: Basic %s\r\n", header, t2);
-
-  return res;
-}
-
-/* Parse the HTTP status line, which is of format:
-
-   HTTP-Version SP Status-Code SP Reason-Phrase
-
-   The function returns the status-code, or -1 if the status line is
-   malformed.  The pointer to reason-phrase is returned in RP.  */
-static int parse_http_status_line(const char *line, const char
-                                  **reason_phrase_ptr) {
-  /* (the variables must not be named `major' and `minor', because
-     that breaks compilation with SunOS4 cc.)  */
-  int mjr, mnr, statcode;
-  const char *p;
-
-  *reason_phrase_ptr = NULL;
-
-  /* The standard format of HTTP-Version is: `HTTP/X.Y', where X is
-     major version, and Y is minor version.  */
-  if (strncmp(line, "HTTP/", 5) != 0) {
-    return -1;
-  }
-  line += 5;
-
-  /* Calculate major HTTP version.  */
-  p = line;
-  for (mjr = 0; QChar(*line).isDigit(); line++) {
-    mjr = 10 * mjr + (*line - '0');
-  }
-  if (*line != '.' || p == line) {
-    return -1;
-  }
-  ++line;
-
-  /* Calculate minor HTTP version.  */
-  p = line;
-  for (mnr = 0; QChar(*line).isDigit(); line++) {
-    mnr = 10 * mnr + (*line - '0');
-  }
-  if (*line != ' ' || p == line) {
-    return -1;
-  }
-  /* Wget will accept only 1.0 and higher HTTP-versions.  The value of
-     minor version can be safely ignored.  */
-  if (mjr < 1) {
-    return -1;
-  }
-  ++line;
-
-  /* Calculate status code.  */
-  if (!(QChar(*line).isDigit() && QChar(line[1]).isDigit() && QChar(line[2])
-        .isDigit())) {
-    return -1;
-  }
-  statcode = 100 *(*line - '0') + 10 *(line[1] - '0') + (line[2] - '0');
-
-  /* Set up the reason phrase pointer.  */
-  line += 3;
-  /* RFC2068 requires SPC here, but we allow the string to finish
-     here, in case no reason-phrase is present.  */
-  if (*line != ' ') {
-    if (! *line) {
-      *reason_phrase_ptr = line;
-    } else {
-      return -1;
-    }
-  } else {
-    *reason_phrase_ptr = line + 1;
-  }
-
-  return statcode;
-}
-
 
 }  // namespace FQTerm
 
-#include "fqterm_socket.moc"
+#include "fqterm_socket_private.moc"
