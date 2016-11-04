@@ -236,22 +236,21 @@ void FQTermSSHSocket::parsePacket() {
   QByteArray data;
   size = private_socket_->bytesAvailable();
   data = private_socket_->readBlock(size);
-  
+
   socket_buffer_->putRawData(data.data(), size);
   packet_receiver_->parseData(socket_buffer_);
 }
 
 int FQTermSSHSocket::chooseVersion(const QString &ver) {
-  QString verion = ver.mid(ver.indexOf("-") + 1);
-  verion = verion.left(verion.indexOf("-"));
+  QString version = ver.mid(ver.indexOf("-") + 1);
+  version = version.left(version.indexOf("-"));
 
-  if (verion == "1.99" || verion == "1.3" || verion == "1.5") {
-    return 1;
-  } else if (verion == "2.0") {
+  if (version == "2.0")
     return 2;
-  } else {
-    return  - 1;
-  } 
+  else if (version == "1.99" || version == "1.3" || version == "1.5")
+    return 1;
+  else
+    return -1;
 }
 
 void FQTermSSHSocket::connectToHost(const QString &host_name, quint16 port) {
