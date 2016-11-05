@@ -21,7 +21,7 @@
 #include "fqterm_trace.h"
 #include "fqterm_ssh_buffer.h"
 #include "fqterm_ssh_packet.h"
-#include "fqterm_ssh_des.h"
+#include "fqterm_ssh_const.h"
 
 #include "fqterm_serialization.h"
 #include "crc32.h"
@@ -38,8 +38,7 @@ FQTermSSHPacketSender::FQTermSSHPacketSender() {
 
   is_encrypt_ = false;
   cipher_type_ = SSH_CIPHER_NONE;
-  cipher_ = NULL;
-  setEncryptionType(SSH_CIPHER_3DES);
+  cipher = NULL;
 
   is_mac_ = false;
   mac_type_ = FQTERM_SSH_MAC_NONE;
@@ -51,11 +50,10 @@ FQTermSSHPacketSender::FQTermSSHPacketSender() {
 }
 
 FQTermSSHPacketSender::~FQTermSSHPacketSender() {
-  delete buffer_;
-  delete output_buffer_;
-  if (is_encrypt_) {
-    delete cipher_;
-  } 
+	delete buffer_;
+	delete output_buffer_;
+	if (cipher)
+		cipher->cleanup(cipher);
 }
 
 void FQTermSSHPacketSender::putRawData(const char *data, int len) {
@@ -92,23 +90,14 @@ void FQTermSSHPacketSender::write() {
   emit dataToWrite();
 }
 
-void FQTermSSHPacketSender::setEncryptionType(int cipherType) {
-  cipher_type_ = cipherType;
-
-  delete cipher_;
-  cipher_ = NULL;
-
-  switch (cipher_type_) {
-    case SSH_CIPHER_3DES:
-      cipher_ = new FQTermSSH1DES3;
-      break;
-  }
-}
-
 void FQTermSSHPacketSender::startEncryption(const u_char *key, const u_char *IV) {
-  is_encrypt_ = true;
-  cipher_->setIV(IV);
-  cipher_->setKey(key);
+	is_encrypt_ = true;
+
+	if (cipher!=NULL) {
+		memcpy(cipher->IV, IV, cipher->IVSize);
+		memcpy(cipher->key, key, cipher->keySize);
+		cipher->init(cipher);
+	}
 }
 
 void FQTermSSHPacketSender::resetEncryption() {
@@ -146,8 +135,7 @@ FQTermSSHPacketReceiver::FQTermSSHPacketReceiver() {
 
   is_decrypt_ = false;
   cipher_type_ = SSH_CIPHER_NONE;
-  cipher_ = NULL;
-  setEncryptionType(SSH_CIPHER_3DES);
+  cipher = NULL;
 
   is_mac_ = false;
   mac_type_ = FQTERM_SSH_MAC_NONE;
@@ -158,11 +146,11 @@ FQTermSSHPacketReceiver::FQTermSSHPacketReceiver() {
   sequence_no_ = 0;
 }
 
-FQTermSSHPacketReceiver::~FQTermSSHPacketReceiver() {
-  delete buffer_;
-  if (is_decrypt_) {
-    delete cipher_;
-  } 
+FQTermSSHPacketReceiver::~FQTermSSHPacketReceiver()
+{
+	delete buffer_;
+	if (cipher)
+		cipher->cleanup(cipher);
 }
 
 void FQTermSSHPacketReceiver::getRawData(char *data, int length) {
@@ -193,23 +181,14 @@ void FQTermSSHPacketReceiver::consume(int len) {
   buffer_->consume(len);
 }
 
-void FQTermSSHPacketReceiver::setEncryptionType(int cipherType) {
-  cipher_type_ = cipherType;
-
-  delete cipher_;
-  cipher_ = NULL;
-
-  switch (cipher_type_) {
-    case SSH_CIPHER_3DES:
-      cipher_ = new FQTermSSH1DES3;
-      break;
-  }
-}
-
 void FQTermSSHPacketReceiver::startEncryption(const u_char *key, const u_char *IV) {
-  is_decrypt_ = true;
-  cipher_->setIV(IV);
-  cipher_->setKey(key);
+	is_decrypt_ = true;
+
+	if (cipher!=NULL) {
+		memcpy(cipher->IV, IV, cipher->IVSize);
+		memcpy(cipher->key, key, cipher->keySize);
+		cipher->init(cipher);
+	}
 }
 
 void FQTermSSHPacketReceiver::resetEncryption() {

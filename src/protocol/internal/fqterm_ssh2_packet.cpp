@@ -21,7 +21,6 @@
 #include "fqterm_trace.h"
 #include "fqterm_ssh_buffer.h"
 #include "fqterm_ssh2_packet.h"
-#include "fqterm_ssh_des.h"
 
 #include "fqterm_serialization.h"
 #include "crc32.h"
@@ -52,8 +51,8 @@ void FQTermSSH2PacketSender::makePacket() {
   int non_padding_len = 4 + 1 + buffer_->len();
 
   int padding_block_len = 8;
-  if (is_encrypt_ && cipher_->blockSize() > padding_block_len) {
-    padding_block_len = cipher_->blockSize();
+  if (is_encrypt_ && cipher->blkSize > padding_block_len) {
+    padding_block_len = cipher->blkSize;
   }
 
   int padding_len = padding_block_len - (non_padding_len % padding_block_len);
@@ -128,7 +127,7 @@ void FQTermSSH2PacketSender::makePacket() {
                               << len << " bytes:\n" 
                               << dumpHexString << std::string((const char *)data, len);
 
-    cipher_->encrypt(data, data, len);
+    FQ_VERIFY(cipher->crypt(cipher, data, data, len)==1);
 
     FQ_TRACE("ssh2packet", 9) << "An encrypted packet (without MAC) made:" 
                               << len << " bytes:\n" 
@@ -137,20 +136,6 @@ void FQTermSSH2PacketSender::makePacket() {
 
   ++sequence_no_;
 }
-
-void FQTermSSH2PacketSender::setEncryptionType(int cipherType) {
-  cipher_type_ = cipherType;
-
-  delete cipher_;
-  cipher_ = NULL;
-
-  switch (cipher_type_) {
-    case SSH_CIPHER_3DES:
-      cipher_ = new FQTermSSH2TripleDESCBC;
-      break;
-  }
-}
-
 
 //==============================================================================
 //FQTermSSH2PacketReceiver
@@ -162,8 +147,8 @@ void FQTermSSH2PacketReceiver::parseData(FQTermSSHBuffer *input) {
   while (input->len() > 0) {
     // 1. Check the ssh packet
     if (input->len() < 16
-        || (is_decrypt_ && input->len() < cipher_->blockSize())
-        || input->len() < last_expected_input_length_ 
+        || (is_decrypt_ && input->len() < cipher->blkSize)
+        || input->len() < last_expected_input_length_
         ) {
       FQ_TRACE("ssh2packet", 3)
           << "Got an incomplete packet. Wait for more data.";
@@ -172,8 +157,8 @@ void FQTermSSH2PacketReceiver::parseData(FQTermSSHBuffer *input) {
 
     if (last_expected_input_length_ == 0) {
       if (is_decrypt_) {
-        // decrypte the first block to get the packet_length field.
-        cipher_->decrypt(input->data(), input->data(), cipher_->blockSize());
+			// decrypte the first block to get the packet_length field.
+			FQ_VERIFY(cipher->crypt(cipher, input->data(), input->data(), cipher->blkSize)==1);
       }
     } else {
       // last_expected_input_length_ != 0
@@ -203,9 +188,9 @@ void FQTermSSH2PacketReceiver::parseData(FQTermSSHBuffer *input) {
     // 2. decrypte data.
     if (is_decrypt_) {
       // decrypte blocks left.
-      unsigned char *tmp = input->data() + cipher_->blockSize();
-      int left_len = expected_input_len - cipher_->blockSize() - mac_->digestSize();
-      cipher_->decrypt(tmp, tmp, left_len);
+      unsigned char *tmp = input->data() + cipher->blkSize;
+      int left_len = expected_input_len - cipher->blkSize - mac_->digestSize();
+      FQ_VERIFY(cipher->crypt(cipher, tmp, tmp, left_len)==1);
     }
 
     // 3. check MAC
@@ -226,7 +211,7 @@ void FQTermSSH2PacketReceiver::parseData(FQTermSSHBuffer *input) {
     packet_len = input->getInt();
 
     std::vector<u_char> data(packet_len);
-    
+
     input->getRawData((char*)&data[0], packet_len);
     if (is_mac_) {
       input->consume(mac_->digestSize());
@@ -248,19 +233,6 @@ void FQTermSSH2PacketReceiver::parseData(FQTermSSHBuffer *input) {
     emit packetAvaliable(packet_type_);
 
     ++sequence_no_;
-  }
-}
-
-void FQTermSSH2PacketReceiver::setEncryptionType(int cipherType) {
-  cipher_type_ = cipherType;
-
-  delete cipher_;
-  cipher_ = NULL;
-
-  switch (cipher_type_) {
-    case SSH_CIPHER_3DES:
-      cipher_ = new FQTermSSH2TripleDESCBC;
-      break;
   }
 }
 

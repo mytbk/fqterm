@@ -28,8 +28,8 @@
 #include "fqterm_ssh_types.h"
 #include "fqterm_ssh_buffer.h"
 #include "fqterm_ssh_mac.h"
-#include "fqterm_ssh_cipher.h"
 #include "fqterm_serialization.h"
+#include "ssh_cipher.h"
 
 namespace FQTerm {
 
@@ -38,10 +38,11 @@ class FQTermSSHPacketSender: public QObject {
  public:
   FQTermSSHBuffer *output_buffer_;
   FQTermSSHBuffer *buffer_;
+  ssh_cipher_t *cipher;
 
   FQTermSSHPacketSender();
   virtual ~FQTermSSHPacketSender();
-  
+
   void startPacket(int pkt_type);
   void putByte(int data);
   void putInt(u_int data);
@@ -51,12 +52,11 @@ class FQTermSSHPacketSender: public QObject {
   void putBN2(BIGNUM *bignum);
   void write();
 
-  int getIVSize() const { return cipher_->getIVSize();}
-  int getKeySize() const { return cipher_->getKeySize();}
+  virtual int getIVSize() const { return cipher->IVSize;}
+  virtual int getKeySize() const { return cipher->keySize;}
   int getMacKeySize() const { return mac_->keySize();}
 
  public slots:
-  virtual void setEncryptionType(int cipherType);
   void startEncryption(const u_char *key, const u_char *IV = NULL);
   void resetEncryption();
 
@@ -72,7 +72,6 @@ class FQTermSSHPacketSender: public QObject {
  protected:
   bool is_encrypt_;
   int cipher_type_;
-  FQTermSSHCipher *cipher_;
 
   bool is_mac_;
   int mac_type_;
@@ -89,6 +88,7 @@ class FQTermSSHPacketReceiver: public QObject {
   Q_OBJECT;
  public:
   FQTermSSHBuffer *buffer_;
+  ssh_cipher_t *cipher;
 
   FQTermSSHPacketReceiver();
   virtual ~FQTermSSHPacketReceiver();
@@ -106,13 +106,12 @@ class FQTermSSHPacketReceiver: public QObject {
   void consume(int len);
 
   virtual int packetDataLen() const { return real_data_len_;}
-  int getIVSize() const { return cipher_->getIVSize();}
-  int getKeySize() const { return cipher_->getKeySize();}
+  virtual int getIVSize() const { return cipher->IVSize;}
+  virtual int getKeySize() const { return cipher->keySize;}
   int getMacKeySize() const { return mac_->keySize();}
 
   virtual void parseData(FQTermSSHBuffer *input) = 0;
  public slots:
-  virtual void setEncryptionType(int cipherType);
   void startEncryption(const u_char *key, const u_char *IV = NULL);
   void resetEncryption();
 
@@ -129,7 +128,6 @@ class FQTermSSHPacketReceiver: public QObject {
  protected:
   bool is_decrypt_;
   int cipher_type_;
-  FQTermSSHCipher *cipher_;
 
   bool is_mac_;
   int mac_type_;

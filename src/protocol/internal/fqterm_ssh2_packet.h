@@ -25,25 +25,21 @@
 
 namespace FQTerm {
 
-class FQTermSSH2PacketSender: public FQTermSSHPacketSender {
- protected:
-  virtual void makePacket();
-
- public:
-  virtual void setEncryptionType(int cipherType);
+class FQTermSSH2PacketSender: public FQTermSSHPacketSender
+{
+protected:
+	virtual void makePacket();
 };
 
-class FQTermSSH2PacketReceiver: public FQTermSSHPacketReceiver {
- private:
-  // greater than 0 if last time an incomplete ssh2 packet received.
-  int last_expected_input_length_;
- public:
-  FQTermSSH2PacketReceiver()
-      : last_expected_input_length_(0) {
-  }
+class FQTermSSH2PacketReceiver: public FQTermSSHPacketReceiver
+{
+private:
+	// greater than 0 if last time an incomplete ssh2 packet received.
+	int last_expected_input_length_;
+public:
+FQTermSSH2PacketReceiver() : last_expected_input_length_(0)	{ }
 
-  virtual void parseData(FQTermSSHBuffer *input);
-  virtual void setEncryptionType(int cipherType);
+	virtual void parseData(FQTermSSHBuffer *input);
 };
 
 }  // namespace FQTerm

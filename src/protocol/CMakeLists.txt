@@ -17,13 +17,14 @@ set(internal_SRCS
   internal/ssh_pubkey_crypto.c
   internal/ssh_diffie-hellman.h
   internal/ssh_diffie-hellman.c
+  internal/ssh_cipher.h
+  internal/ssh_evp_cipher.c
+  internal/ssh_3des-ssh1.c
   internal/crc32.h
   internal/fqterm_serialization.h
   internal/fqterm_ssh_auth.h
   internal/fqterm_ssh_buffer.h
-  internal/fqterm_ssh_cipher.h
   internal/fqterm_ssh_const.h
-  internal/fqterm_ssh_des.h
   internal/fqterm_ssh_hash.h
   internal/fqterm_ssh_kex.h
   internal/fqterm_ssh2_kex.h
@@ -37,7 +38,6 @@ set(internal_SRCS
   internal/crc32.cpp
   internal/fqterm_ssh_auth.cpp
   internal/fqterm_ssh_buffer.cpp
-  internal/fqterm_ssh_des.cpp
   internal/fqterm_ssh_kex.cpp
   internal/fqterm_ssh2_kex.cpp
   internal/fqterm_ssh_mac.cpp

@@ -30,6 +30,7 @@
 #include "fqterm_ssh_md5.h"
 #include "fqterm_trace.h"
 #include "ssh_pubkey_crypto.h"
+#include "ssh_cipher.h"
 
 namespace FQTerm {
 
@@ -296,8 +297,8 @@ bool FQTermSSH2Kex::changeKeyAlg() {
     memcpy(session_id_, H_, SHA_DIGEST_LENGTH);
   }
 
-  packet_sender_->setEncryptionType(SSH_CIPHER_3DES);
-  packet_receiver_->setEncryptionType(SSH_CIPHER_3DES);
+  packet_sender_->cipher = new_ssh_cipher_evp(EVP_des_ede3_cbc, 24, 8, 8, 1);
+  packet_receiver_->cipher = new_ssh_cipher_evp(EVP_des_ede3_cbc, 24, 8, 8, 0);
 
   packet_sender_->setMacType(FQTERM_SSH_HMAC_SHA1);
   packet_receiver_->setMacType(FQTERM_SSH_HMAC_SHA1);

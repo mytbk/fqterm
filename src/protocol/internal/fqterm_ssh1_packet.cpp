@@ -21,7 +21,6 @@
 #include "fqterm_trace.h"
 #include "fqterm_ssh_buffer.h"
 #include "fqterm_ssh1_packet.h"
-#include "fqterm_ssh_des.h"
 
 #include "fqterm_serialization.h"
 #include "crc32.h"
@@ -42,6 +41,11 @@ namespace FQTerm {
 //  length =  type + data + crc32
 //
 //==============================================================================
+
+	FQTermSSH1PacketSender::FQTermSSH1PacketSender()
+	{
+		cipher = new_3des_ssh1(1);
+	}
 
 void FQTermSSH1PacketSender::makePacket() {
   int len, padding, i;
@@ -68,14 +72,20 @@ void FQTermSSH1PacketSender::makePacket() {
   output_buffer_->putInt(ssh_crc32(output_buffer_->data() + 4, output_buffer_->len() - 4));
 
   if (is_encrypt_) {
-    cipher_->encrypt(output_buffer_->data() + 4, output_buffer_->data() + 4, output_buffer_->len() - 4);
-  } 
+	  cipher->crypt(cipher, output_buffer_->data() + 4, output_buffer_->data() + 4, output_buffer_->len() - 4);
+  }
 
 }
 
 //==============================================================================
 //FQTermSSH1PacketReceiver
 //==============================================================================
+
+	FQTermSSH1PacketReceiver::FQTermSSH1PacketReceiver()
+	{
+		cipher = new_3des_ssh1(0);
+	}
+
 void FQTermSSH1PacketReceiver::parseData(FQTermSSHBuffer *input) {
   u_int mycrc, gotcrc;
   u_char *buf = NULL;
@@ -116,11 +126,11 @@ void FQTermSSH1PacketReceiver::parseData(FQTermSSHBuffer *input) {
 
     input->getRawData((char*)sourceData, total_len);
     if (is_decrypt_) {
-      cipher_->decrypt(sourceData, targetData, total_len);
+	    cipher->crypt(cipher, sourceData, targetData, total_len);
     } else {
-      memcpy(targetData, sourceData, total_len);
-    } 
-    
+	    memcpy(targetData, sourceData, total_len);
+    }
+
     buffer_->putRawData((char*)targetData, total_len);
 
     // Check the crc32.
