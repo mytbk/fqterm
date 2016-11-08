@@ -68,9 +68,6 @@ private:
 
   unsigned char *session_id_;
 
-
-
-
   bool is_first_kex_;
 
   ssh_pubkey_t *host_key_;
@@ -80,8 +77,8 @@ private:
   int server_flag_, ciphers_, auth_;
 //  u_char session_id_[16];
   u_char session_key_[32];
-  
-  void negotiateAlgorithms();
+
+  bool negotiateAlgorithms();
   void exchangeKey();
   bool verifyKey();
   void sendNewKeys();

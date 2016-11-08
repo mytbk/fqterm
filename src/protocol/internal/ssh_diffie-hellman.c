@@ -63,6 +63,7 @@ ssh_dh_free(SSH_DH *dh)
 {
 	BN_free(dh->g);
 	BN_free(dh->p);
+	ssh_md_ctx_free(dh->digest.mdctx);
 	free(dh);
 }
 
@@ -72,8 +73,11 @@ ssh_dh_group1_sha1(void)
 	SSH_DH *dh = (SSH_DH*)malloc(sizeof(SSH_DH));
 	dh->g = BN_new();
 	dh->p = BN_new();
-	dh->hash = SHA1;
-	dh->hashlen = SHA_DIGEST_LENGTH;
+	dh->digest = (evp_md_t) {
+		.mdctx = ssh_md_ctx_new(),
+		.md = EVP_sha1(),
+		.hashlen = SHA_DIGEST_LENGTH
+	};
 	BN_set_word(dh->g, g);
 	BN_bin2bn(prime_group1, 128, dh->p);
 	return dh;
@@ -85,11 +89,22 @@ ssh_dh_group14_sha1(void)
 	SSH_DH *dh = (SSH_DH*)malloc(sizeof(SSH_DH));
 	dh->g = BN_new();
 	dh->p = BN_new();
-	dh->hash = SHA1;
-	dh->hashlen = SHA_DIGEST_LENGTH;
+	dh->digest = (evp_md_t) {
+		.mdctx = ssh_md_ctx_new(),
+		.md = EVP_sha1(),
+		.hashlen = SHA_DIGEST_LENGTH
+	};
 	BN_set_word(dh->g, g);
 	BN_bin2bn(prime_group14, 256, dh->p);
 	return dh;
+}
+
+void
+ssh_dh_hash(SSH_DH *dh, const unsigned char *in, unsigned char *out, size_t n)
+{
+	EVP_DigestInit_ex(dh->digest.mdctx, dh->digest.md, NULL);
+	EVP_DigestUpdate(dh->digest.mdctx, in, n);
+	EVP_DigestFinal_ex(dh->digest.mdctx, out, NULL);
 }
 
 struct
