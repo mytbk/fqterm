@@ -36,8 +36,13 @@ extern "C" {
 	};
 
 	typedef const EVP_CIPHER*(*SSH_EVP)(void);
+	typedef SSH_CIPHER*(*NEW_CIPHER)(int);
+
 	SSH_CIPHER* new_ssh_cipher_evp(SSH_EVP, size_t key, size_t iv, size_t blk, int enc);
 	SSH_CIPHER* new_3des_ssh1(int);
+	/* all_ciphers.c */
+	extern const char all_ciphers_list[];
+	NEW_CIPHER search_cipher(const char *s);
 
 #ifdef __cplusplus
 }

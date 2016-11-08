@@ -13,13 +13,16 @@ set(export_SRCS
 )
 
 set(internal_SRCS
+  internal/ssh_crypto_common.h
+  internal/ssh_crypto_common.c
+  internal/ssh_cipher.h
+  internal/all_ciphers.c
+  internal/ssh_evp_cipher.c
+  internal/ssh_3des-ssh1.c
   internal/ssh_pubkey_crypto.h
   internal/ssh_pubkey_crypto.c
   internal/ssh_diffie-hellman.h
   internal/ssh_diffie-hellman.c
-  internal/ssh_cipher.h
-  internal/ssh_evp_cipher.c
-  internal/ssh_3des-ssh1.c
   internal/crc32.h
   internal/fqterm_serialization.h
   internal/fqterm_ssh_auth.h

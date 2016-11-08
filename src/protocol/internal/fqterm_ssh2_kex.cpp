@@ -137,8 +137,38 @@ void FQTermSSH2Kex::negotiateAlgorithms() {
   }
   this->dh = dh();
 
+  // TODO: host key algorithms
+  size_t hk_algo_len = packet_receiver_->getInt();
+  char hk_algo[hk_algo_len+1];
+  packet_receiver_->getRawData(hk_algo, hk_algo_len);
+  hk_algo[hk_algo_len] = '\0';
+
+  // encryption algo c2s
+  size_t el_c2s_len = packet_receiver_->getInt();
+  char el_c2s[el_c2s_len+1];
+  packet_receiver_->getRawData(el_c2s, el_c2s_len);
+  el_c2s[el_c2s_len] = '\0';
+  NEW_CIPHER c2s = search_cipher(el_c2s);
+  if (c2s==NULL) {
+	  emit kexError(tr("No matching c2s cipher algorithms!"));
+	  return;
+  }
+  packet_sender_->cipher = c2s(1);
+
+  // encryption algo s2c
+  size_t el_s2c_len = packet_receiver_->getInt();
+  char el_s2c[el_s2c_len+1];
+  packet_receiver_->getRawData(el_s2c, el_s2c_len);
+  el_s2c[el_s2c_len] = '\0';
+  NEW_CIPHER s2c = search_cipher(el_s2c);
+  if (s2c==NULL) {
+	  emit kexError(tr("No matching s2c cipher algorithms!"));
+	  return;
+  }
+  packet_receiver_->cipher = s2c(0);
+
   std::vector<char> name_lists;
-  for (int i = 1; i < 10; ++i) {
+  for (int i = 4; i < 10; ++i) {
     int name_lists_len = packet_receiver_->getInt();
     if (name_lists_len > 0) {
       name_lists.resize(name_lists_len);
@@ -159,8 +189,8 @@ void FQTermSSH2Kex::negotiateAlgorithms() {
   packet_sender_->putRawData((const char*)cookie_, 16);    // FIXME: generate new cookie_;
   packet_sender_->putString(all_dh_list);
   packet_sender_->putString("ssh-rsa");
-  packet_sender_->putString("3des-cbc");
-  packet_sender_->putString("3des-cbc");
+  packet_sender_->putString(all_ciphers_list);
+  packet_sender_->putString(all_ciphers_list);
   packet_sender_->putString("hmac-sha1");
   packet_sender_->putString("hmac-sha1");
   packet_sender_->putString("none");
@@ -296,9 +326,6 @@ bool FQTermSSH2Kex::changeKeyAlg() {
     session_id_ = new unsigned char[SHA_DIGEST_LENGTH];
     memcpy(session_id_, H_, SHA_DIGEST_LENGTH);
   }
-
-  packet_sender_->cipher = new_ssh_cipher_evp(EVP_des_ede3_cbc, 24, 8, 8, 1);
-  packet_receiver_->cipher = new_ssh_cipher_evp(EVP_des_ede3_cbc, 24, 8, 8, 0);
 
   packet_sender_->setMacType(FQTERM_SSH_HMAC_SHA1);
   packet_receiver_->setMacType(FQTERM_SSH_HMAC_SHA1);
