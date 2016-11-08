@@ -252,8 +252,8 @@ bool FQTermSSH2Kex::verifyKey() {
 
   RSA_free(rsactx);
 
-  delete K_S;
-  delete s;
+  delete [] K_S;
+  delete [] s;
 
   return res == 1;
 }

@@ -195,7 +195,7 @@ void FQTermSSHBuffer::getSSH2BN(BIGNUM *bignum) {
 
   FQ_VERIFY(res != NULL);
 
-  delete hex_data;
+  delete [] hex_data;
 }
 
 u_short FQTermSSHBuffer::getWord() {
