@@ -245,9 +245,9 @@ int FQTermSSHSocket::chooseVersion(const QString &ver) {
   QString version = ver.mid(ver.indexOf("-") + 1);
   version = version.left(version.indexOf("-"));
 
-  if (version == "2.0")
+  if (version == "2.0" || version == "1.99")
     return 2;
-  else if (version == "1.99" || version == "1.3" || version == "1.5")
+  else if (version == "1.3" || version == "1.5")
     return 1;
   else
     return -1;
