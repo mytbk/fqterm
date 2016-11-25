@@ -5,7 +5,8 @@
 #include <openssl/sha.h>
 #include <openssl/evp.h>
 
-#if OPENSSL_VERSION_NUMBER >= 0x10100000L
+#if OPENSSL_VERSION_NUMBER >= 0x10100000L && \
+	!defined(LIBRESSL_VERSION_NUMBER)
 #define ssh_md_ctx_new EVP_MD_CTX_new
 #define ssh_md_ctx_free EVP_MD_CTX_free
 #else
