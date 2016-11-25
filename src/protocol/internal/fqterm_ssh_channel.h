@@ -57,6 +57,7 @@ signals:
   void channelOK();
   void channelReadyRead(const char *data, int len);
   void channelError(QString);
+  void channelClosed();
 };
 
 class FQTermSSH1Channel: public FQTermSSHChannel {

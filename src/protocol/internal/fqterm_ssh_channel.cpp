@@ -360,8 +360,11 @@ void FQTermSSH2Channel::processChannelPacket() {
       //    byte      SSH_MSG_CHANNEL_EOF
       //    uint32    recipient channel
       // FIXME: this error would cause the connection closed, while only the channel need be closed in ssh2.
-      emit channelError(tr("Channel closed by the server."));
-      break;
+	    packet_sender_->startPacket(SSH2_MSG_CHANNEL_CLOSE);
+	    packet_sender_->putInt(server_channel_id_);
+	    packet_sender_->write();
+	    emit channelClosed();
+	    break;
     case SSH2_MSG_CHANNEL_REQUEST:
       //    byte      SSH_MSG_CHANNEL_REQUEST
       //    uint32    recipient channel

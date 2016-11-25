@@ -157,6 +157,7 @@ void FQTermSSHSocket::init(int ssh_version) {
     FQ_VERIFY(connect(ssh_channel_, SIGNAL(channelOK()), this, SLOT(channelOK())));
     FQ_VERIFY(connect(ssh_channel_, SIGNAL(channelReadyRead(const char *, int)), this, SLOT(channelReadyRead(const char *, int))));
     FQ_VERIFY(connect(ssh_channel_, SIGNAL(channelError(QString)), this, SLOT(handleError(QString))));
+    FQ_VERIFY(connect(ssh_channel_, SIGNAL(channelClosed()), this, SIGNAL(connectionClosed())));
 
     key_exchanger_->initKex(packet_receiver_, packet_sender_);
   }
