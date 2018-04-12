@@ -78,7 +78,6 @@
 #include "statusBar.h"
 #include "sitemanager.h"
 #include "fqterm_shortcuthelper.h"
-#include "fqterm_mini_server.h"
 #include "shortcutdialog.h"
 #include "schemadialog.h"
 #include "fqterm_ip_location.h"
@@ -186,9 +185,6 @@ FQTermFrame::FQTermFrame()
 
   installEventFilter(this);
 
-  serverThread_ = new FQTermMiniServerThread();
-  if (FQTermPref::getInstance()->runServer_)
-    serverThread_->start();
 #ifdef HAVE_PYTHON
   pythonHelper_ = new FQTermPythonHelper;
 #endif
@@ -218,10 +214,6 @@ FQTermFrame::~FQTermFrame() {
   //  delete uaoCodec_;
   delete windowManager_;
   FQTermIPLocation::Destroy();
-  serverThread_->quit();
-  serverThread_->wait(1000);
-  delete serverThread_;
-  
 }
 
 //initialize setting from fqterm.cfg
@@ -330,9 +322,6 @@ void FQTermFrame::iniSetting() {
   if (FQTermPref::getInstance()->useStyleSheet_) {
     loadStyleSheetFromFile(FQTermPref::getInstance()->styleSheetFile_);
   }
-
-  strTmp = config_->getItemValue("global", "runserver");
-  FQTermPref::getInstance()->runServer_ = (strTmp != "0");
 }
 
 void FQTermFrame::loadPref() {
@@ -479,8 +468,6 @@ void FQTermFrame::saveSetting() {
   QByteArray state = saveState().toHex();
   strTmp = QString(state);
   config_->setItemValue("global", "toolbarstate", strTmp);
-
-  config_->setItemValue("global", "runserver", FQTermPref::getInstance()->runServer_ ? "1" : "0");
 
   config_->save(getPath(USER_CONFIG) + "fqterm.cfg");
 }
@@ -1008,16 +995,6 @@ void FQTermFrame::bosscolor() {
 }
 
 
-void FQTermFrame::toggleServer(bool on) {
-  FQTermPref::getInstance()->runServer_ = on;
-  if (on) {
-    serverThread_->start();
-  } else {
-    serverThread_->quit();
-    serverThread_->wait(1000);
-  }
-}
-
 void FQTermFrame::themesMenuAboutToShow() {
   QVector<QChar> vectorShortcutKeys;
   menuThemes_->clear();
@@ -1351,12 +1328,6 @@ void FQTermFrame::addMainTool() {
 
   toolBarMdiTools_->addAction(getAction(FQTermShortcutHelper::QUICKLOGIN));
 
-  serverButton_ = new QToolButton(toolBarMdiTools_);
-  serverButton_->setCheckable(true);
-  serverButton_->setIcon(QPixmap(getPath(RESOURCE) + "pic/fqterm_32x32.png"));
-  serverButton_->setChecked(FQTermPref::getInstance()->runServer_);
-  FQ_VERIFY(connect(serverButton_, SIGNAL(toggled(bool)), this, SLOT(toggleServer(bool))));
-  toolBarMdiTools_->addWidget(serverButton_);
   // custom define
   toolBarSetupKeys_ = addToolBar("Custom Key");
   toolBarSetupKeys_->setObjectName("Custom Key");

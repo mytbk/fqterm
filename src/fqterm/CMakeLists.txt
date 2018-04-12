@@ -82,7 +82,6 @@ include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/../protocol
   ${CMAKE_CURRENT_SOURCE_DIR}/../terminal
   ${CMAKE_CURRENT_SOURCE_DIR}/../utilities
-  ${CMAKE_CURRENT_SOURCE_DIR}/../unite
   ${CMAKE_CURRENT_SOURCE_DIR}/../ui
   ${CMAKE_CURRENT_SOURCE_DIR}/../ui/imageviewer
   ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty
@@ -101,7 +100,6 @@ add_dependencies(fqterm_main
   fqterm_protocol
   fqterm_ui
   fqterm_utilities
-  fqterm_unite
 )
 
 if(USE_QT5)

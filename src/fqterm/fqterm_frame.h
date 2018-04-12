@@ -55,7 +55,6 @@ class FQTermWindow;
 class StatusBar;
 class FQTermTimeLabel;
 class TranslatorInstaller;
-class FQTermMiniServerThread;
 class FQTermShortcutHelper;
 
 #ifdef HAVE_PYTHON
@@ -149,7 +148,6 @@ class FQTermFrame: public QMainWindow {
   void refreshScreen();
   void fullscreen();
   void bosscolor();
-  void toggleServer(bool on);
   void uiFont();
   void logRaw();
   void antiIdle();
@@ -231,7 +229,6 @@ class FQTermFrame: public QMainWindow {
   FQTermConfig * config_;
   FQTermShortcutHelper * shortcutHelper_;
   QAction* getAction(int shortcut);
-  FQTermMiniServerThread* serverThread_;
 
   UAOCodec* uaoCodec_;
 
