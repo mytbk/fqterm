@@ -43,8 +43,6 @@ class prefDialog: public QDialog {
   void onHttp();
   // 	void onBeep(int);
   void onBrowse();
-  void onImage();
-  void onPool();
   void onStyleSheet();
   void onEditor();
  protected:

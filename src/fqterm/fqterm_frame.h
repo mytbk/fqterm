@@ -47,7 +47,6 @@ namespace FQTerm {
 
 class IPLookupDialog;
 class DefineEscapeDialog;
-class FQTermImage;
 class FQTermParam;
 class FQTermConfig;
 class FQTermWndMgr;
@@ -72,7 +71,6 @@ class FQTermFrame: public QMainWindow {
 
   void popupFocusIn(FQTermWindow*);
 
-  void viewImages(QString filename, bool raiseViewer);
   void buzz(FQTermWindow* window = NULL);
   void installTranslator(const QString& lang);
   FQTermConfig * config() const { return config_; }
@@ -91,7 +89,6 @@ class FQTermFrame: public QMainWindow {
   
   bool event(QEvent *event);
 
-  void viewImages();
   bool clearUp();
 
   // Menu
@@ -185,9 +182,6 @@ class FQTermFrame: public QMainWindow {
  private:
 
   FQTermWndMgr *windowManager_;
-  // image viewer
-  FQTermImage *imageViewer_;
-
   FQTermTimeLabel *labelTime_;
 
   QString theme_;

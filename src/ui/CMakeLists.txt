@@ -1,7 +1,5 @@
 set(CMAKE_AUTOMOC ON)
 
-add_subdirectory(imageviewer)
-
 set(fqterm_ui_SRCS
   aboutdialog.h
   addrdialog.h

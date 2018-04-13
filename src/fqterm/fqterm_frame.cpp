@@ -68,12 +68,6 @@
 #include "fqterm_window.h"
 #include "fqterm_wndmgr.h"
 
-#ifdef IMAGE_USE_PICFLOW
-#include "imageviewer.h"
-#else
-#include "imageviewer_origin.h"
-#endif
-
 #include "quickdialog.h"
 #include "statusBar.h"
 #include "sitemanager.h"
@@ -131,13 +125,6 @@ FQTermFrame::FQTermFrame()
 
   initTranslator();
   shortcutHelper_ = new FQTermShortcutHelper(config_, this);
-
-#ifdef IMAGE_USE_PICFLOW
-  imageViewer_ = new FQTermImageFlow(config_, NULL, Qt::Window);
-#else
-  imageViewer_ = new FQTermImageOrigin(config_, NULL, Qt::Window);
-#endif
-
 
   //create the window manager to deal with the window-tab-icon pairs
   windowManager_ = new FQTermWndMgr(this);
@@ -208,7 +195,6 @@ FQTermFrame::~FQTermFrame() {
   delete pythonHelper_;
 #endif //HAVE_PYTHON
   clearTranslator();
-  delete imageViewer_;
   delete shortcutHelper_;
   delete config_;
   // should not delete yourself!!
@@ -388,8 +374,6 @@ void FQTermFrame::loadPref() {
   if (FQTermPref::getInstance()->zmodemDir_.right(1) != "/") {
     FQTermPref::getInstance()->zmodemDir_.append('/');
   }
-  strTmp = config_->getItemValue("preference", "image");
-  FQTermPref::getInstance()->imageViewerName_ = strTmp;
   strTmp = config_->getItemValue("preference", "qssfile");
   FQTermPref::getInstance()->styleSheetFile_ = strTmp;
   FQTermPref::getInstance()->useStyleSheet_ = !strTmp.isEmpty();
@@ -1011,7 +995,6 @@ void FQTermFrame::uiFont() {
    if (FQTermPref::getInstance()->useStyleSheet_) {
      refreshStyleSheet();
    }
-   imageViewer_->adjustItemSize();
   }
 }
 
@@ -1237,29 +1220,6 @@ void FQTermFrame::enableMouse() {
       windowManager_->activeWindow()->getSession()->param().isSupportMouse_);
 }
 
-void FQTermFrame::viewImages(QString filename, bool raiseViewer) {
-  if (filename.isEmpty()) {
-    filename = FQTermPref::getInstance()->poolDir_;
-  }
-
-  if (raiseViewer) {
-    imageViewer_->scrollTo(filename);
-    if (imageViewer_->isHidden()) {
-      imageViewer_->resize(size() * 3 / 4 + QSize(1,1));
-      imageViewer_->show();
-    }
-    clearFocus();
-    imageViewer_->raise();
-    imageViewer_->activateWindow();
-  } else {
-    imageViewer_->updateImage(filename);
-  }
-}
-
-void FQTermFrame::viewImages() {
-  viewImages(FQTermPref::getInstance()->poolDir_, true);
-}
-
 void FQTermFrame::beep() {
   windowManager_->activeWindow()->getSession()->param().isBeep_ =
       !windowManager_->activeWindow()->getSession()->param().isBeep_;
@@ -1447,7 +1407,6 @@ void FQTermFrame::addMainTool() {
   toolBarMdiConnectTools_->addAction(getAction(FQTermShortcutHelper::ANTIIDLE));
   toolBarMdiConnectTools_->addAction(getAction(FQTermShortcutHelper::AUTOREPLY));
   toolBarMdiConnectTools_->addAction(getAction(FQTermShortcutHelper::VIEWMESSAGE));
-  toolBarMdiConnectTools_->addAction(getAction(FQTermShortcutHelper::IMAGEVIEWER));
   toolBarMdiConnectTools_->addAction(getAction(FQTermShortcutHelper::MOUSESUPPORT));
   toolBarMdiConnectTools_->addAction(getAction(FQTermShortcutHelper::BEEP));
   toolBarMdiConnectTools_->addAction(getAction(FQTermShortcutHelper::AUTORECONNECT));
@@ -1610,7 +1569,6 @@ void FQTermFrame::addMainMenu() {
   FQTERM_ADDACTION(spec, VIEWMESSAGE, this, viewMessages);
   FQTERM_ADDACTION(spec, BEEP, this, beep);
   FQTERM_ADDACTION(spec, MOUSESUPPORT, this, enableMouse);
-  FQTERM_ADDACTION(spec, IMAGEVIEWER, this, viewImages);
   FQTERM_ADDACTION(spec, IPLOOKUP, this, ipLookup);
 
   //Script

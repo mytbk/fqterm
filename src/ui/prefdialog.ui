@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>619</width>
-    <height>584</height>
+    <width>693</width>
+    <height>675</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,7 +19,16 @@
      <property name="spacing">
       <number>6</number>
      </property>
-     <property name="margin">
+     <property name="leftMargin">
+      <number>11</number>
+     </property>
+     <property name="topMargin">
+      <number>11</number>
+     </property>
+     <property name="rightMargin">
+      <number>11</number>
+     </property>
+     <property name="bottomMargin">
       <number>11</number>
      </property>
      <item>
@@ -85,7 +94,16 @@
      <property name="spacing">
       <number>6</number>
      </property>
-     <property name="margin">
+     <property name="leftMargin">
+      <number>0</number>
+     </property>
+     <property name="topMargin">
+      <number>0</number>
+     </property>
+     <property name="rightMargin">
+      <number>0</number>
+     </property>
+     <property name="bottomMargin">
       <number>0</number>
      </property>
      <item>
@@ -175,7 +193,16 @@
         <string>Sound When Receive Messages</string>
        </property>
        <layout class="QGridLayout">
-        <property name="margin">
+        <property name="leftMargin">
+         <number>11</number>
+        </property>
+        <property name="topMargin">
+         <number>11</number>
+        </property>
+        <property name="rightMargin">
+         <number>11</number>
+        </property>
+        <property name="bottomMargin">
          <number>11</number>
         </property>
         <property name="spacing">
@@ -220,7 +247,16 @@
        <property name="spacing">
         <number>6</number>
        </property>
-       <property name="margin">
+       <property name="leftMargin">
+        <number>11</number>
+       </property>
+       <property name="topMargin">
+        <number>11</number>
+       </property>
+       <property name="rightMargin">
+        <number>11</number>
+       </property>
+       <property name="bottomMargin">
         <number>11</number>
        </property>
        <item>
@@ -281,45 +317,29 @@
        <property name="title">
         <string>Vertical Display</string>
        </property>
-       <widget class="QRadioButton" name="topRadioButton">
-        <property name="geometry">
-         <rect>
-          <x>11</x>
-          <y>15</y>
-          <width>84</width>
-          <height>18</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>Top</string>
-        </property>
-       </widget>
-       <widget class="QRadioButton" name="middleRadioButton">
-        <property name="geometry">
-         <rect>
-          <x>123</x>
-          <y>15</y>
-          <width>84</width>
-          <height>18</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>Middle</string>
-        </property>
-       </widget>
-       <widget class="QRadioButton" name="bottomRadioButton">
-        <property name="geometry">
-         <rect>
-          <x>234</x>
-          <y>15</y>
-          <width>84</width>
-          <height>18</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>Bottom</string>
-        </property>
-       </widget>
+       <layout class="QGridLayout" name="gridLayout_3">
+        <item row="0" column="0">
+         <widget class="QRadioButton" name="topRadioButton">
+          <property name="text">
+           <string>Top</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QRadioButton" name="middleRadioButton">
+          <property name="text">
+           <string>Middle</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="2">
+         <widget class="QRadioButton" name="bottomRadioButton">
+          <property name="text">
+           <string>Bottom</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </widget>
      </item>
      <item>
@@ -352,13 +372,6 @@
         </widget>
        </item>
        <item>
-        <widget class="QLabel" name="textLabel1_3">
-         <property name="text">
-          <string>HTTP Directory</string>
-         </property>
-        </widget>
-       </item>
-       <item>
         <widget class="QLabel" name="textLabel9">
          <property name="text">
           <string>StyleSheet File</string>
@@ -369,13 +382,6 @@
         <widget class="QLabel" name="TextLabel3">
          <property name="text">
           <string>HTTP Browser</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="textLabel1_2">
-         <property name="text">
-          <string>Image Viewer</string>
          </property>
         </widget>
        </item>
@@ -394,21 +400,15 @@
         <widget class="QLineEdit" name="zmodemLineEdit"/>
        </item>
        <item row="1" column="0" colspan="2">
-        <widget class="QLineEdit" name="poolLineEdit"/>
-       </item>
-       <item row="2" column="0" colspan="2">
         <widget class="QLineEdit" name="styleSheetLineEdit"/>
        </item>
-       <item row="3" column="0" colspan="2">
+       <item row="2" column="0" colspan="2">
         <widget class="QLineEdit" name="httpLineEdit"/>
        </item>
-       <item row="4" column="0" colspan="2">
-        <widget class="QLineEdit" name="imageLineEdit"/>
-       </item>
-       <item row="5" column="0">
+       <item row="3" column="0">
         <widget class="QLineEdit" name="editorLineEdit"/>
        </item>
-       <item row="5" column="1">
+       <item row="3" column="1">
         <widget class="QLineEdit" name="editorArgLineEdit"/>
        </item>
       </layout>
@@ -423,13 +423,6 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="poolPushButton">
-         <property name="text">
-          <string>Browse</string>
-         </property>
-        </widget>
-       </item>
-       <item>
         <widget class="QPushButton" name="styleSheetPushButton">
          <property name="text">
           <string>Browse</string>
@@ -438,13 +431,6 @@
        </item>
        <item>
         <widget class="QPushButton" name="choosehttpPushButton">
-         <property name="text">
-          <string>Choose</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="imagePushButton">
          <property name="text">
           <string>Choose</string>
          </property>
@@ -479,7 +465,16 @@
      <property name="spacing">
       <number>6</number>
      </property>
-     <property name="margin">
+     <property name="leftMargin">
+      <number>11</number>
+     </property>
+     <property name="topMargin">
+      <number>11</number>
+     </property>
+     <property name="rightMargin">
+      <number>11</number>
+     </property>
+     <property name="bottomMargin">
       <number>11</number>
      </property>
      <item>
@@ -533,12 +528,8 @@
   <tabstop>ximComboBox</tabstop>
   <tabstop>zmodemLineEdit</tabstop>
   <tabstop>browsePushButton</tabstop>
-  <tabstop>poolLineEdit</tabstop>
-  <tabstop>poolPushButton</tabstop>
   <tabstop>httpLineEdit</tabstop>
   <tabstop>choosehttpPushButton</tabstop>
-  <tabstop>imageLineEdit</tabstop>
-  <tabstop>imagePushButton</tabstop>
   <tabstop>okPushButton</tabstop>
   <tabstop>cancelPushButton</tabstop>
  </tabstops>

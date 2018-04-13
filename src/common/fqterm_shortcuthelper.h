@@ -88,7 +88,6 @@ public:
     IPLOOKUP,
     BEEP,
     MOUSESUPPORT,
-    IMAGEVIEWER,
     RUNSCRIPT,    //F7
     STOPSCRIPT,   //F8
     RUNPYTHONSCRIPT, //Ctrl+F1

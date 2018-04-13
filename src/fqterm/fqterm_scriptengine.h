@@ -86,7 +86,6 @@ public slots: //script apis
   QString getReplyKey();
   QString getURL();
   QString getIP();
-  void previewImage(const QString& url);
   void sleep(int ms);
   QString copyArticle();
   void openUrl(const QString & url);
