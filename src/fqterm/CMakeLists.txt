@@ -83,7 +83,6 @@ include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/../terminal
   ${CMAKE_CURRENT_SOURCE_DIR}/../utilities
   ${CMAKE_CURRENT_SOURCE_DIR}/../ui
-  ${CMAKE_CURRENT_SOURCE_DIR}/../ui/imageviewer
   ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty
   ${CMAKE_CURRENT_BINARY_DIR}/../ui
   ${CMAKE_CURRENT_BINARY_DIR}

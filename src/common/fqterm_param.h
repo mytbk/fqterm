@@ -63,7 +63,6 @@ struct FQTermPref {
   QString styleSheetFile_;
   QString zmodemDir_;
   QString poolDir_;
-  QString imageViewerName_;
   QString externalEditor_;
   QString externalEditorArg_;
   QString searchEngine_;
