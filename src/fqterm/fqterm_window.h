@@ -49,7 +49,6 @@ class PageViewMessage;
 class FQTermConfig;
 class FQTermImage;
 class FQTermFrame;
-class FQTermHttp;
 class FQTermScreen;
 class FQTermSession;
 class FQTermSound;
@@ -111,7 +110,6 @@ class FQTermWindow : public QMainWindow,
   void runScript(const QString & filename);
   int externInput(const QByteArray &);
   int externInput(const QString &);
-  void getHttpHelper(const QString &, bool);
 
   void openUrl(QString url);
   void openUrlImpl(QString url);
@@ -193,16 +191,9 @@ signals:
   void externalEditorDone(const QString& str);
 
   //http menu
-  void previewLink();
-  void saveLink();
   void openLink();
   void copyLink();
-  void previewImage(const QString &filename, bool raiseViewer);
-  void httpPreviewImage(const QString &filename, bool raiseViewer, bool done);
-  void startHttpDownload(FQTermHttp *, const QString &filedesp);
 
-  void httpDone(QObject*);
- 
   // decode
   // void setMouseMode(bool);
   void articleCopied(int e, const QString content);

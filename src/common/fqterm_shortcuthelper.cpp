@@ -107,7 +107,6 @@ void FQTermShortcutHelper::initShortcutDescriptionTable()
   getAction(BEEP)->setCheckable(true);
   initShortcutDescriptionTableEntry(MOUSESUPPORT, "mousesupport", tr(""), tr("Toggle Mouse Support"), "mouse");  
   getAction(MOUSESUPPORT)->setCheckable(true);
-  initShortcutDescriptionTableEntry(IMAGEVIEWER, "imageviewer", tr(""), tr("Image Viewer"), "image_viewer");  
   initShortcutDescriptionTableEntry(RUNSCRIPT, "runscript", tr("F7"), tr("Run Script"));  
   initShortcutDescriptionTableEntry(STOPSCRIPT, "stop", tr("F8"), tr("Stop Script"));  
 #ifdef HAVE_PYTHON
@@ -207,7 +206,6 @@ void FQTermShortcutHelper::retranslateActions() {
   retranslateAction(IPLOOKUP, tr("I&P Lookup"));
   retranslateAction(BEEP, tr("&Beep"));
   retranslateAction(MOUSESUPPORT, tr("&Mouse support"));
-  retranslateAction(IMAGEVIEWER, tr("Ima&ge viewer"));
   retranslateAction(RUNSCRIPT, tr("&Run..."));
   retranslateAction(STOPSCRIPT, tr("&Stop"));
   retranslateAction(RUNPYTHONSCRIPT, tr("Run &Python..."));

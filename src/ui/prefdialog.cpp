@@ -73,8 +73,6 @@ void prefDialog::connectSlots() {
   FQ_VERIFY(connect(ui_.choosehttpPushButton, SIGNAL(clicked()), this, SLOT(onHttp())));
   //FQ_VERIFY(connect(ButtonGroup1 , SIGNAL(clicked(int)), this, SLOT(onBeep(int)) ));
   FQ_VERIFY(connect(ui_.browsePushButton, SIGNAL(clicked()), this, SLOT(onBrowse())));
-  FQ_VERIFY(connect(ui_.imagePushButton, SIGNAL(clicked()), this, SLOT(onImage())));
-  FQ_VERIFY(connect(ui_.poolPushButton, SIGNAL(clicked()), this, SLOT(onPool())));
   FQ_VERIFY(connect(ui_.styleSheetPushButton, SIGNAL(clicked()), this, SLOT(onStyleSheet())));
   FQ_VERIFY(connect(ui_.editorPushButton, SIGNAL(clicked()), this, SLOT(onEditor())));
 }
@@ -140,12 +138,6 @@ void prefDialog::loadSetting() {
   strTmp = config_->getItemValue("preference", "clearpool");
   ui_.clearCheckBox->setChecked(strTmp == "1");
 
-  strTmp = config_->getItemValue("preference", "pool");
-  if (strTmp.isEmpty()) {
-    strTmp = getPath(USER_CONFIG) + "pool/";
-  }
-  ui_.poolLineEdit->setText(strTmp);
-
   strTmp = config_->getItemValue("preference", "http");
   ui_.httpLineEdit->setText(strTmp);
 
@@ -154,9 +146,6 @@ void prefDialog::loadSetting() {
     strTmp = getPath(USER_CONFIG) + "zmodem/";
   }
   ui_.zmodemLineEdit->setText(strTmp);
-
-  strTmp = config_->getItemValue("preference", "image");
-  ui_.imageLineEdit->setText(strTmp);
 
   strTmp = config_->getItemValue("preference", "qssfile");
   ui_.styleSheetLineEdit->setText(strTmp);
@@ -227,19 +216,12 @@ void prefDialog::saveSetting() {
   strTmp.setNum(ui_.asciiEnhanceCheckBox->isChecked() ? 1 : 0);
   config_->setItemValue("preference", "asciienhance", strTmp);
 
-  strTmp = ui_.poolLineEdit->text();
-  if (strTmp.isEmpty()) {
-    strTmp = getPath(USER_CONFIG) + "pool/";
-  }
-  config_->setItemValue("preference", "pool", strTmp);
-
   strTmp = ui_.zmodemLineEdit->text();
   if (strTmp.isEmpty()) {
     strTmp = getPath(USER_CONFIG) + "zmodem/";
   }
   config_->setItemValue("preference", "zmodem", strTmp);
   config_->setItemValue("preference", "http", ui_.httpLineEdit->text());
-  config_->setItemValue("preference", "image", ui_.imageLineEdit->text());
 
   config_->setItemValue("preference", "qssfile", ui_.styleSheetLineEdit->text().trimmed());
 
@@ -296,20 +278,6 @@ void prefDialog::onBrowse() {
   QString dir = fileDialog_->getExistingDirectory("Choose a directory", ui_.zmodemLineEdit->text());
   if (!dir.isEmpty()) {
     ui_.zmodemLineEdit->setText(dir);
-  }
-}
-
-void prefDialog::onImage() {
-  QString image = fileDialog_->getOpenName("Choose an Image Viewer", "*");
-  if (!image.isEmpty()) {
-    ui_.imageLineEdit->setText(image);
-  }
-}
-
-void prefDialog::onPool() {
-  QString pool = fileDialog_->getExistingDirectory("Choose a directory", ui_.poolLineEdit->text());
-  if (!pool.isEmpty()) {
-    ui_.poolLineEdit->setText(pool);
   }
 }
 

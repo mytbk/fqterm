@@ -31,7 +31,6 @@
 #include <QFontDialog>
 #include <QFontMetrics>
 #include <QInputDialog>
-#include <QImageReader>
 #include <QMenu>
 #include <QMessageBox>
 #include <QStatusBar>
@@ -52,12 +51,10 @@
 #include "progressBar.h"
 #include "common.h"
 #include "fqterm_buffer.h"
-#include "fqterm_canvas.h"
 #include "fqterm_config.h"
 #include "fqterm_convert.h"
 #include "fqterm_filedialog.h"
 #include "fqterm_frame.h"
-#include "fqterm_http.h"
 #include "fqterm_ip_location.h"
 #include "fqterm_param.h"
 #include "fqterm_path.h"
@@ -66,7 +63,6 @@
 #include "fqterm_sound.h"
 #include "fqterm_window.h"
 #include "fqterm_wndmgr.h"
-#include "imageviewer.h"
 #include "sshlogindialog.h"
 #include "statusBar.h"
 #include "zmodemdialog.h"
@@ -267,9 +263,7 @@ FQTermWindow::~FQTermWindow() {
 
 void FQTermWindow::addMenu() {
   urlMenu_ = new QMenu(screen_);
-  urlMenu_->addAction(tr("Preview image"), this, SLOT(previewLink()));
   urlMenu_->addAction(tr("Open link"), this, SLOT(openLink()));
-  urlMenu_->addAction(tr("Save As..."), this, SLOT(saveLink()));
   urlMenu_->addAction(tr("Copy link address"), this, SLOT(copyLink()));
   urlMenu_->addSeparator();
   urlMenu_->addAction(tr("Share Selected Text and URL!"), this, SLOT(shareIt()));
@@ -460,7 +454,7 @@ void FQTermWindow::mousePressEvent(QMouseEvent *mouseevent) {
     if (mouseevent->modifiers() & Qt::ControlModifier) {
       // on Url
       if (!session_->getUrl().isEmpty()) {
-        previewLink();
+        openLink();
       }
       return ;
     }
@@ -486,7 +480,7 @@ void FQTermWindow::mousePressEvent(QMouseEvent *mouseevent) {
     if (isConnected())
       // on Url
       if (!session_->getUrl().isEmpty()) {
-        previewLink();
+        openLink();
       } else {
         pasteHelper(false);
       }
@@ -540,13 +534,6 @@ void FQTermWindow::mouseMoveEvent(QMouseEvent *mouseevent) {
   }
 }
 
-static bool isSupportedImage(const QString &name) {
-  static QList<QByteArray> image_formats =
-      QImageReader::supportedImageFormats();
-
-  return image_formats.contains(name.section(".", -1).toLower().toUtf8());
-}
-
 void FQTermWindow::mouseReleaseEvent(QMouseEvent *mouseevent) {
   if (scriptMouseEvent(mouseevent))
     return;
@@ -577,11 +564,7 @@ void FQTermWindow::mouseReleaseEvent(QMouseEvent *mouseevent) {
   // url
   QString url = session_->getUrl();
   if (!url.isEmpty()) {
-    if (isSupportedImage(url)) {
-      previewLink();      
-    } else {
-      openUrl(url);
-    }
+    openUrl(url);
     return ;
   }
 
@@ -1596,12 +1579,6 @@ void FQTermWindow::openLink() {
   }
 }
 
-void FQTermWindow::saveLink() {
-  QString url = session_->getUrl();
-  if (!url.isEmpty())
-    getHttpHelper(url, false);
-}
-
 void FQTermWindow::openUrl(QString url)
 {
   QString caption = tr("URL Dialog");
@@ -1658,11 +1635,6 @@ void FQTermWindow::openUrlImpl(QString url)
     }
 }
 
-
-void FQTermWindow::previewLink() {
-  getHttpHelper(session_->getUrl(), true);
-}
-
 void FQTermWindow::copyLink() {
   QString strUrl;
   strUrl = session_->bbs2unicode(session_->getUrl().toLatin1());
@@ -1671,89 +1643,6 @@ void FQTermWindow::copyLink() {
 
   clipboard->setText(strUrl, QClipboard::Selection);
   clipboard->setText(strUrl, QClipboard::Clipboard);
-}
-
-void FQTermWindow::getHttpHelper(const QString &url, bool preview) {
-
-  const QString &strPool = FQTermPref::getInstance()->poolDir_;
-
-  FQTermHttp *http = new FQTermHttp(config_, this, strPool, session_->param().serverEncodingID_);
-  if (getSession()->param().proxyType_ != 0) {
-    QString host = getSession()->param().proxyHostName_;
-    int port = getSession()->param().proxyPort_;
-    bool auth = getSession()->param().isAuthentation_;
-    QString user = auth ? getSession()->param().proxyUserName_ : QString();
-    QString pass = auth ? getSession()->param().proxyPassword_ : QString();
-    switch (getSession()->param().proxyType_)
-    {
-    case 1:
-    case 2:
-      //no support in qt.
-      FQ_TRACE("network", 0) << "proxy type not supported by qt, download will not use proxy.";
-      break;
-    case 3:
-      http->setProxy(QNetworkProxy(QNetworkProxy::Socks5Proxy, host, port, user, pass));
-      break;
-    case 4:
-      http->setProxy(QNetworkProxy(QNetworkProxy::HttpProxy, host, port, user, pass));
-      break;
-    }
-  }
-  FQTerm::StatusBar::instance()->newProgressOperation(http).setDescription(tr("Waiting header...")).setAbortSlot(http, SLOT(cancel())).setMaximum(100);
-  FQTerm::StatusBar::instance()->resetMainText();
-  FQTerm::StatusBar::instance()->setProgress(http, 0);
-
-  FQ_VERIFY(connect(http, SIGNAL(headerReceived(FQTermHttp *, const QString &)),
-                    this, SLOT(startHttpDownload(FQTermHttp*,const QString&))));
-
-  FQ_VERIFY(connect(http,SIGNAL(done(QObject*)),this,SLOT(httpDone(QObject*))));
-
-  FQ_VERIFY(connect(http, SIGNAL(message(const QString &)),
-                    pageViewMessage_, SLOT(showText(const QString &))));
-
-  FQ_VERIFY(connect(http, SIGNAL(done(QObject*)),
-                    FQTerm::StatusBar::instance(),
-                    SLOT(endProgressOperation(QObject*))));
-
-  FQ_VERIFY(connect(http, SIGNAL(percent(int)),
-                    FQTerm::StatusBar::instance(), SLOT(setProgress(int))));
-
-  FQ_VERIFY(connect(http, SIGNAL(previewImage(const QString &, bool, bool)),
-                    this, SLOT(httpPreviewImage(const QString &, bool, bool))));
-
-
-  http->getLink(url, preview);
-}
-
-void FQTermWindow::startHttpDownload(
-    FQTermHttp *pHttp, const QString &filedesp) {
-  FQTerm::StatusBar::instance()->newProgressOperation(pHttp).setDescription
-      (filedesp).setAbortSlot(pHttp, SLOT(cancel())).setMaximum(100);
-
-  FQTerm::StatusBar::instance()->resetMainText();
-}
-
-void FQTermWindow::httpDone(QObject *pHttp) {
-  pHttp->deleteLater();
-}
-
-void FQTermWindow::httpPreviewImage(const QString &filename, bool raiseViewer, bool done) 
-{
-  if (config_->getItemValue("preference", "image").isEmpty() || done) {
-    previewImage(filename, raiseViewer);
-  }
-}
-
-void FQTermWindow::previewImage(const QString &filename, bool raiseViewer) {
-//  QString strViewer = frame_->config()->getItemValue("preference", "image");
-  QString strViewer = config_->getItemValue("preference", "image");
-
-  if (strViewer.isEmpty()) {
-    frame_->viewImages(filename, raiseViewer);
-  } else if(raiseViewer) {
-    runProgram(strViewer, filename);
-  }
-
 }
 
 void FQTermWindow::beep() {

@@ -224,10 +224,6 @@ QString FQTermScriptEngine::getIP() {
   return session_->getIP();
 }
 
-void FQTermScriptEngine::previewImage(const QString& url) {
-  window_->getHttpHelper(url, true);
-}
-
 void FQTermScriptEngine::sleep(int ms) {
   int originInterval = engine_->processEventsInterval();
   engine_->setProcessEventsInterval(1);
