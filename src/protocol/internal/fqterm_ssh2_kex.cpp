@@ -27,7 +27,6 @@
 #include <openssl/evp.h>
 
 #include "fqterm_ssh2_kex.h"
-#include "fqterm_ssh_md5.h"
 #include "fqterm_trace.h"
 #include "ssh_pubkey_crypto.h"
 #include "ssh_cipher.h"

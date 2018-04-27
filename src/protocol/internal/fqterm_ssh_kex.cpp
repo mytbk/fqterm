@@ -19,8 +19,8 @@
  ***************************************************************************/
 
 #include "fqterm_ssh_kex.h"
-#include "fqterm_ssh_md5.h"
 #include "fqterm_trace.h"
+#include <openssl/md5.h>
 
 namespace FQTerm {
 
@@ -191,13 +191,13 @@ void FQTermSSH1Kex::makeSessionKey() {
 
 void FQTermSSH1Kex::makeSessionId() {
   u_char *p;
-  FQTermSSHMD5 *md5;
+  MD5_CTX ctx;
   int servlen, hostlen;
   const BIGNUM *host_n;
   const BIGNUM *server_n;
   const BIGNUM *e, *d;
 
-  md5 = new FQTermSSHMD5;
+  MD5_Init(&ctx);
   ssh_pubkey_getrsa(server_key_, &server_n, &e, &d);
   ssh_pubkey_getrsa(host_key_, &host_n, &e, &d);
   servlen = BN_num_bytes(server_n);
@@ -208,10 +208,10 @@ void FQTermSSH1Kex::makeSessionId() {
   BN_bn2bin(host_n, p);
   BN_bn2bin(server_n, p+hostlen);
 
-  md5->update(p, servlen + hostlen);
-  md5->update(cookie_, 8);
-  md5->final(session_id_);
-  delete md5;
+  MD5_Update(&ctx, p, servlen+hostlen);
+  MD5_Update(&ctx, cookie_, 8);
+  MD5_Final(session_id_, &ctx);
+
   delete [] p;
 }
 
