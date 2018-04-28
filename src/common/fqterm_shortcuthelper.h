@@ -52,6 +52,7 @@ public:
     FQTERM_APPLICATION_SHORTCUT_START = 0,
     CONNECT,
     DISCONNECT,
+    CONN_INFO,
     ADDRESSBOOK,  //F2
     QUICKLOGIN,   //F3
     COPY,         //Ctrl+Ins under lin & win, Ctrl+C under mac

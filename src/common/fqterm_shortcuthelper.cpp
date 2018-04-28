@@ -52,6 +52,7 @@ void FQTermShortcutHelper::initShortcutDescriptionTable()
   initShortcutDescriptionTableEntry(CASCADEWINDOWS, "cascadewindows", tr(""), tr("Cascade Windows"));
   initShortcutDescriptionTableEntry(TILEWINDOWS, "tilewindows", tr(""), tr("Tils Windows"));
   initShortcutDescriptionTableEntry(DISCONNECT, "disconnect", tr(""), tr("Disconnect Host"), "disconnect");
+  initShortcutDescriptionTableEntry(CONN_INFO, "conninfo", tr(""), tr("Connection Info"), "conn_info");
   initShortcutDescriptionTableEntry(ADDRESSBOOK, "addressbook", tr("F2"), tr("Address Book"), "address_book");
   initShortcutDescriptionTableEntry(QUICKLOGIN, "quicklogin", tr("F3"), tr("Quick Login"), "quick_login");
 #if defined(__APPLE__)
@@ -171,6 +172,7 @@ void FQTermShortcutHelper::retranslateAction(int shortcut, const QString& text)
 void FQTermShortcutHelper::retranslateActions() {
   retranslateAction(CONNECT, tr("&Connect"));
   retranslateAction(DISCONNECT, tr("&Disconnect"));
+  retranslateAction(CONN_INFO, tr("Connection Info"));
   retranslateAction(ADDRESSBOOK, tr("&Address book"));
   retranslateAction(QUICKLOGIN, tr("&Quick login"));
   retranslateAction(COPY, tr("&Copy"));

@@ -23,6 +23,8 @@
 
 #include <QAbstractSocket>
 #include <QByteArray>
+#include "fqterm_socket.h"
+#include "connect_info.h"
 
 namespace FQTerm {
 
@@ -52,7 +54,6 @@ struct fsm_trans {
  *	FQTermTelnet class definition
  *-------------------------------------------------------------------------------
  */
-class FQTermSocket;
 
 // Telnet connection, a wrapper of socket.
 // It will translate raw NVT data from low level socket to ansi data,
@@ -84,6 +85,7 @@ class FQTermTelnet: public QObject {
 
   bool readyForInput();
 
+  conn_info_t *connectionInfo() { return socket->connectionInfo(); }
 
  signals:
   void readyRead(int, int); // There are datas to be read out

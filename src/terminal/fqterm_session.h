@@ -35,6 +35,8 @@
 #include "fqterm_param.h"
 #include "fqterm_config.h"
 #include "fqterm_convert.h"
+#include "internal/fqterm_telnet.h"
+#include "connect_info.h"
 #ifdef HAVE_PYTHON
 #include <Python.h>
 #endif //HAVE_PYTHON
@@ -79,7 +81,6 @@ struct LineColorInfo {
 class FQTermConfig;
 class FQTermBuffer;
 class FQTermTextLine;
-class FQTermTelnet;
 class FQTermDecode;
 class FQTermZmodem;
 class ArticleCopyThread;
@@ -220,6 +221,7 @@ class FQTermSession: public QObject {
   void stopLogging(bool);
   bool isLogging();
 
+  conn_info_t * connectionInfo() { return telnet_->connectionInfo(); }
  public:
 
 

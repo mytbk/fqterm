@@ -85,6 +85,8 @@
 #include "defineescape.h"
 #include "uaocodec.h"
 
+#include "connect_info.h"
+
 #ifdef USE_DOTNET_STYLE
 #include "dotnetstyle.h"
 #endif //USE_DOTNET_STYLE
@@ -688,6 +690,56 @@ void FQTermFrame::disconnect() {
   if (aw) {
     aw->disconnect();
   }
+}
+
+static QString ssh2_info(conn_info_t *info)
+{
+	QString txt;
+	txt.append("\nhost key (SHA256): ");
+	const char *tab = "0123456789ABCDEF";
+	for (int i=0; i<32; i++) {
+		unsigned char b = info->ssh_proto_info.hash[i];
+		char hex[4] = { tab[(b>>4)], tab[b&0xf], ':', 0 };
+		if (i==31)
+			hex[2] = 0;
+		txt.append(hex);
+	}
+	txt.append(QString("\ncipher(c2s): %1\ncipher(s2c): %2")
+			.arg(info->ssh_proto_info.c2s_cipher)
+			.arg(info->ssh_proto_info.s2c_cipher));
+	if (info->ssh_proto_info.c2s_mac) {
+		txt.append(QString("\nMAC(c2s): %1")
+				.arg(info->ssh_proto_info.c2s_mac));
+	}
+	if (info->ssh_proto_info.s2c_mac) {
+		txt.append(QString("\nMAC(s2c): %1")
+				.arg(info->ssh_proto_info.s2c_mac));
+	}
+	return txt;
+}
+
+void FQTermFrame::conn_info()
+{
+	FQTermSession *sess = windowManager_->activeWindow()->getSession();
+	conn_info_t *info = sess->connectionInfo();
+	QString txt;
+	switch (info->proto) {
+		case PROTO_TELNET:
+			txt = "protocol: Telnet";
+			break;
+		case PROTO_LOCAL:
+			txt = "protocol: Local";
+			break;
+		case PROTO_SSH:
+			txt = QString("protocol: SSH %1")
+				.arg(info->ssh_proto_info.proto_version);
+			if (info->ssh_proto_info.proto_version == 2)
+				txt.append(ssh2_info(info));
+			break;
+	}
+	QMessageBox b(QMessageBox::Information, "Connection Information",
+			txt, QMessageBox::Ok, this);
+	b.exec();
 }
 
 void FQTermFrame::copy() {
@@ -1335,6 +1387,7 @@ void FQTermFrame::addMainTool() {
   // the toolbar
   toolBarMdiConnectTools_ = addToolBar("BBS operations");
   toolBarMdiConnectTools_->setObjectName("BBS operations");
+  toolBarMdiConnectTools_->addAction(getAction(FQTermShortcutHelper::CONN_INFO));
   FQTERM_ADDACTION(toolBarMdiConnectTools_, DISCONNECT, this, disconnect);
   getAction(FQTermShortcutHelper::DISCONNECT)->setEnabled(false);
   toolBarMdiConnectTools_->addSeparator();
@@ -1422,6 +1475,7 @@ void FQTermFrame::addMainMenu() {
 
   FQTERM_ADDACTION(menuFile_, CONNECT, this, connectIt);
   FQTERM_ADDACTION(menuFile_, DISCONNECT, this, disconnect);
+  FQTERM_ADDACTION(menuFile_, CONN_INFO, this, conn_info);
   menuFile_->addSeparator();
   FQTERM_ADDACTION(menuFile_, ADDRESSBOOK, this, addressBook);
   FQTERM_ADDACTION(menuFile_, QUICKLOGIN, this, quickLogin);
@@ -1588,6 +1642,7 @@ void FQTermFrame::updateMenuToolBar() {
   }
 
   // update menu
+  getAction(FQTermShortcutHelper::CONN_INFO)->setEnabled(window->isConnected());
   getAction(FQTermShortcutHelper::DISCONNECT)->setEnabled(window->isConnected());
   getAction(FQTermShortcutHelper::COPYWITHCOLOR)->setChecked(window->getSession()->param().isColorCopy_);
   getAction(FQTermShortcutHelper::RECTANGLESELECTION)->setChecked(window->getSession()->param().isRectSelect_);
@@ -1654,6 +1709,7 @@ void FQTermFrame::comboFontChanged(const QFont & font) {
 }
 
 void FQTermFrame::enableMenuToolBar(bool enable) {
+  getAction(FQTermShortcutHelper::CONN_INFO)->setEnabled(enable);
   getAction(FQTermShortcutHelper::DISCONNECT)->setEnabled(enable);
   getAction(FQTermShortcutHelper::COPY)->setEnabled(enable);
   getAction(FQTermShortcutHelper::PASTE)->setEnabled(enable);

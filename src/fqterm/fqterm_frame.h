@@ -118,6 +118,7 @@ class FQTermFrame: public QMainWindow {
 
   void connectIt();
   void disconnect();
+  void conn_info();
   void copy();
   void paste();
   void searchIt();
