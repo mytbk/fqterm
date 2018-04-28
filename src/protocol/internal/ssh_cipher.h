@@ -24,6 +24,7 @@ extern "C" {
 		 * Before using the crypto function, IV and key must
 		 * be set and then init function must be called
 		 */
+		const char *name;
 		unsigned char *IV;
 		unsigned char *key;
 		void *priv;

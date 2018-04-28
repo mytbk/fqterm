@@ -2,8 +2,12 @@
 #include "ssh_cipher.h"
 #include <openssl/evp.h>
 
-#define EVP_CIPHER_FUNC(name, evp, k, i, b) \
-	static SSH_CIPHER* evp_##name(int e) { return new_ssh_cipher_evp(evp, k, i, b, e); }
+#define EVP_CIPHER_FUNC(NAME, evp, k, i, b) \
+	static SSH_CIPHER* evp_##NAME(int e) { \
+		SSH_CIPHER *c = new_ssh_cipher_evp(evp, k, i, b, e); \
+		c->name = #NAME; \
+		return c; \
+	}
 
 EVP_CIPHER_FUNC(aes256_ctr, EVP_aes_256_ctr, 32, 16, 16)
 EVP_CIPHER_FUNC(aes192_ctr, EVP_aes_192_ctr, 24, 16, 16)
