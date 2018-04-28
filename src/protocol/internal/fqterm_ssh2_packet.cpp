@@ -62,9 +62,8 @@ void FQTermSSH2PacketSender::makePacket() {
 
   // 2. renew the output buffer.
   int total_len = non_padding_len + padding_len;
-  if (is_mac_) {
-    total_len += mac_->digestSize();
-  }
+  if (is_mac_)
+    total_len += mac->dgstSize;
 
   delete output_buffer_;
   output_buffer_ = new FQTermSSHBuffer(total_len);
@@ -95,8 +94,8 @@ void FQTermSSH2PacketSender::makePacket() {
     buffer.putInt(sequence_no_);
     buffer.putRawData((const char *)packet, len);
 
-    std::vector<u_char> digest(mac_->digestSize());
-    mac_->getDigest(buffer.data(), buffer.len(), &digest[0]);
+    std::vector<u_char> digest(mac->dgstSize);
+    mac->getmac(mac, buffer.data(), buffer.len(), &digest[0]);
 
     FQ_TRACE("ssh2packet", 9) << "Making packets...";
     FQ_TRACE("ssh2packet", 9) << "Append MAC with sequence_no_" << sequence_no_; 
@@ -121,7 +120,7 @@ void FQTermSSH2PacketSender::makePacket() {
     // with the given algorithm.
 
     u_char *data = output_buffer_->data();
-    int len = output_buffer_->len() - mac_->digestSize();
+    int len = output_buffer_->len() - mac->dgstSize;
 
     FQ_TRACE("ssh2packet", 9) << "An packet (without MAC) to be encrypted:" 
                               << len << " bytes:\n" 
@@ -174,7 +173,7 @@ void FQTermSSH2PacketReceiver::parseData(FQTermSSHBuffer *input) {
       return ;
     }
 
-    int expected_input_len = 4 + packet_len + (is_mac_ ? mac_->digestSize() : 0);
+    int expected_input_len = 4 + packet_len + (is_mac_ ? mac->dgstSize : 0);
 
     if (input->len()  < (long)expected_input_len) {
       FQ_TRACE("ssh2packet", 3)
@@ -189,15 +188,15 @@ void FQTermSSH2PacketReceiver::parseData(FQTermSSHBuffer *input) {
     if (is_decrypt_) {
       // decrypte blocks left.
       unsigned char *tmp = input->data() + cipher->blkSize;
-      int left_len = expected_input_len - cipher->blkSize - mac_->digestSize();
+      int left_len = expected_input_len - cipher->blkSize - mac->dgstSize;
       FQ_VERIFY(cipher->crypt(cipher, tmp, tmp, left_len)==1);
     }
 
     // 3. check MAC
     if (is_mac_) {
-      int digest_len = mac_->digestSize();
+      int digest_len = mac->dgstSize;
       std::vector<u_char> digest(digest_len);
-      mac_->getDigest(input->data(), expected_input_len - digest_len, &digest[0]);
+      mac->getmac(mac, input->data(), expected_input_len - digest_len, &digest[0]);
 
       u_char *received_digest = input->data() + expected_input_len - digest_len;
 
@@ -213,9 +212,8 @@ void FQTermSSH2PacketReceiver::parseData(FQTermSSHBuffer *input) {
     std::vector<u_char> data(packet_len);
 
     input->getRawData((char*)&data[0], packet_len);
-    if (is_mac_) {
-      input->consume(mac_->digestSize());
-    }
+    if (is_mac_)
+      input->consume(mac->dgstSize);
 
     int padding_len = data[0];
 

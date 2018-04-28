@@ -41,8 +41,7 @@ FQTermSSHPacketSender::FQTermSSHPacketSender() {
   cipher = NULL;
 
   is_mac_ = false;
-  mac_type_ = FQTERM_SSH_MAC_NONE;
-  mac_ = NULL;
+  mac = NULL;
 
   is_compressed_ = false;
 
@@ -54,6 +53,8 @@ FQTermSSHPacketSender::~FQTermSSHPacketSender() {
 	delete output_buffer_;
 	if (cipher)
 		cipher->cleanup(cipher);
+        if (mac)
+		mac->cleanup(mac);
 }
 
 void FQTermSSHPacketSender::putRawData(const char *data, int len) {
@@ -104,22 +105,9 @@ void FQTermSSHPacketSender::resetEncryption() {
   is_encrypt_ = false;
 }
 
-void FQTermSSHPacketSender::setMacType(int macType) {
-  mac_type_ = macType;
-
-  delete mac_;
-  mac_ = NULL;
-
-  switch (mac_type_) {
-    case FQTERM_SSH_HMAC_SHA1:
-      mac_ = new FQTermSSHSHA1;
-      break;
-  }
-}
-
 void FQTermSSHPacketSender::startMac(const u_char *key) {
   is_mac_ = true;
-  mac_->setKey(key);
+  memcpy(mac->key, key, mac->keySize);
 }
 
 void FQTermSSHPacketSender::resetMac() {
@@ -138,8 +126,7 @@ FQTermSSHPacketReceiver::FQTermSSHPacketReceiver() {
   cipher = NULL;
 
   is_mac_ = false;
-  mac_type_ = FQTERM_SSH_MAC_NONE;
-  mac_ = NULL;
+  mac = NULL;
 
   is_compressed_ = false;
 
@@ -151,6 +138,8 @@ FQTermSSHPacketReceiver::~FQTermSSHPacketReceiver()
 	delete buffer_;
 	if (cipher)
 		cipher->cleanup(cipher);
+        if (mac)
+		mac->cleanup(mac);
 }
 
 void FQTermSSHPacketReceiver::getRawData(char *data, int length) {
@@ -195,21 +184,9 @@ void FQTermSSHPacketReceiver::resetEncryption() {
   is_decrypt_ = false;
 }
 
-void FQTermSSHPacketReceiver::setMacType(int macType) {
-  mac_type_ = macType;
-  delete mac_;
-  mac_ = NULL;
-
-  switch (mac_type_) {
-    case FQTERM_SSH_HMAC_SHA1:
-      mac_ = new FQTermSSHSHA1;
-      break;
-  }
-}
-
 void FQTermSSHPacketReceiver::startMac(const u_char *key) {
   is_mac_ = true;
-  mac_->setKey(key);
+  memcpy(mac->key, key, mac->keySize);
 }
 
 void FQTermSSHPacketReceiver::resetMac() {

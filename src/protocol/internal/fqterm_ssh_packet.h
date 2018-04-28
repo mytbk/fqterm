@@ -27,7 +27,7 @@
 
 #include "fqterm_ssh_types.h"
 #include "fqterm_ssh_buffer.h"
-#include "fqterm_ssh_mac.h"
+#include "ssh_mac.h"
 #include "fqterm_serialization.h"
 #include "ssh_cipher.h"
 
@@ -39,6 +39,7 @@ class FQTermSSHPacketSender: public QObject {
   FQTermSSHBuffer *output_buffer_;
   FQTermSSHBuffer *buffer_;
   ssh_cipher_t *cipher;
+  ssh_mac_t *mac;
 
   FQTermSSHPacketSender();
   virtual ~FQTermSSHPacketSender();
@@ -54,13 +55,12 @@ class FQTermSSHPacketSender: public QObject {
 
   virtual int getIVSize() const { return cipher->IVSize;}
   virtual int getKeySize() const { return cipher->keySize;}
-  int getMacKeySize() const { return mac_->keySize();}
+  int getMacKeySize() const { return mac->keySize;}
 
  public slots:
   void startEncryption(const u_char *key, const u_char *IV = NULL);
   void resetEncryption();
 
-  void setMacType(int macType);
   void startMac(const u_char *sessionkey);
   void resetMac();
 
@@ -74,8 +74,6 @@ class FQTermSSHPacketSender: public QObject {
   int cipher_type_;
 
   bool is_mac_;
-  int mac_type_;
-  FQTermSSHMac *mac_;
 
   bool is_compressed_;
 
@@ -89,6 +87,7 @@ class FQTermSSHPacketReceiver: public QObject {
  public:
   FQTermSSHBuffer *buffer_;
   ssh_cipher_t *cipher;
+  ssh_mac_t *mac;
 
   FQTermSSHPacketReceiver();
   virtual ~FQTermSSHPacketReceiver();
@@ -108,14 +107,13 @@ class FQTermSSHPacketReceiver: public QObject {
   virtual int packetDataLen() const { return real_data_len_;}
   virtual int getIVSize() const { return cipher->IVSize;}
   virtual int getKeySize() const { return cipher->keySize;}
-  int getMacKeySize() const { return mac_->keySize();}
+  int getMacKeySize() const { return mac->keySize;}
 
   virtual void parseData(FQTermSSHBuffer *input) = 0;
  public slots:
   void startEncryption(const u_char *key, const u_char *IV = NULL);
   void resetEncryption();
 
-  void setMacType(int macType);
   void startMac(const u_char *sessionkey);
   void resetMac();
 
@@ -130,8 +128,6 @@ class FQTermSSHPacketReceiver: public QObject {
   int cipher_type_;
 
   bool is_mac_;
-  int mac_type_;
-  FQTermSSHMac *mac_;
 
   bool is_compressed_;
 

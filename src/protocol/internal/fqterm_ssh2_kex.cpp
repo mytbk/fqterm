@@ -167,8 +167,32 @@ bool FQTermSSH2Kex::negotiateAlgorithms() {
   }
   packet_receiver_->cipher = s2c(0);
 
+  // mac algo c2s
+  size_t m_c2s_len = packet_receiver_->getInt();
+  char m_c2s[m_c2s_len+1];
+  packet_receiver_->getRawData(m_c2s, m_c2s_len);
+  m_c2s[m_c2s_len] = '\0';
+  const struct ssh_mac_t * mac_c2s = search_mac(m_c2s);
+  if (mac_c2s == NULL) {
+	  emit kexError(tr("No matching c2s MAC algorithms!"));
+	  return false;
+  }
+  packet_sender_->mac = mac_c2s->new_mac(mac_c2s);
+
+  // mac algo s2c
+  size_t m_s2c_len = packet_receiver_->getInt();
+  char m_s2c[m_s2c_len+1];
+  packet_receiver_->getRawData(m_s2c, m_s2c_len);
+  m_s2c[m_s2c_len] = '\0';
+  const struct ssh_mac_t * mac_s2c = search_mac(m_s2c);
+  if (mac_s2c == NULL) {
+	  emit kexError(tr("No matching s2c MAC algorithms!"));
+	  return false;
+  }
+  packet_receiver_->mac = mac_s2c->new_mac(mac_s2c);
+
   std::vector<char> name_lists;
-  for (int i = 4; i < 10; ++i) {
+  for (int i = 6; i < 10; ++i) {
     int name_lists_len = packet_receiver_->getInt();
     if (name_lists_len > 0) {
       name_lists.resize(name_lists_len);
@@ -191,8 +215,8 @@ bool FQTermSSH2Kex::negotiateAlgorithms() {
   packet_sender_->putString("ssh-rsa");
   packet_sender_->putString(all_ciphers_list);
   packet_sender_->putString(all_ciphers_list);
-  packet_sender_->putString("hmac-sha1");
-  packet_sender_->putString("hmac-sha1");
+  packet_sender_->putString(all_macs_list);
+  packet_sender_->putString(all_macs_list);
   packet_sender_->putString("none");
   packet_sender_->putString("none");
   packet_sender_->putString("");
@@ -329,9 +353,6 @@ bool FQTermSSH2Kex::changeKeyAlg() {
 	  session_id_ = new unsigned char[dh->digest.hashlen];
 	  memcpy(session_id_, H_, dh->digest.hashlen);
   }
-
-  packet_sender_->setMacType(FQTERM_SSH_HMAC_SHA1);
-  packet_receiver_->setMacType(FQTERM_SSH_HMAC_SHA1);
 
   // From RFC 4253 section 7.2:
   // Initial IV client to server: HASH(K || H || "A" || session_id)

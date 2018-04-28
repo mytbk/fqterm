@@ -19,6 +19,8 @@ set(internal_SRCS
   internal/all_ciphers.c
   internal/ssh_evp_cipher.c
   internal/ssh_3des-ssh1.c
+  internal/ssh_mac.h
+  internal/ssh_mac.c
   internal/ssh_pubkey_crypto.h
   internal/ssh_pubkey_crypto.c
   internal/ssh_diffie-hellman.h
@@ -30,7 +32,6 @@ set(internal_SRCS
   internal/fqterm_ssh_const.h
   internal/fqterm_ssh_kex.h
   internal/fqterm_ssh2_kex.h
-  internal/fqterm_ssh_mac.h
   internal/fqterm_ssh_packet.h
   internal/fqterm_ssh1_packet.h
   internal/fqterm_ssh2_packet.h
@@ -41,7 +42,6 @@ set(internal_SRCS
   internal/fqterm_ssh_buffer.cpp
   internal/fqterm_ssh_kex.cpp
   internal/fqterm_ssh2_kex.cpp
-  internal/fqterm_ssh_mac.cpp
   internal/fqterm_ssh_packet.cpp
   internal/fqterm_ssh1_packet.cpp
   internal/fqterm_ssh2_packet.cpp
