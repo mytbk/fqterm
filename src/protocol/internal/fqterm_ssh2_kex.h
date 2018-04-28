@@ -55,6 +55,8 @@ private:
   char *I_C_;
   int I_S_len_;
   char *I_S_;
+  int K_S_len_;
+  char *K_S_;
 
   SSH_DH *dh;
   BIGNUM *bn_x_;
@@ -69,9 +71,6 @@ private:
   unsigned char *session_id_;
 
   bool is_first_kex_;
-
-  ssh_pubkey_t *host_key_;
-  ssh_pubkey_t *server_key_;
 
   u_char cookie_[16];
   int server_flag_, ciphers_, auth_;
@@ -92,6 +91,10 @@ public:
 
   virtual void initKex(FQTermSSHPacketReceiver *packetReceiver,
                        FQTermSSHPacketSender *outputSender);
+  void hostKeyHash(unsigned char *md)
+  {
+	  SHA256((const unsigned char*)K_S_, K_S_len_, md);
+  }
 
 public slots:
   void handlePacket(int type);

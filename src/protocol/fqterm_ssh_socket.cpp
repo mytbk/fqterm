@@ -161,11 +161,22 @@ void FQTermSSHSocket::init(int ssh_version) {
 
     key_exchanger_->initKex(packet_receiver_, packet_sender_);
   }
+
+  conn_info.proto = PROTO_SSH;
+  conn_info.ssh_proto_info.proto_version = ssh_version;
 }
 
-void FQTermSSHSocket::kexOK() {
-  FQ_TRACE("sshsocket", 3) << "Key exchange completed!";
-  authentication_->initAuth(packet_receiver_, packet_sender_);
+void FQTermSSHSocket::kexOK()
+{
+	FQ_TRACE("sshsocket", 3) << "Key exchange completed!";
+	conn_info.ssh_proto_info.c2s_cipher = packet_sender_->cipher->name;
+	conn_info.ssh_proto_info.s2c_cipher = packet_receiver_->cipher->name;
+	if (packet_sender_->mac)
+		conn_info.ssh_proto_info.c2s_mac = packet_sender_->mac->name;
+	if (packet_receiver_->mac)
+		conn_info.ssh_proto_info.s2c_mac = packet_receiver_->mac->name;
+	key_exchanger_->hostKeyHash(conn_info.ssh_proto_info.hash);
+	authentication_->initAuth(packet_receiver_, packet_sender_);
 }
 
 void FQTermSSHSocket::authOK() {

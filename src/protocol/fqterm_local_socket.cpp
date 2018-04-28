@@ -15,6 +15,7 @@ FQTermLocalSocket::FQTermLocalSocket()
   //TODO: Error
   //FQ_VERIFY(connect(shell_process_, SIGNAL(error(QAbstractSocket::SocketError)), this, SIGNAL(error(QAbstractSocket::SocketError))));
   //FQ_VERIFY(connect(shell_process_, SIGNAL(socketState(int)), this, SIGNAL(socketState(int))));
+  conn_info.proto = PROTO_LOCAL;
 }
 
 FQTermLocalSocket::~FQTermLocalSocket()

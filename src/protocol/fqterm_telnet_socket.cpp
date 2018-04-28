@@ -13,6 +13,7 @@ FQTermTelnetSocket::FQTermTelnetSocket()
   FQ_VERIFY(connect(private_socket_, SIGNAL(readyRead()), this, SIGNAL(readyRead())));
   FQ_VERIFY(connect(private_socket_, SIGNAL(error(QAbstractSocket::SocketError)), this, SIGNAL(error(QAbstractSocket::SocketError))));
   FQ_VERIFY(connect(private_socket_, SIGNAL(socketState(int)), this, SIGNAL(socketState(int))));
+  conn_info.proto = PROTO_TELNET;
 }
 
 FQTermTelnetSocket::~FQTermTelnetSocket() {

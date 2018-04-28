@@ -42,6 +42,7 @@ FQTermSSH2Kex::FQTermSSH2Kex(const char *V_C, const char *V_S)
   I_C_ = NULL;
   I_S_len_ = 0;
   I_S_ = NULL;
+  K_S_ = NULL;
 
   bn_x_ = BN_new();
   bn_e_ = BN_new();
@@ -56,6 +57,8 @@ FQTermSSH2Kex::FQTermSSH2Kex(const char *V_C, const char *V_S)
 FQTermSSH2Kex::~FQTermSSH2Kex() {
   delete[] I_C_;
   delete[] I_S_;
+  if (K_S_)
+    delete [] K_S_;
 
   BN_clear_free(bn_x_);
   BN_clear_free(bn_e_);
@@ -109,6 +112,24 @@ void FQTermSSH2Kex::handlePacket(int type)
 
 bool FQTermSSH2Kex::negotiateAlgorithms() {
   FQ_FUNC_TRACE("ssh2kex", 10);
+
+  /*
+   * RFC 4253 section 7: kex begins by the following packet
+   * byte         SSH_MSG_KEXINIT
+   * byte[16]     cookie (random bytes)
+   * name-list    kex_algorithms
+   * name-list    server_host_key_algorithms
+   * name-list    encryption_algorithms_client_to_server
+   * name-list    encryption_algorithms_server_to_client
+   * name-list    mac_algorithms_client_to_server
+   * name-list    mac_algorithms_server_to_client
+   * name-list    compression_algorithms_client_to_server
+   * name-list    compression_algorithms_server_to_client
+   * name-list    languages_client_to_server
+   * name-list    languages_server_to_client
+   * boolean      first_kex_packet_follows
+   * uint32       0 (reserved for future extension)
+   */
 
   if (packet_receiver_->packetType() != SSH2_MSG_KEXINIT) {
     emit kexError(tr("startKex: First packet is not SSH_MSG_KEXINIT"));
@@ -256,8 +277,9 @@ bool FQTermSSH2Kex::verifyKey() {
 
   // Extract data
 
-  int K_S_len = -1;
-  unsigned char *K_S = (unsigned char *)packet_receiver_->getString(&K_S_len);
+  if (K_S_)
+    delete [] K_S_;
+  K_S_ = (char*)packet_receiver_->getString(&K_S_len_);
 
   packet_receiver_->getBN2(bn_f_);
 
@@ -273,7 +295,7 @@ bool FQTermSSH2Kex::verifyKey() {
   buffer->putString(V_S_);
   buffer->putString(I_C_, I_C_len_);
   buffer->putString(I_S_, I_S_len_);
-  buffer->putString((char *)K_S, K_S_len);
+  buffer->putString(K_S_, K_S_len_);
   buffer->putSSH2BN(bn_e_);
   buffer->putSSH2BN(bn_f_);
   buffer->putSSH2BN(bn_K_);
@@ -287,7 +309,7 @@ bool FQTermSSH2Kex::verifyKey() {
 
   // Ignore the first 15 bytes of the signature of H sent from server:
   // algorithm_name_length[4], algorithm_name[7]("ssh-rsa") and signature_length[4].
-  RSA *rsactx = CreateRSAContext(K_S, K_S_len);
+  RSA *rsactx = CreateRSAContext((unsigned char*)K_S_, K_S_len_);
   int sig_len = s_len - 15;
   unsigned char *sig = s + 15;
   int res = RSA_verify(NID_sha1, s_H, SHA_DIGEST_LENGTH,
@@ -295,7 +317,6 @@ bool FQTermSSH2Kex::verifyKey() {
 
   RSA_free(rsactx);
 
-  delete [] K_S;
   delete [] s;
 
   return res == 1;

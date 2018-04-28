@@ -53,7 +53,7 @@ public:
 
   virtual void initKex(FQTermSSHPacketReceiver *packetReceiver,
                        FQTermSSHPacketSender *outputSender) = 0;
-
+  virtual void hostKeyHash(unsigned char *md) {}
 public slots:
   virtual void handlePacket(int type) = 0;
 

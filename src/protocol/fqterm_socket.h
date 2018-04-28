@@ -51,6 +51,8 @@
 #include <QStringList>
 #include <QProcess>
 
+#include "connect_info.h"
+
 class QTcpSocket;
 namespace FQTerm {
 /*
@@ -115,6 +117,9 @@ class FQTermSocketPrivate: public QObject {
 class FQTermSocket: public QObject {
 
   Q_OBJECT;
+protected:
+  conn_info_t conn_info;
+
  public:
   FQTermSocket(QObject *parent = 0): QObject(parent) {}
 
@@ -133,6 +138,7 @@ class FQTermSocket: public QObject {
   virtual unsigned long bytesAvailable() = 0;
   virtual bool readyForInput() {return true;}
   virtual bool setTermSize(int col, int row) {return 0;}
+  virtual conn_info_t * connectionInfo() { return &conn_info; }
  signals:
   void sshAuthOK();
   void connected();
