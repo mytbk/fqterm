@@ -1,3 +1,14 @@
+Changes in 0.9.8.6
+==================
+
+Well, it's still not the final version of FQTerm 0.9.x branch...
+
+Changes include:
+
+* drop mini server
+* more refactor on native SSH
+* merge the fix to #11
+
 Changes in 0.9.8.4
 ==================
 
