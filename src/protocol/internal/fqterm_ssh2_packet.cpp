@@ -194,17 +194,21 @@ void FQTermSSH2PacketReceiver::parseData(FQTermSSHBuffer *input) {
 
     // 3. check MAC
     if (is_mac_) {
-      int digest_len = mac->dgstSize;
-      std::vector<u_char> digest(digest_len);
-      mac->getmac(mac, input->data(), expected_input_len - digest_len, &digest[0]);
+		int digest_len = mac->dgstSize;
+		std::vector<u_char> digest(digest_len);
 
-      u_char *received_digest = input->data() + expected_input_len - digest_len;
+		FQTermSSHBuffer buffer(4 + expected_input_len - digest_len);
+		buffer.putInt(sequence_no_);
+		buffer.putRawData((const char *)input->data(), expected_input_len - digest_len);
+		mac->getmac(mac, buffer.data(), buffer.len(), &digest[0]);
 
-      if (memcmp(&digest[0], received_digest, digest_len) == 0) {
-        FQ_TRACE("ssh2packet", 0) << "incorrect MAC.";
-        return ;
-      }
-    }
+		u_char *received_digest = input->data() + expected_input_len - digest_len;
+
+		if (memcmp(&digest[0], received_digest, digest_len) != 0) {
+			emit packetError("incorrect MAC.");
+			return ;
+		}
+	}
 
     // 4. get every field of the ssh packet.
     packet_len = input->getInt();
