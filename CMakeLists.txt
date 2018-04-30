@@ -1,6 +1,6 @@
 project(fqterm)
 
-set(FQTERM_VERSION "0.9.8.6")
+set(FQTERM_VERSION "0.9.8.7")
 set(CMAKE_VERBOSE_MAKEFILE ON)
 cmake_minimum_required(VERSION 3.0.0 FATAL_ERROR)
 

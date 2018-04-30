@@ -1,3 +1,10 @@
+Changes in 0.9.8.7
+==================
+
+This version fixes the SSH MAC verification. However, you should still use your local ssh(1) if you can.
+
+A new feature is introduced to show the connection info.
+
 Changes in 0.9.8.6
 ==================
 
