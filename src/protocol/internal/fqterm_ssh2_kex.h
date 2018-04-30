@@ -24,7 +24,7 @@
 #include <openssl/sha.h>
 
 #include "fqterm_ssh_kex.h"
-#include "ssh_diffie-hellman.h"
+#include "ssh_session.h"
 
 namespace FQTerm {
 
@@ -58,17 +58,7 @@ private:
   int K_S_len_;
   char *K_S_;
 
-  SSH_DH *dh;
-  BIGNUM *bn_x_;
-  BIGNUM *bn_e_;
-  BN_CTX *ctx_;
-
-  BIGNUM *bn_K_;
-  BIGNUM *bn_f_;
-
-  unsigned char H_[SHA512_DIGEST_LENGTH];
-
-  unsigned char *session_id_;
+  ssh_session sess;
 
   bool is_first_kex_;
 
@@ -82,8 +72,6 @@ private:
   bool verifyKey();
   void sendNewKeys();
   bool changeKeyAlg();
-
-  unsigned char *computeKey(int len, char flag);
 
 public:
   FQTermSSH2Kex(const char *V_C, const char *V_S);

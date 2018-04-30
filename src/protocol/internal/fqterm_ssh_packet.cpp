@@ -77,10 +77,6 @@ void FQTermSSHPacketSender::putBN(BIGNUM *bn) {
   buffer_->putSSH1BN(bn);
 }
 
-void FQTermSSHPacketSender::putBN2(BIGNUM *bn) {
-  buffer_->putSSH2BN(bn);
-}
-
 void FQTermSSHPacketSender::startPacket(int pkt_type) {
   buffer_->clear();
   buffer_->putByte(pkt_type);
@@ -160,10 +156,6 @@ void *FQTermSSHPacketReceiver::getString(int *length) {
 
 void FQTermSSHPacketReceiver::getBN(BIGNUM *bignum) {
   buffer_->getSSH1BN(bignum);
-}
-
-void FQTermSSHPacketReceiver::getBN2(BIGNUM *bignum) {
-  buffer_->getSSH2BN(bignum);
 }
 
 void FQTermSSHPacketReceiver::consume(int len) {

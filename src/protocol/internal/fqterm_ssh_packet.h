@@ -50,7 +50,6 @@ class FQTermSSHPacketSender: public QObject {
   void putString(const char *string, int len = -1);
   void putRawData(const char *data, int length);
   void putBN(BIGNUM *bignum);
-  void putBN2(BIGNUM *bignum);
   void write();
 
   virtual int getIVSize() const { return cipher->IVSize;}
@@ -101,7 +100,6 @@ class FQTermSSHPacketReceiver: public QObject {
   void *getString(int *length = NULL);
   void getRawData(char *data, int length);
   void getBN(BIGNUM *bignum);
-  void getBN2(BIGNUM *bignum);
   void consume(int len);
 
   virtual int packetDataLen() const { return real_data_len_;}

@@ -44,14 +44,7 @@ FQTermSSH2Kex::FQTermSSH2Kex(const char *V_C, const char *V_S)
   I_S_ = NULL;
   K_S_ = NULL;
 
-  bn_x_ = BN_new();
-  bn_e_ = BN_new();
-  ctx_ = BN_CTX_new();
-
-  bn_K_ = BN_new();
-  bn_f_ = BN_new();
-
-  session_id_ = NULL;
+  sess.session_id = NULL;
 }
 
 FQTermSSH2Kex::~FQTermSSH2Kex() {
@@ -60,14 +53,8 @@ FQTermSSH2Kex::~FQTermSSH2Kex() {
   if (K_S_)
     delete [] K_S_;
 
-  BN_clear_free(bn_x_);
-  BN_clear_free(bn_e_);
-  BN_CTX_free(ctx_);
-
-  BN_clear_free(bn_K_);
-  BN_clear_free(bn_f_);
-
-  delete[] session_id_;
+  if (sess.session_id != NULL)
+    delete[] sess.session_id;
 }
 
 void FQTermSSH2Kex::initKex(FQTermSSHPacketReceiver *packetReceiver, 
@@ -156,7 +143,7 @@ bool FQTermSSH2Kex::negotiateAlgorithms() {
 	  emit kexError(tr("No matching KEX algorithms!"));
 	  return false;
   }
-  this->dh = new_dh();
+  sess.dh = new_dh();
 
   // TODO: host key algorithms
   size_t hk_algo_len = packet_receiver_->getInt();
@@ -258,12 +245,23 @@ bool FQTermSSH2Kex::negotiateAlgorithms() {
   return true;
 }
 
-void FQTermSSH2Kex::exchangeKey() {
-  BN_pseudo_rand_range(bn_x_, dh->p);
-  BN_mod_exp(bn_e_, dh->g, bn_x_, dh->p, ctx_);
+/* RFC 4253 section 8:
+ * client generate x and compute e=g^x
+ * server generate y and compute f=g^y
+ *
+ * client sends:
+ * byte      SSH_MSG_KEXDH_INIT
+ * mpint     e
+ * server sends:
+ * byte      SSH_MSG_KEXDH_REPLY
+ * string    server public host key and certificates (K_S)
+ * mpint     f
+ * string    signature of H
+ */
 
+void FQTermSSH2Kex::exchangeKey() {
   packet_sender_->startPacket(SSH2_MSG_KEXDH_INIT);
-  packet_sender_->putBN2(bn_e_);
+  packet_sender_->putRawData((const char*)sess.dh->mpint_e, sess.dh->e_len);
   packet_sender_->write();
 }
 
@@ -275,18 +273,21 @@ bool FQTermSSH2Kex::verifyKey() {
     return false;
   }
 
-  // Extract data
 
   if (K_S_)
     delete [] K_S_;
   K_S_ = (char*)packet_receiver_->getString(&K_S_len_);
 
-  packet_receiver_->getBN2(bn_f_);
+  int mpint_f_len;
+  unsigned char *mpint_f = (unsigned char *)packet_receiver_->getString(&mpint_f_len);
+  if (ssh_dh_compute_secret(sess.dh, mpint_f, mpint_f_len) < 0) {
+    emit kexError(tr("Error when computing shared secret"));
+    delete mpint_f;
+    return false;
+  }
 
   int s_len = -1;
   unsigned char *s = (unsigned char *)packet_receiver_->getString(&s_len);
-
-  BN_mod_exp(bn_K_, bn_f_, bn_x_, dh->p, ctx_);
 
   FQTermSSHBuffer *buffer = packet_sender_->output_buffer_;
 
@@ -296,16 +297,16 @@ bool FQTermSSH2Kex::verifyKey() {
   buffer->putString(I_C_, I_C_len_);
   buffer->putString(I_S_, I_S_len_);
   buffer->putString(K_S_, K_S_len_);
-  buffer->putSSH2BN(bn_e_);
-  buffer->putSSH2BN(bn_f_);
-  buffer->putSSH2BN(bn_K_);
+  buffer->putRawData((const char*)sess.dh->mpint_e, sess.dh->e_len);
+  buffer->putString((const char*)mpint_f, mpint_f_len);
+  buffer->putRawData((const char*)sess.dh->secret, sess.dh->secret_len);
 
-  ssh_dh_hash(dh, buffer->data(), H_, buffer->len());
+  ssh_dh_hash(sess.dh, buffer->data(), sess.H, buffer->len());
 
   // Start verify
   // ssh-rsa specifies SHA-1 hashing
   unsigned char s_H[SHA_DIGEST_LENGTH];
-  SHA1(H_, dh->digest.hashlen, s_H);
+  SHA1(sess.H, sess.dh->digest.hashlen, s_H);
 
   // Ignore the first 15 bytes of the signature of H sent from server:
   // algorithm_name_length[4], algorithm_name[7]("ssh-rsa") and signature_length[4].
@@ -317,6 +318,7 @@ bool FQTermSSH2Kex::verifyKey() {
 
   RSA_free(rsactx);
 
+  delete [] mpint_f;
   delete [] s;
 
   return res == 1;
@@ -365,14 +367,16 @@ void FQTermSSH2Kex::sendNewKeys(){
 }
 
 bool FQTermSSH2Kex::changeKeyAlg() {
+	unsigned char IV_c2s[128], IV_s2c[128], key_c2s[128], key_s2c[128], mac_c2s[128], mac_s2c[128];
+
   if (packet_receiver_->packetType() != SSH2_MSG_NEWKEYS) {
     emit kexError(tr("Expect a SSH_MSG_NEWKEYS packet"));
     return false;
   }
 
-  if (session_id_ == NULL) {
-	  session_id_ = new unsigned char[dh->digest.hashlen];
-	  memcpy(session_id_, H_, dh->digest.hashlen);
+  if (sess.session_id == NULL) {
+	  sess.session_id = new unsigned char[sess.dh->digest.hashlen];
+	  memcpy(sess.session_id, sess.H, sess.dh->digest.hashlen);
   }
 
   // From RFC 4253 section 7.2:
@@ -391,73 +395,33 @@ bool FQTermSSH2Kex::changeKeyAlg() {
   // Integrity key server to client: HASH(K || H || "F" || session_id)
 
   int IV_c2s_len = packet_sender_->getIVSize();
-  unsigned char *IV_c2s = computeKey(IV_c2s_len, 'A');
+  computeKey(&sess, IV_c2s_len, 'A', IV_c2s);
 
   int IV_s2c_len = packet_receiver_->getIVSize();
-  unsigned char *IV_s2c = computeKey(IV_s2c_len, 'B');
+  computeKey(&sess, IV_s2c_len, 'B', IV_s2c);
 
   int key_c2s_len = packet_sender_->getKeySize();
-  unsigned char *key_c2s = computeKey(key_c2s_len, 'C');
+  computeKey(&sess, key_c2s_len, 'C', key_c2s);
 
   int key_s2c_len = packet_receiver_->getKeySize();
-  unsigned char *key_s2c = computeKey(key_s2c_len, 'D');
+  computeKey(&sess, key_s2c_len, 'D', key_s2c);
 
   int mac_key_c2s_len = packet_sender_->getMacKeySize();
-  unsigned char *mac_key_c2s = computeKey(mac_key_c2s_len, 'E');
+  computeKey(&sess, mac_key_c2s_len, 'E', mac_c2s);
 
   int mac_key_s2c_len = packet_receiver_->getMacKeySize();
-  unsigned char *mac_key_s2c = computeKey(mac_key_s2c_len, 'F');
-
+  computeKey(&sess, mac_key_s2c_len, 'F', mac_s2c);
 
   packet_sender_->startEncryption(key_c2s, IV_c2s);
-  packet_sender_->startMac(mac_key_c2s);
+  packet_sender_->startMac(mac_c2s);
 
   packet_receiver_->startEncryption(key_s2c, IV_s2c);
-  packet_receiver_->startMac(mac_key_s2c);
+  packet_receiver_->startMac(mac_s2c);
 
   /* now key exchange ends */
-  ssh_dh_free(dh);
-
-  delete[] IV_c2s;
-  delete[] IV_s2c;
-  delete[] key_c2s;
-  delete[] key_s2c;
-  delete[] mac_key_c2s;
-  delete[] mac_key_s2c;
+  ssh_dh_free(sess.dh);
 
   return true;
-}
-
-unsigned char *FQTermSSH2Kex::computeKey(int expected_len, char flag)
-{
-	unsigned char *key = new unsigned char[expected_len + SHA_DIGEST_LENGTH];
-
-	int len = 0;
-
-	EVP_MD_CTX *mdctx = dh->digest.mdctx;
-	const EVP_MD *md = dh->digest.md;
-	int hashlen = dh->digest.hashlen;
-
-	FQTermSSHBuffer K(BN_num_bytes(bn_K_) + 5);
-	K.putSSH2BN(bn_K_);
-
-	while (len < expected_len) {
-		EVP_DigestInit_ex(mdctx, md, NULL);
-		EVP_DigestUpdate(mdctx, K.data(), K.len());
-		EVP_DigestUpdate(mdctx, H_, hashlen);
-
-		if (len == 0) {
-			EVP_DigestUpdate(mdctx, &flag, 1);
-			EVP_DigestUpdate(mdctx, session_id_, hashlen);
-		} else {
-			EVP_DigestUpdate(mdctx, key, len);
-		}
-
-		EVP_DigestFinal_ex(mdctx, key+len, NULL);
-		len += SHA_DIGEST_LENGTH;
-	}
-
-	return key;
 }
 
 }  // namespace FQTerm

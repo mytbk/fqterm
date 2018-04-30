@@ -127,34 +127,6 @@ void FQTermSSHBuffer::putSSH1BN(BIGNUM *bignum) {
   delete [] buf;
 }
 
-
-
-void FQTermSSHBuffer::putSSH2BN(BIGNUM *bignum) {
-  // FIXME: support negative number and add error handling.
-
-  FQ_VERIFY(!BN_is_negative(bignum));  // currently we don't support negative big number.
-
-  if (BN_is_zero(bignum)) {
-    this->putInt(0);
-  } else {
-    u_int bytes = BN_num_bytes(bignum) + 1;
-
-    FQ_VERIFY(bytes >= 2); // currently we don't support big numbers so small
-
-    std::vector<u_char> buf(bytes);
-    buf[0] = 0;
-
-    int bin_len = BN_bn2bin(bignum, &buf[0] + 1);
-
-    FQ_VERIFY(bin_len == (int)bytes - 1);
-      
-    u_int no_high_bit = (buf[1] & 0x80) ? 0 : 1;
-
-    this->putInt(bytes - no_high_bit);
-    this->putRawData((const char *)&buf[0] + no_high_bit, bytes - no_high_bit);
-  }
-}
-
 //==============================================================================
 // Retrieves a BIGNUM from the buffer.
 //==============================================================================
@@ -180,22 +152,6 @@ void FQTermSSHBuffer::getSSH1BN(BIGNUM *bignum) {
   bin = data();
   BN_bin2bn(bin, bytes, bignum);
   consume(bytes);
-}
-
-void FQTermSSHBuffer::getSSH2BN(BIGNUM *bignum) {
-  // FIXME: support negative numbers and error handling
-  int len;
-  unsigned char *hex_data = (unsigned char *)getString(&len);
-
-  FQ_VERIFY(!(len > 0 && (hex_data[0] & 0x80)));  // don't support negative numbers.
-
-  FQ_VERIFY(len < 10240);  // don't support so large numbers.
-
-  BIGNUM *res = BN_bin2bn(hex_data, len, bignum);
-
-  FQ_VERIFY(res != NULL);
-
-  delete [] hex_data;
 }
 
 u_short FQTermSSHBuffer::getWord() {

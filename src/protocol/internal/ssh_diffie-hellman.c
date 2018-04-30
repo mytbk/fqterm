@@ -1,4 +1,5 @@
 #include "ssh_diffie-hellman.h"
+#include "ssh_session.h"
 #include "ssh_crypto_common.h"
 #include <stdlib.h>
 
@@ -64,15 +65,39 @@ ssh_dh_free(SSH_DH *dh)
 	BN_free(dh->g);
 	BN_free(dh->p);
 	ssh_md_ctx_free(dh->digest.mdctx);
+	BN_clear_free(dh->bn_x);
+	BN_CTX_free(dh->ctx);
+	free(dh->mpint_e);
+	free(dh->secret);
 	free(dh);
+}
+
+static void dh_compute(SSH_DH *dh)
+{
+	dh->bn_x = BN_new();
+	BN_pseudo_rand_range(dh->bn_x, dh->p);
+
+	BIGNUM *bn_e = BN_new();
+	BN_mod_exp(bn_e, dh->g, dh->bn_x, dh->p, dh->ctx);
+	dh->e_len = BN_bn2mpi(bn_e, NULL);
+	dh->mpint_e = (unsigned char*)malloc(dh->e_len);
+	BN_bn2mpi(bn_e, dh->mpint_e);
+	BN_free(bn_e);
+}
+
+static SSH_DH *create_dh()
+{
+	SSH_DH *dh = (SSH_DH*)malloc(sizeof(SSH_DH));
+	dh->ctx = BN_CTX_new();
+	dh->g = BN_new();
+	dh->p = BN_new();
+	return dh;
 }
 
 SSH_DH *
 ssh_dh_group1_sha1(void)
 {
-	SSH_DH *dh = (SSH_DH*)malloc(sizeof(SSH_DH));
-	dh->g = BN_new();
-	dh->p = BN_new();
+	SSH_DH *dh = create_dh();
 	dh->digest = (evp_md_t) {
 		.mdctx = ssh_md_ctx_new(),
 		.md = EVP_sha1(),
@@ -80,15 +105,14 @@ ssh_dh_group1_sha1(void)
 	};
 	BN_set_word(dh->g, g);
 	BN_bin2bn(prime_group1, 128, dh->p);
+	dh_compute(dh);
 	return dh;
 }
 
 SSH_DH *
 ssh_dh_group14_sha1(void)
 {
-	SSH_DH *dh = (SSH_DH*)malloc(sizeof(SSH_DH));
-	dh->g = BN_new();
-	dh->p = BN_new();
+	SSH_DH *dh = create_dh();
 	dh->digest = (evp_md_t) {
 		.mdctx = ssh_md_ctx_new(),
 		.md = EVP_sha1(),
@@ -96,6 +120,7 @@ ssh_dh_group14_sha1(void)
 	};
 	BN_set_word(dh->g, g);
 	BN_bin2bn(prime_group14, 256, dh->p);
+	dh_compute(dh);
 	return dh;
 }
 
@@ -105,6 +130,19 @@ ssh_dh_hash(SSH_DH *dh, const unsigned char *in, unsigned char *out, size_t n)
 	EVP_DigestInit_ex(dh->digest.mdctx, dh->digest.md, NULL);
 	EVP_DigestUpdate(dh->digest.mdctx, in, n);
 	EVP_DigestFinal_ex(dh->digest.mdctx, out, NULL);
+}
+
+int ssh_dh_compute_secret(SSH_DH *dh, const unsigned char *f_bin, int f_len)
+{
+	BIGNUM *bn_f = BN_new();
+	if (bn_f == NULL || BN_bin2bn(f_bin, f_len, bn_f) == NULL)
+		return -1;
+	BIGNUM *bn_k = BN_new();
+	BN_mod_exp(bn_k, bn_f, dh->bn_x, dh->p, dh->ctx);
+	dh->secret_len = BN_bn2mpi(bn_k, NULL);
+	dh->secret = (unsigned char*)malloc(dh->secret_len);
+	BN_bn2mpi(bn_k, dh->secret);
+	return 0;
 }
 
 struct
@@ -128,3 +166,30 @@ search_dh(const char *s)
 }
 
 const char all_dh_list[] = "diffie-hellman-group14-sha1,diffie-hellman-group1-sha1";
+
+void computeKey(ssh_session *sess, int expected_len, char flag, unsigned char key[])
+{
+	SSH_DH *dh = sess->dh;
+
+	int len = 0;
+
+	EVP_MD_CTX *mdctx = dh->digest.mdctx;
+	const EVP_MD *md = dh->digest.md;
+	int hashlen = dh->digest.hashlen;
+
+	while (len < expected_len) {
+		EVP_DigestInit_ex(mdctx, md, NULL);
+		EVP_DigestUpdate(mdctx, dh->secret, dh->secret_len);
+		EVP_DigestUpdate(mdctx, sess->H, hashlen);
+
+		if (len == 0) {
+			EVP_DigestUpdate(mdctx, &flag, 1);
+			EVP_DigestUpdate(mdctx, sess->session_id, hashlen);
+		} else {
+			EVP_DigestUpdate(mdctx, key, len);
+		}
+
+		EVP_DigestFinal_ex(mdctx, key+len, NULL);
+		len += hashlen;
+	}
+}

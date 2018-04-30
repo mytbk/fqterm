@@ -31,6 +31,12 @@ extern "C" {
 	{
 		BIGNUM *g; // generator
 		BIGNUM *p; // prime
+		BIGNUM *bn_x; /* random number */
+		int e_len;
+		unsigned char *mpint_e; /* g^x mod p */
+		int secret_len;
+		unsigned char *secret;
+		BN_CTX *ctx;
 		evp_md_t digest;
 	} SSH_DH;
 
@@ -38,6 +44,7 @@ extern "C" {
 	SSH_DH *ssh_dh_group1_sha1(void);
 	SSH_DH *ssh_dh_group14_sha1(void);
 	void ssh_dh_hash(SSH_DH*, const unsigned char* data, unsigned char*, size_t len);
+	int ssh_dh_compute_secret(SSH_DH*, const unsigned char *, int);
 
 	typedef SSH_DH*(*NEW_DH)(void);
 	extern const char all_dh_list[];

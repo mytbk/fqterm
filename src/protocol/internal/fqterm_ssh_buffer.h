@@ -62,9 +62,6 @@ class FQTermSSHBuffer {
   void putSSH1BN(BIGNUM *bignum);
   void getSSH1BN(BIGNUM *bignum);
 
-  void putSSH2BN(BIGNUM *bignum);
-  void getSSH2BN(BIGNUM *bignum);
-  
   void putInt(u_int data);
   u_int getInt();
   
