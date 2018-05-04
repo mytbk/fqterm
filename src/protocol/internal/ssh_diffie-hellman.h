@@ -41,8 +41,6 @@ extern "C" {
 	} SSH_DH;
 
 	void ssh_dh_free(SSH_DH*);
-	SSH_DH *ssh_dh_group1_sha1(void);
-	SSH_DH *ssh_dh_group14_sha1(void);
 	void ssh_dh_hash(SSH_DH*, const unsigned char* data, unsigned char*, size_t len);
 	int ssh_dh_compute_secret(SSH_DH*, const unsigned char *, int);
 
