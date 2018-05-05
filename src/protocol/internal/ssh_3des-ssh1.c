@@ -40,7 +40,7 @@ cleanup(SSH_CIPHER* my)
 }
 
 static int
-decrypt(SSH_CIPHER* my, const u_char *source, u_char *dest, size_t len)
+decrypt(SSH_CIPHER* my, const uint8_t *source, uint8_t *dest, size_t len)
 {
 	struct ssh1_3des_priv *priv = (struct ssh1_3des_priv*)my->priv;
 	DES_ncbc_encrypt(source, dest, len, &priv->d_key3, &priv->d_IV3, 0);
@@ -50,7 +50,7 @@ decrypt(SSH_CIPHER* my, const u_char *source, u_char *dest, size_t len)
 }
 
 static int
-encrypt(SSH_CIPHER* my, const u_char *source, u_char *dest, size_t len)
+encrypt(SSH_CIPHER* my, const uint8_t *source, uint8_t *dest, size_t len)
 {
 	struct ssh1_3des_priv *priv = (struct ssh1_3des_priv*)my->priv;
 	DES_ncbc_encrypt(source, dest, len, &priv->d_key1, &priv->d_IV1, 1);
