@@ -48,7 +48,6 @@ include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/src/terminal
   ${CMAKE_CURRENT_SOURCE_DIR}/src/utilities
   ${CMAKE_CURRENT_SOURCE_DIR}/src/ui
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/unite
   ${AUDIO_INCLUDE_DIR}
 )
 
