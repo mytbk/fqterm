@@ -10,8 +10,6 @@ class FQTermLocalSocket: public FQTermSocket {
 private:
   QProcess* shell_process_;
 public:
-  static QString *shell_bin_;
-
   FQTermLocalSocket();
   ~FQTermLocalSocket();
   void flush(){}

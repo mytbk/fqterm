@@ -1,5 +1,6 @@
 #include "fqterm.h"
 #include "fqterm_local_socket.h"
+#include "fqterm_path.h"
 
 namespace FQTerm {
 
@@ -25,8 +26,8 @@ FQTermLocalSocket::~FQTermLocalSocket()
 
 void FQTermLocalSocket::connectToHost( const QString &host, quint16 port )
 {
-  if (shell_bin_!=NULL) {
-    shell_process_->start(FQTermLocalSocket::shell_bin_->arg(QString::number(port), host),
+  if (local_shell_bin!=NULL) {
+    shell_process_->start(local_shell_bin->arg(QString::number(port), host),
                           QIODevice::ReadWrite | QIODevice::Unbuffered);
   } else {
     emit connectionClosed();

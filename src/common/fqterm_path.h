@@ -29,6 +29,7 @@ class FQTermParam;
 
 namespace FQTerm {
 
+extern QString *local_shell_bin;
 enum PathCategory {RESOURCE, USER_CONFIG};
 
 const QString &getPath(PathCategory category);

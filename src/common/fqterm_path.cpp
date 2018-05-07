@@ -36,7 +36,7 @@
 #include "../protocol/fqterm_local_socket.h"
 
 namespace FQTerm {
-QString* FQTermLocalSocket::shell_bin_ = NULL;
+QString* local_shell_bin = NULL;
 static QString getUserDataDir();
 static QString getInstallPrefix();
 static QString getResourceDir(const QString &prefix);
@@ -197,9 +197,8 @@ bool iniSettings() {
 
   // fqterm local socket cmdline
   QString externSSH = conf->getItemValue("global", "externSSH");
-  if (!externSSH.isEmpty()) {
-    FQTermLocalSocket::shell_bin_ = new QString(externSSH);
-  }
+  if (!externSSH.isEmpty())
+    local_shell_bin = new QString(externSSH);
 
   delete conf;
   return true;

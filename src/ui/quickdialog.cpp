@@ -54,6 +54,8 @@ quickDialog::quickDialog(FQTermConfig * config, QWidget *parent, Qt::WindowFlags
 
   ui_.connectPushButton->setDefault(true);
 
+  ui_.protocolComboBox->setItemText(2, QString("Local (%1)").arg(*local_shell_bin));
+
   connectSlots();
 
   loadHistory();
