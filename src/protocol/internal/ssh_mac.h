@@ -24,6 +24,8 @@
 #include <stdint.h>
 #include <openssl/evp.h>
 
+#define MAX_DGSTLEN 128
+
 #ifdef __cplusplus
 extern "C" {
 #endif

@@ -270,10 +270,11 @@ void FQTermSSHSocket::connectToHost(const QString &host_name, quint16 port) {
   private_socket_->connectToHost(host_name, port);
 }
 
-void FQTermSSHSocket::writeData() {
-  socketWriteBlock((const char*)packet_sender_->output_buffer_->data(),
-                   packet_sender_->output_buffer_->len());
-  private_socket_->flush();
+void FQTermSSHSocket::writeData()
+{
+	socketWriteBlock((const char*)buffer_data(&packet_sender_->data_to_send),
+			buffer_len(&packet_sender_->data_to_send));
+	private_socket_->flush();
 }
 
 void FQTermSSHSocket::handlePacket(int type) {

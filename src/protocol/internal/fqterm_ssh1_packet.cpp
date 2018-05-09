@@ -47,34 +47,31 @@ namespace FQTerm {
 		cipher = new_3des_ssh1(1);
 	}
 
-void FQTermSSH1PacketSender::makePacket() {
-  int len, padding, i;
-  u_int32_t rand_val = 0;
+void FQTermSSH1PacketSender::makePacket()
+{
+	int len, padding_len;
+	uint32_t padding[2];
+	uint8_t *data = buffer_data(&orig_data);
+	size_t data_len = buffer_len(&orig_data);
 
-  delete output_buffer_;
+	len = data_len + 4; //CRC32
+	padding_len = 8 - (len % 8);
+	padding[0] = rand();
+	padding[1] = rand();
 
-  len = buffer_->len() + 4; //CRC32
-  padding = 8-(len % 8);
+	buffer_clear(&data_to_send);
+	buffer_append_be32(&data_to_send, len);
+	buffer_append(&data_to_send, (const uint8_t*)padding, padding_len);
+	buffer_append(&data_to_send, data, data_len);
+	buffer_append_be32(&data_to_send, ssh_crc32(
+				buffer_data(&data_to_send) + 4,
+				buffer_len(&data_to_send) - 4));
 
-  output_buffer_ = new FQTermSSHBuffer(len + padding + 4); //pktlen and crc32
-  output_buffer_->putInt(len);
-
-  for (i = 0; i < padding; i++) {
-    if (i % 4 == 0) {
-      rand_val = rand();  // FIXME:  rand() doesn't range from 0 to 2^32.
-    } 
-    
-    output_buffer_->putByte(rand_val &0xff);
-    rand_val >>= 8;
-  }
-
-  output_buffer_->putRawData((const char*)buffer_->data(), buffer_->len());
-  output_buffer_->putInt(ssh_crc32(output_buffer_->data() + 4, output_buffer_->len() - 4));
-
-  if (is_encrypt_) {
-	  cipher->crypt(cipher, output_buffer_->data() + 4, output_buffer_->data() + 4, output_buffer_->len() - 4);
-  }
-
+	if (is_encrypt_) {
+		cipher->crypt(cipher, buffer_data(&data_to_send) + 4,
+				buffer_data(&data_to_send) + 4,
+				buffer_len(&data_to_send) - 4);
+	}
 }
 
 //==============================================================================
@@ -110,7 +107,7 @@ void FQTermSSH1PacketReceiver::parseData(FQTermSSHBuffer *input) {
     u_int padding_len = total_len - real_data_len_;
 
     real_data_len_ -= 5;
-    buffer_->clear();
+    buffer_clear(&recvbuf);
 
     // Get the data of the packet.
     if (input->len() - 4 < (long)total_len) {
@@ -131,12 +128,12 @@ void FQTermSSH1PacketReceiver::parseData(FQTermSSHBuffer *input) {
 	    memcpy(targetData, sourceData, total_len);
     }
 
-    buffer_->putRawData((char*)targetData, total_len);
+    buffer_append(&recvbuf, targetData, total_len);
 
     // Check the crc32.
-    buf = buffer_->data() + total_len - 4;
+    buf = buffer_data(&recvbuf) + total_len - 4;
     mycrc = ntohu32(buf);
-    gotcrc = ssh_crc32(buffer_->data(), total_len - 4);
+    gotcrc = ssh_crc32(buffer_data(&recvbuf), total_len - 4);
 
     if (mycrc != gotcrc) {
       emit packetError(tr("parseData: bad CRC32"));
@@ -144,9 +141,9 @@ void FQTermSSH1PacketReceiver::parseData(FQTermSSHBuffer *input) {
     }
 
     // Drop the padding.
-    buffer_->consume(padding_len);
+    buffer_consume(&recvbuf, padding_len);
 
-    packet_type_ = buffer_->getByte();
+    packet_type_ = buffer_get_u8(&recvbuf);
 
     emit packetAvaliable(packet_type_);
 

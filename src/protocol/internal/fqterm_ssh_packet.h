@@ -30,25 +30,27 @@
 #include "ssh_mac.h"
 #include "fqterm_serialization.h"
 #include "ssh_cipher.h"
+#include "buffer.h"
 
 namespace FQTerm {
 
 class FQTermSSHPacketSender: public QObject {
   Q_OBJECT;
  public:
-  FQTermSSHBuffer *output_buffer_;
-  FQTermSSHBuffer *buffer_;
+  buffer orig_data; /* always unencrypted */
+  buffer data_to_send;
   ssh_cipher_t *cipher;
   ssh_mac_t *mac;
 
   FQTermSSHPacketSender();
   virtual ~FQTermSSHPacketSender();
 
-  void startPacket(int pkt_type);
-  void putByte(int data);
-  void putInt(u_int data);
+  void startPacket(uint8_t pkt_type);
+  inline void putByte(uint8_t b) { buffer_append_byte(&orig_data, b); }
+  inline void putInt(uint32_t x) { buffer_append_be32(&orig_data, x); }
   void putString(const char *string, int len = -1);
-  void putRawData(const char *data, int length);
+  inline void putRawData(const uint8_t *data, size_t len)
+  { buffer_append(&orig_data, data, len); }
   void putBN(BIGNUM *bignum);
   void write();
 
@@ -84,7 +86,7 @@ class FQTermSSHPacketSender: public QObject {
 class FQTermSSHPacketReceiver: public QObject {
   Q_OBJECT;
  public:
-  FQTermSSHBuffer *buffer_;
+  buffer recvbuf;
   ssh_cipher_t *cipher;
   ssh_mac_t *mac;
 

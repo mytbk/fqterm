@@ -178,7 +178,7 @@ void FQTermSSH1Kex::makeSessionKey() {
 
   packet_sender_->startPacket(SSH1_CMSG_SESSION_KEY);
   packet_sender_->putByte(SSH_CIPHER_3DES);
-  packet_sender_->putRawData((const char*)cookie_, 8);
+  packet_sender_->putRawData((const uint8_t*)cookie_, 8);
   packet_sender_->putBN(key);
 
   BN_free(key);

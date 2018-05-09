@@ -128,7 +128,7 @@ bool FQTermSSH2Kex::negotiateAlgorithms() {
   delete[] I_S_;
   I_S_ = new char[I_S_len_];
   I_S_[0] = SSH2_MSG_KEXINIT;
-  memcpy(I_S_ + 1, packet_receiver_->buffer_->data(), I_S_len_ - 1);
+  memcpy(I_S_ + 1, buffer_data(&packet_receiver_->recvbuf), I_S_len_ - 1);
 
   // 1. Parse server kex init packet
   packet_receiver_->getRawData((char*)cookie_, 16);
@@ -218,7 +218,7 @@ bool FQTermSSH2Kex::negotiateAlgorithms() {
 
   // 2. compose a kex init packet.
   packet_sender_->startPacket(SSH2_MSG_KEXINIT);
-  packet_sender_->putRawData((const char*)cookie_, 16);    // FIXME: generate new cookie_;
+  packet_sender_->putRawData((const uint8_t*)cookie_, 16);    // FIXME: generate new cookie_;
   packet_sender_->putString(all_dh_list);
   packet_sender_->putString("ssh-rsa");
   packet_sender_->putString(all_ciphers_list);
@@ -234,10 +234,10 @@ bool FQTermSSH2Kex::negotiateAlgorithms() {
   packet_sender_->putInt(0);
 
   // 3. backup the payload of this client packet.
-  I_C_len_ = packet_sender_->buffer_->len();
+  I_C_len_ = buffer_len(&packet_sender_->orig_data);
   delete[] I_C_;
   I_C_ = new char[I_C_len_];
-  memcpy(I_C_, packet_sender_->buffer_->data(), I_C_len_);
+  memcpy(I_C_, buffer_data(&packet_sender_->orig_data), I_C_len_);
 
   // 4. send packet to server
   packet_sender_->write();
@@ -259,10 +259,11 @@ bool FQTermSSH2Kex::negotiateAlgorithms() {
  * string    signature of H
  */
 
-void FQTermSSH2Kex::exchangeKey() {
-  packet_sender_->startPacket(SSH2_MSG_KEXDH_INIT);
-  packet_sender_->putRawData((const char*)sess.dh->mpint_e, sess.dh->e_len);
-  packet_sender_->write();
+void FQTermSSH2Kex::exchangeKey()
+{
+	packet_sender_->startPacket(SSH2_MSG_KEXDH_INIT);
+	packet_sender_->putRawData(sess.dh->mpint_e, sess.dh->e_len);
+	packet_sender_->write();
 }
 
 static RSA *CreateRSAContext(unsigned char *host_key, int len);
@@ -289,19 +290,20 @@ bool FQTermSSH2Kex::verifyKey() {
   int s_len = -1;
   unsigned char *s = (unsigned char *)packet_receiver_->getString(&s_len);
 
-  FQTermSSHBuffer *buffer = packet_sender_->output_buffer_;
+  buffer vbuf;
+  buffer_init(&vbuf);
+  buffer_append_string(&vbuf, V_C_, strlen(V_C_));
+  buffer_append_string(&vbuf, V_S_, strlen(V_S_));
+  buffer_append_string(&vbuf, I_C_, I_C_len_);
+  buffer_append_string(&vbuf, I_S_, I_S_len_);
+  buffer_append_string(&vbuf, K_S_, K_S_len_);
+  buffer_append(&vbuf, sess.dh->mpint_e, sess.dh->e_len);
+  buffer_append_string(&vbuf, (const char*)mpint_f, mpint_f_len);
+  buffer_append(&vbuf, sess.dh->secret, sess.dh->secret_len);
 
-  buffer->clear();
-  buffer->putString(V_C_);
-  buffer->putString(V_S_);
-  buffer->putString(I_C_, I_C_len_);
-  buffer->putString(I_S_, I_S_len_);
-  buffer->putString(K_S_, K_S_len_);
-  buffer->putRawData((const char*)sess.dh->mpint_e, sess.dh->e_len);
-  buffer->putString((const char*)mpint_f, mpint_f_len);
-  buffer->putRawData((const char*)sess.dh->secret, sess.dh->secret_len);
+  ssh_dh_hash(sess.dh, buffer_data(&vbuf), sess.H, buffer_len(&vbuf));
 
-  ssh_dh_hash(sess.dh, buffer->data(), sess.H, buffer->len());
+  buffer_deinit(&vbuf);
 
   // Start verify
   // ssh-rsa specifies SHA-1 hashing

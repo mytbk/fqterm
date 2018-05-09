@@ -67,7 +67,7 @@ void FQTermSSH1Channel::changeTermSize(int col, int row) {
 void FQTermSSH1Channel::sendData(const char *data, int len) {
   packet_sender_->startPacket(SSH1_CMSG_STDIN_DATA);
   packet_sender_->putInt(len);
-  packet_sender_->putRawData(data, len);
+  packet_sender_->putRawData((const uint8_t *)data, len);
   packet_sender_->write();
 }
 
@@ -98,7 +98,7 @@ void FQTermSSH1Channel::handlePacket(int type) {
         case SSH1_SMSG_STDOUT_DATA:
         case SSH1_SMSG_STDERR_DATA:
           {
-            const char *data = (const char *)packet_receiver_->buffer_->data() + 4;
+            const char *data = (const char*)buffer_data(&packet_receiver_->recvbuf) + 4;
             int len = packet_receiver_->packetDataLen() - 4;
             emit channelReadyRead(data, len);
           }
@@ -336,7 +336,7 @@ void FQTermSSH2Channel::processChannelPacket() {
         //    string    data
         packet_receiver_->consume(4);
         int len = packet_receiver_->getInt();
-        const char *data = (const char *)packet_receiver_->buffer_->data();
+        const char *data = (const char*)buffer_data(&packet_receiver_->recvbuf);
         local_window_size_ -= len;
         checkLocalWindowSize();
         emit channelReadyRead(data, len);
@@ -349,7 +349,7 @@ void FQTermSSH2Channel::processChannelPacket() {
         //    string    data
         packet_receiver_->consume(4);
         int len = packet_receiver_->getInt();
-        const char *data = (const char *)packet_receiver_->buffer_->data();
+        const char *data = (const char*)buffer_data(&packet_receiver_->recvbuf);
         local_window_size_ -= len;
         checkLocalWindowSize();
         emit channelReadyRead(data, len);
@@ -377,9 +377,10 @@ void FQTermSSH2Channel::processChannelPacket() {
   }
 }
 
-void FQTermSSH2Channel::handlePacket(int type) {
+void FQTermSSH2Channel::handlePacket(int type)
+{
   // first check the channel id.
-  u_int32_t channel_id = ntohu32(packet_receiver_->buffer_->data());
+  u_int32_t channel_id = ntohu32(buffer_data(&packet_receiver_->recvbuf));
   if (channel_id != channel_id_) {
     return;
   }
@@ -400,7 +401,7 @@ void FQTermSSH2Channel::handlePacket(int type) {
             FQ_TRACE("ssh2channel", 8) << "SSH2_MSG_CHANNEL_REQUEST isn't supported, just send back a packet with SSH2_MSG_CHANNEL_SUCCESS if reply is needed.";
 
             packet_receiver_->consume(4);
-            u_int32_t len = ntohu32(packet_receiver_->buffer_->data());
+            u_int32_t len = ntohu32(buffer_data(&packet_receiver_->recvbuf));
             packet_receiver_->consume(4 + len);
             bool replyNeeded = packet_receiver_->getByte();
 

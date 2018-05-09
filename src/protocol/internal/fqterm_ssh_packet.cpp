@@ -25,6 +25,7 @@
 
 #include "fqterm_serialization.h"
 #include "crc32.h"
+#include <openssl/bn.h>
 
 namespace FQTerm {
 
@@ -32,9 +33,10 @@ namespace FQTerm {
 //FQTermSSHPacketSender
 //==============================================================================
 
-FQTermSSHPacketSender::FQTermSSHPacketSender() {
-  buffer_ = new FQTermSSHBuffer(1024);
-  output_buffer_ = new FQTermSSHBuffer(1024);
+FQTermSSHPacketSender::FQTermSSHPacketSender()
+{
+  buffer_init(&orig_data);
+  buffer_init(&data_to_send);
 
   is_encrypt_ = false;
   cipher_type_ = SSH_CIPHER_NONE;
@@ -48,43 +50,56 @@ FQTermSSHPacketSender::FQTermSSHPacketSender() {
   sequence_no_ = 0;
 }
 
-FQTermSSHPacketSender::~FQTermSSHPacketSender() {
-	delete buffer_;
-	delete output_buffer_;
+FQTermSSHPacketSender::~FQTermSSHPacketSender()
+{
 	if (cipher)
 		cipher->cleanup(cipher);
         if (mac)
 		mac->cleanup(mac);
+	buffer_deinit(&data_to_send);
+	buffer_deinit(&orig_data);
 }
 
-void FQTermSSHPacketSender::putRawData(const char *data, int len) {
-  buffer_->putRawData(data, len);
+void FQTermSSHPacketSender::putString(const char *s, int len)
+{
+	if (len < 0)
+		len = strlen(s);
+
+	putInt(len);
+	putRawData((const uint8_t *)s, len);
 }
 
-void FQTermSSHPacketSender::putByte(int data) {
-  buffer_->putByte(data);
+void FQTermSSHPacketSender::putBN(BIGNUM *bignum)
+{
+	int bits = BN_num_bits(bignum);
+	int bin_size = (bits + 7) / 8;
+	uint8_t buf[bin_size];
+	int oi;
+	uint8_t msg[2];
+
+	// Get the value of in binary
+	oi = BN_bn2bin(bignum, buf);
+	if (oi != bin_size) {
+		FQ_TRACE("sshbuffer", 0) << "BN_bn2bin() failed: oi = " << oi
+			<< " != bin_size." << bin_size;
+	} 
+
+	// Store the number of bits in the buffer in two bytes, msb first
+	buffer_append_be16(&orig_data, bits);
+	// Store the binary data.
+	putRawData(buf, oi);
 }
 
-void FQTermSSHPacketSender::putInt(u_int data) {
-  buffer_->putInt(data);
+void FQTermSSHPacketSender::startPacket(uint8_t pkt_type)
+{
+	buffer_clear(&orig_data);
+	putByte(pkt_type);
 }
 
-void FQTermSSHPacketSender::putString(const char *string, int len) {
-  buffer_->putString(string, len);
-}
-
-void FQTermSSHPacketSender::putBN(BIGNUM *bn) {
-  buffer_->putSSH1BN(bn);
-}
-
-void FQTermSSHPacketSender::startPacket(int pkt_type) {
-  buffer_->clear();
-  buffer_->putByte(pkt_type);
-}
-
-void FQTermSSHPacketSender::write() {
-  makePacket();
-  emit dataToWrite();
+void FQTermSSHPacketSender::write()
+{
+	makePacket();
+	emit dataToWrite();
 }
 
 void FQTermSSHPacketSender::startEncryption(const u_char *key, const u_char *IV) {
@@ -114,8 +129,9 @@ void FQTermSSHPacketSender::resetMac() {
 //FQTermSSHPacketReceiver
 //==============================================================================
 
-FQTermSSHPacketReceiver::FQTermSSHPacketReceiver() {
-  buffer_ = new FQTermSSHBuffer(1024);
+FQTermSSHPacketReceiver::FQTermSSHPacketReceiver()
+{
+	buffer_init(&recvbuf);
 
   is_decrypt_ = false;
   cipher_type_ = SSH_CIPHER_NONE;
@@ -131,35 +147,79 @@ FQTermSSHPacketReceiver::FQTermSSHPacketReceiver() {
 
 FQTermSSHPacketReceiver::~FQTermSSHPacketReceiver()
 {
-	delete buffer_;
+	buffer_deinit(&recvbuf);
 	if (cipher)
 		cipher->cleanup(cipher);
         if (mac)
 		mac->cleanup(mac);
 }
 
-void FQTermSSHPacketReceiver::getRawData(char *data, int length) {
-  buffer_->getRawData(data, length);
+void FQTermSSHPacketReceiver::getRawData(char *data, int length)
+{
+	if (buffer_len(&recvbuf) >= length)
+		buffer_get(&recvbuf, (uint8_t*)data, length);
+	else
+		emit packetError("Read too many bytes!");
 }
 
-u_char FQTermSSHPacketReceiver::getByte() {
-  return buffer_->getByte();
+u_char FQTermSSHPacketReceiver::getByte()
+{
+	if (buffer_len(&recvbuf) >= 1)
+		return buffer_get_u8(&recvbuf);
+	else
+		emit packetError("Read too many bytes!");
 }
 
-u_int FQTermSSHPacketReceiver::getInt() {
-  return buffer_->getInt();
+u_int FQTermSSHPacketReceiver::getInt()
+{
+	if (buffer_len(&recvbuf) >= 4)
+		return buffer_get_u32(&recvbuf);
+	else
+		emit packetError("Read too many bytes!");
 }
 
-void *FQTermSSHPacketReceiver::getString(int *length) {
-  return buffer_->getString(length);
+void *FQTermSSHPacketReceiver::getString(int *length)
+{
+	uint32_t l = getInt();
+	char *data = new char[l+1];
+	getRawData(data, l);
+	data[l] = 0;
+	if (length != NULL)
+		*length = l;
+	return data;
 }
 
-void FQTermSSHPacketReceiver::getBN(BIGNUM *bignum) {
-  buffer_->getSSH1BN(bignum);
+void FQTermSSHPacketReceiver::getBN(BIGNUM *bignum)
+{
+	int bits, bytes;
+	u_char buf[2];
+	u_char *bin;
+
+	// Get the number for bits.
+	if (buffer_len(&recvbuf) >= 2) {
+		bits = buffer_get_u16(&recvbuf);
+	} else {
+		emit packetError("Read too many bytes!");
+		return;
+	}
+	// Compute the number of binary bytes that follow.
+	bytes = (bits + 7) / 8;
+	if (bytes > 8 *1024) {
+		emit packetError("Can't handle BN of size!");
+		return ;
+	}
+	if (buffer_len(&recvbuf) < bytes) {
+		emit packetError("The input buffer is too small!");
+		return ;
+	}
+	bin = buffer_data(&recvbuf);
+	BN_bin2bn(bin, bytes, bignum);
+	buffer_consume(&recvbuf, bytes);
 }
 
-void FQTermSSHPacketReceiver::consume(int len) {
-  buffer_->consume(len);
+void FQTermSSHPacketReceiver::consume(int len)
+{
+	buffer_consume(&recvbuf, len);
 }
 
 void FQTermSSHPacketReceiver::startEncryption(const u_char *key, const u_char *IV) {
