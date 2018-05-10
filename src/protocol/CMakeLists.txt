@@ -14,6 +14,7 @@ set(export_SRCS
 
 set(internal_SRCS
   internal/buffer.c
+  internal/ssh_rsa.c
   internal/ssh_crypto_common.h
   internal/ssh_crypto_common.c
   internal/ssh_cipher.h

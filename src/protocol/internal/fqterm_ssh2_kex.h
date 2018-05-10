@@ -51,13 +51,6 @@ private:
   mpint     K, the shared secret
   */
 
-  int I_C_len_;
-  char *I_C_;
-  int I_S_len_;
-  char *I_S_;
-  int K_S_len_;
-  char *K_S_;
-
   ssh_session sess;
 
   bool is_first_kex_;
@@ -81,7 +74,7 @@ public:
                        FQTermSSHPacketSender *outputSender);
   void hostKeyHash(unsigned char *md)
   {
-	  SHA256((const unsigned char*)K_S_, K_S_len_, md);
+	  SHA256(sess.K_S, sess.K_S_len, md);
   }
 
 public slots:

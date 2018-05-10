@@ -30,31 +30,37 @@
 #include "fqterm_trace.h"
 #include "ssh_pubkey_crypto.h"
 #include "ssh_cipher.h"
+#include "ssh_rsa.h"
 
 namespace FQTerm {
 
-FQTermSSH2Kex::FQTermSSH2Kex(const char *V_C, const char *V_S) 
-    : FQTermSSHKex(V_C, V_S) {
-  is_first_kex_ = true;
-  kex_state_ = FQTermSSH2Kex::BEFORE_KEXINIT;
+FQTermSSH2Kex::FQTermSSH2Kex(const char *V_C, const char *V_S)
+    : FQTermSSHKex(V_C, V_S)
+{
+	is_first_kex_ = true;
+	kex_state_ = FQTermSSH2Kex::BEFORE_KEXINIT;
 
-  I_C_len_ = 0;
-  I_C_ = NULL;
-  I_S_len_ = 0;
-  I_S_ = NULL;
-  K_S_ = NULL;
-
-  sess.session_id = NULL;
+	sess.I_C = NULL;
+	sess.I_S = NULL;
+	sess.K_S = NULL;
+	sess.session_id = NULL;
+	sess.V_C = this->V_C_;
+	sess.V_S = this->V_S_;
 }
 
-FQTermSSH2Kex::~FQTermSSH2Kex() {
-  delete[] I_C_;
-  delete[] I_S_;
-  if (K_S_)
-    delete [] K_S_;
+FQTermSSH2Kex::~FQTermSSH2Kex()
+{
+	if (sess.I_C)
+		delete[] sess.I_C;
 
-  if (sess.session_id != NULL)
-    delete[] sess.session_id;
+	if (sess.I_S)
+		delete[] sess.I_S;
+
+	if (sess.K_S)
+		free(sess.K_S);
+
+	if (sess.session_id != NULL)
+		delete[] sess.session_id;
 }
 
 void FQTermSSH2Kex::initKex(FQTermSSHPacketReceiver *packetReceiver, 
@@ -124,11 +130,12 @@ bool FQTermSSH2Kex::negotiateAlgorithms() {
   }
 
   // 0. Backup the payload of this server packet.
-  I_S_len_ = packet_receiver_->packetDataLen() + 1;  // add 1 bytes for packet type.
-  delete[] I_S_;
-  I_S_ = new char[I_S_len_];
-  I_S_[0] = SSH2_MSG_KEXINIT;
-  memcpy(I_S_ + 1, buffer_data(&packet_receiver_->recvbuf), I_S_len_ - 1);
+  sess.I_S_len = packet_receiver_->packetDataLen() + 1;  // add 1 bytes for packet type.
+  if (sess.I_S)
+	  delete[] sess.I_S;
+  sess.I_S = new char[sess.I_S_len];
+  sess.I_S[0] = SSH2_MSG_KEXINIT;
+  memcpy(sess.I_S + 1, buffer_data(&packet_receiver_->recvbuf), sess.I_S_len - 1);
 
   // 1. Parse server kex init packet
   packet_receiver_->getRawData((char*)cookie_, 16);
@@ -234,10 +241,11 @@ bool FQTermSSH2Kex::negotiateAlgorithms() {
   packet_sender_->putInt(0);
 
   // 3. backup the payload of this client packet.
-  I_C_len_ = buffer_len(&packet_sender_->orig_data);
-  delete[] I_C_;
-  I_C_ = new char[I_C_len_];
-  memcpy(I_C_, buffer_data(&packet_sender_->orig_data), I_C_len_);
+  sess.I_C_len = buffer_len(&packet_sender_->orig_data);
+  if (sess.I_C)
+	  delete [] sess.I_C;
+  sess.I_C = new char[sess.I_C_len];
+  memcpy(sess.I_C, buffer_data(&packet_sender_->orig_data), sess.I_C_len);
 
   // 4. send packet to server
   packet_sender_->write();
@@ -266,124 +274,30 @@ void FQTermSSH2Kex::exchangeKey()
 	packet_sender_->write();
 }
 
-static RSA *CreateRSAContext(unsigned char *host_key, int len);
-
-bool FQTermSSH2Kex::verifyKey() {
-  if (packet_receiver_->packetType() != SSH2_MSG_KEXDH_REPLY) {
-    emit kexError(tr("Expect a SSH_MSG_KEXDH_REPLY packet"));
-    return false;
-  }
-
-
-  if (K_S_)
-    delete [] K_S_;
-  K_S_ = (char*)packet_receiver_->getString(&K_S_len_);
-
-  int mpint_f_len;
-  unsigned char *mpint_f = (unsigned char *)packet_receiver_->getString(&mpint_f_len);
-  if (ssh_dh_compute_secret(sess.dh, mpint_f, mpint_f_len) < 0) {
-    emit kexError(tr("Error when computing shared secret"));
-    delete mpint_f;
-    return false;
-  }
-
-  int s_len = -1;
-  unsigned char *s = (unsigned char *)packet_receiver_->getString(&s_len);
-
-  buffer vbuf;
-  buffer_init(&vbuf);
-  buffer_append_string(&vbuf, V_C_, strlen(V_C_));
-  buffer_append_string(&vbuf, V_S_, strlen(V_S_));
-  buffer_append_string(&vbuf, I_C_, I_C_len_);
-  buffer_append_string(&vbuf, I_S_, I_S_len_);
-  buffer_append_string(&vbuf, K_S_, K_S_len_);
-  buffer_append(&vbuf, sess.dh->mpint_e, sess.dh->e_len);
-  buffer_append_string(&vbuf, (const char*)mpint_f, mpint_f_len);
-  buffer_append(&vbuf, sess.dh->secret, sess.dh->secret_len);
-
-  ssh_dh_hash(sess.dh, buffer_data(&vbuf), sess.H, buffer_len(&vbuf));
-
-  buffer_deinit(&vbuf);
-
-  // Start verify
-  // ssh-rsa specifies SHA-1 hashing
-  unsigned char s_H[SHA_DIGEST_LENGTH];
-  SHA1(sess.H, sess.dh->digest.hashlen, s_H);
-
-  // Ignore the first 15 bytes of the signature of H sent from server:
-  // algorithm_name_length[4], algorithm_name[7]("ssh-rsa") and signature_length[4].
-  RSA *rsactx = CreateRSAContext((unsigned char*)K_S_, K_S_len_);
-  if (rsactx == NULL) {
-	  emit kexError("Fail to get the RSA key!");
-	  return false;
-  }
-  int sig_len = s_len - 15;
-  unsigned char *sig = s + 15;
-  int res = RSA_verify(NID_sha1, s_H, SHA_DIGEST_LENGTH,
-                       sig, sig_len, rsactx);
-
-  RSA_free(rsactx);
-
-  delete [] mpint_f;
-  delete [] s;
-
-  return res == 1;
-}
-
-static RSA *CreateRSAContext(unsigned char *hostkey, int len)
+bool FQTermSSH2Kex::verifyKey()
 {
-	int algo_len, e_len, n_len;
-	RSA *rsa = RSA_new();
-	BIGNUM *rsa_e = BN_new();
-	BIGNUM *rsa_n = BN_new();
+	if (packet_receiver_->packetType() != SSH2_MSG_KEXDH_REPLY) {
+		emit kexError(tr("Expect a SSH_MSG_KEXDH_REPLY packet"));
+		return false;
+	}
 
-	if (len >= 4)
-		algo_len = be32toh(*(uint32_t*)hostkey);
-	else
-		goto fail;
-	hostkey += 4;
-	len -= 4;
-
-	if (!(len >= 7 && algo_len == 7 && memcmp(hostkey, "ssh-rsa", 7) == 0))
-		goto fail;
-	hostkey += 7;
-	len -= 7;
-
-	if (len >= 4)
-		e_len = be32toh(*(uint32_t*)hostkey);
-	else
-		goto fail;
-	if (len >= 4+e_len)
-		BN_mpi2bn(hostkey, 4+e_len, rsa_e);
-	else
-		goto fail;
-	hostkey += 4 + e_len;
-	len -= 4 + e_len;
-
-	if (len >= 4)
-		n_len = be32toh(*(uint32_t*)hostkey);
-	else
-		goto fail;
-	if (len >= 4+n_len)
-		BN_mpi2bn(hostkey, 4+n_len, rsa_n);
-	else
-		goto fail;
-	hostkey += 4 + n_len;
-	len -= 4 + n_len;
-
-#ifdef HAVE_OPAQUE_STRUCTS
-	RSA_set0_key(rsa, rsa_n, rsa_e, NULL);
-#else
-	rsa->n = rsa_n;
-	rsa->e = rsa_e;
-#endif
-
-	return rsa;
-fail:
-	BN_clear_free(rsa_e);
-	BN_clear_free(rsa_n);
-	RSA_free(rsa);
-	return NULL;
+	buffer *buf = &packet_receiver_->recvbuf;
+	int res = verifyRSAKey(&sess, buffer_data(buf), buffer_len(buf));
+	switch (res) {
+		case 1:
+			return true;
+		case 0:
+			return false;
+		case -ESECRET:
+			emit kexError(tr("Error computing secret!"));
+			return false;
+		case -ERSA:
+			emit kexError(tr("Fail to get the RSA key!"));
+			return false;
+		default:
+			emit kexError(tr("verifyKey: unknown error!"));
+			return false;
+	}
 }
 
 void FQTermSSH2Kex::sendNewKeys(){
