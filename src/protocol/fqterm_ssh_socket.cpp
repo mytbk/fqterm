@@ -48,7 +48,7 @@ FQTermSSHSocket::FQTermSSHSocket(int col, int row, const QString& termtype, cons
 
   input_buffer_ = NULL;
   output_buffer_ = NULL;
-  socket_buffer_ = NULL;
+  buffer_init(&socket_buffer);
   packet_receiver_ = NULL;
   packet_sender_ = NULL;
   key_exchanger_ = NULL;
@@ -72,7 +72,7 @@ FQTermSSHSocket::~FQTermSSHSocket() {
   delete private_socket_;
   delete input_buffer_;
   delete output_buffer_;
-  delete socket_buffer_;
+  buffer_deinit(&socket_buffer);
   delete packet_receiver_;
   delete packet_sender_;
   delete key_exchanger_;
@@ -87,7 +87,7 @@ void FQTermSSHSocket::init(int ssh_version) {
 
   delete input_buffer_;
   delete output_buffer_;
-  delete socket_buffer_;
+  buffer_clear(&socket_buffer);
   delete packet_receiver_;
   delete packet_sender_;
   delete key_exchanger_;
@@ -100,7 +100,6 @@ void FQTermSSHSocket::init(int ssh_version) {
   if (ssh_version == 1) {
     input_buffer_ = new FQTermSSHBuffer(1024);
     output_buffer_ = new FQTermSSHBuffer(1024);
-    socket_buffer_ = new FQTermSSHBuffer(1024);
     packet_receiver_ = new FQTermSSH1PacketReceiver;
     packet_sender_ = new FQTermSSH1PacketSender;
     key_exchanger_ = new FQTermSSH1Kex(SSH_V1_C, server_name_.toLatin1().constData());
@@ -130,7 +129,6 @@ void FQTermSSHSocket::init(int ssh_version) {
   } else {
     input_buffer_ = new FQTermSSHBuffer(1024);
     output_buffer_ = new FQTermSSHBuffer(1024);
-    socket_buffer_ = new FQTermSSHBuffer(1024);
     packet_receiver_ = new FQTermSSH2PacketReceiver;
     packet_sender_ = new FQTermSSH2PacketSender;
     key_exchanger_ = new FQTermSSH2Kex(SSH_V2_C, server_name_.toLatin1().constData());
@@ -249,8 +247,8 @@ void FQTermSSHSocket::parsePacket() {
   size = private_socket_->bytesAvailable();
   data = private_socket_->readBlock(size);
 
-  socket_buffer_->putRawData(data.data(), size);
-  packet_receiver_->parseData(socket_buffer_);
+  buffer_append(&socket_buffer, (const uint8_t*)data.data(), size);
+  packet_receiver_->parseData(&socket_buffer);
 }
 
 int FQTermSSHSocket::chooseVersion(const QString &ver) {

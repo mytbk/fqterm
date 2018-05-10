@@ -125,15 +125,15 @@ void FQTermSSH2PacketSender::makePacket()
 //==============================================================================
 //FQTermSSH2PacketReceiver
 //==============================================================================
-void FQTermSSH2PacketReceiver::parseData(FQTermSSHBuffer *input) {
+void FQTermSSH2PacketReceiver::parseData(buffer *input) {
   FQ_TRACE("ssh2packet", 9) << "----------------------------Receive "
                             << (is_decrypt_ ? "Encrypted": "plain")
                             << " Packet----<<<<<<<";
-  while (input->len() > 0) {
+  while (buffer_len(input) > 0) {
     // 1. Check the ssh packet
-    if (input->len() < 16
-        || (is_decrypt_ && input->len() < cipher->blkSize)
-        || input->len() < last_expected_input_length_
+    if (buffer_len(input) < 16
+        || (is_decrypt_ && buffer_len(input) < cipher->blkSize)
+        || buffer_len(input) < last_expected_input_length_
         ) {
       FQ_TRACE("ssh2packet", 3)
           << "Got an incomplete packet. Wait for more data.";
@@ -143,7 +143,7 @@ void FQTermSSH2PacketReceiver::parseData(FQTermSSHBuffer *input) {
     if (last_expected_input_length_ == 0) {
       if (is_decrypt_) {
 			// decrypte the first block to get the packet_length field.
-			FQ_VERIFY(cipher->crypt(cipher, input->data(), input->data(), cipher->blkSize)==1);
+			FQ_VERIFY(cipher->crypt(cipher, buffer_data(input), buffer_data(input), cipher->blkSize)==1);
       }
     } else {
       // last_expected_input_length_ != 0
@@ -152,7 +152,7 @@ void FQTermSSH2PacketReceiver::parseData(FQTermSSHBuffer *input) {
       // so it must not be decrypted again.
     }
 
-    int packet_len = ntohu32(input->data());
+    int packet_len = ntohu32(buffer_data(input));
 
     if (packet_len > SSH_BUFFER_MAX) {
       emit packetError(tr("parseData: packet too big"));
@@ -161,7 +161,7 @@ void FQTermSSH2PacketReceiver::parseData(FQTermSSHBuffer *input) {
 
     int expected_input_len = 4 + packet_len + (is_mac_ ? mac->dgstSize : 0);
 
-    if (input->len()  < (long)expected_input_len) {
+    if (buffer_len(input)  < (long)expected_input_len) {
       FQ_TRACE("ssh2packet", 3)
           << "The packet is too small. Wait for more data.";
       last_expected_input_length_ = expected_input_len;    
@@ -173,7 +173,7 @@ void FQTermSSH2PacketReceiver::parseData(FQTermSSHBuffer *input) {
     // 2. decrypte data.
     if (is_decrypt_) {
       // decrypte blocks left.
-      unsigned char *tmp = input->data() + cipher->blkSize;
+      unsigned char *tmp = buffer_data(input) + cipher->blkSize;
       int left_len = expected_input_len - cipher->blkSize - mac->dgstSize;
       FQ_VERIFY(cipher->crypt(cipher, tmp, tmp, left_len)==1);
     }
@@ -186,12 +186,12 @@ void FQTermSSH2PacketReceiver::parseData(FQTermSSHBuffer *input) {
 	    buffer mbuf;
 	    buffer_init(&mbuf);
 	    buffer_append_be32(&mbuf, sequence_no_);
-	    buffer_append(&mbuf, (const uint8_t*)input->data(),
+	    buffer_append(&mbuf, (const uint8_t*)buffer_data(input),
 			    expected_input_len - digest_len);
 	    mac->getmac(mac, buffer_data(&mbuf), buffer_len(&mbuf), digest);
 	    buffer_deinit(&mbuf);
 
-	    u_char *received_digest = input->data() + expected_input_len - digest_len;
+	    u_char *received_digest = buffer_data(input) + expected_input_len - digest_len;
 
 	    if (memcmp(digest, received_digest, digest_len) != 0) {
 		    emit packetError("incorrect MAC.");
@@ -200,13 +200,13 @@ void FQTermSSH2PacketReceiver::parseData(FQTermSSHBuffer *input) {
     }
 
     // 4. get every field of the ssh packet.
-    packet_len = input->getInt();
+    packet_len = buffer_get_u32(input);
 
     std::vector<u_char> data(packet_len);
 
-    input->getRawData((char*)&data[0], packet_len);
+    buffer_get(input, &data[0], packet_len);
     if (is_mac_)
-      input->consume(mac->dgstSize);
+      buffer_consume(input, mac->dgstSize);
 
     int padding_len = data[0];
 

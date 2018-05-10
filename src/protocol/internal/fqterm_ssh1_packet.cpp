@@ -83,19 +83,19 @@ void FQTermSSH1PacketSender::makePacket()
 		cipher = new_3des_ssh1(0);
 	}
 
-void FQTermSSH1PacketReceiver::parseData(FQTermSSHBuffer *input) {
+void FQTermSSH1PacketReceiver::parseData(buffer *input) {
   u_int mycrc, gotcrc;
   u_char *buf = NULL;
   u_char *targetData = NULL;
   u_char *sourceData = NULL;
 
   // Get the length of the packet.
-  while (input->len() > 0) {
-    if (input->len() < 4) {
+  while (buffer_len(input) > 0) {
+    if (buffer_len(input) < 4) {
       FQ_TRACE("ssh1packet", 3) << "The packet is too small.";
       return ;
     }
-    buf = input->data();
+    buf = buffer_data(input);
     real_data_len_ = ntohu32(buf);
 
     if (real_data_len_ > SSH_BUFFER_MAX) {
@@ -110,18 +110,18 @@ void FQTermSSH1PacketReceiver::parseData(FQTermSSHBuffer *input) {
     buffer_clear(&recvbuf);
 
     // Get the data of the packet.
-    if (input->len() - 4 < (long)total_len) {
+    if (buffer_len(input) - 4 < (long)total_len) {
       FQ_TRACE("ssh1packet", 3) << "The packet is too small";
       return ;
     }
 
-    real_data_len_ = input->getInt() - 5;
+    real_data_len_ = buffer_get_u32(input) - 5;
     targetData = new u_char[total_len];
     sourceData = new u_char[total_len];
     memset(targetData, 0, total_len);
     memset(sourceData, 0, total_len);
 
-    input->getRawData((char*)sourceData, total_len);
+    buffer_get(input, sourceData, total_len);
     if (is_decrypt_) {
 	    cipher->crypt(cipher, sourceData, targetData, total_len);
     } else {

@@ -34,7 +34,7 @@ public:
 
 class FQTermSSH1PacketReceiver: public FQTermSSHPacketReceiver {
 public:
-  virtual void parseData(FQTermSSHBuffer *input);
+  virtual void parseData(buffer *input);
   FQTermSSH1PacketReceiver();
 };
 

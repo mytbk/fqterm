@@ -22,6 +22,7 @@
 #define FQTERM_SSH_SOCKET_H
 
 #include "fqterm_socket.h"
+#include "internal/buffer.h"
 
 
 namespace FQTerm {
@@ -58,7 +59,7 @@ private:
 
   FQTermSSHBuffer *output_buffer_;
 
-  FQTermSSHBuffer *socket_buffer_;
+	buffer socket_buffer; /* data received from the socket */
 
 
   FQTermSSHPacketReceiver *packet_receiver_;

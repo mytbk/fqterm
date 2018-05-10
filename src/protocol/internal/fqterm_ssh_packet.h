@@ -109,7 +109,7 @@ class FQTermSSHPacketReceiver: public QObject {
   virtual int getKeySize() const { return cipher->keySize;}
   int getMacKeySize() const { return mac->keySize;}
 
-  virtual void parseData(FQTermSSHBuffer *input) = 0;
+  virtual void parseData(buffer *input) = 0;
  public slots:
   void startEncryption(const u_char *key, const u_char *IV = NULL);
   void resetEncryption();

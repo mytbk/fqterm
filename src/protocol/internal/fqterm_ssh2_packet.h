@@ -40,7 +40,7 @@ private:
 public:
 FQTermSSH2PacketReceiver() : last_expected_input_length_(0)	{ }
 
-	virtual void parseData(FQTermSSHBuffer *input);
+	virtual void parseData(buffer *input);
 };
 
 }  // namespace FQTerm
