@@ -313,6 +313,10 @@ bool FQTermSSH2Kex::verifyKey() {
   // Ignore the first 15 bytes of the signature of H sent from server:
   // algorithm_name_length[4], algorithm_name[7]("ssh-rsa") and signature_length[4].
   RSA *rsactx = CreateRSAContext((unsigned char*)K_S_, K_S_len_);
+  if (rsactx == NULL) {
+	  emit kexError("Fail to get the RSA key!");
+	  return false;
+  }
   int sig_len = s_len - 15;
   unsigned char *sig = s + 15;
   int res = RSA_verify(NID_sha1, s_H, SHA_DIGEST_LENGTH,
@@ -326,41 +330,60 @@ bool FQTermSSH2Kex::verifyKey() {
   return res == 1;
 }
 
-static RSA *CreateRSAContext(unsigned char *host_key, int len) {
-  FQTermSSHBuffer buffer(len);
+static RSA *CreateRSAContext(unsigned char *hostkey, int len)
+{
+	int algo_len, e_len, n_len;
+	RSA *rsa = RSA_new();
+	BIGNUM *rsa_e = BN_new();
+	BIGNUM *rsa_n = BN_new();
 
-  buffer.putRawData((char *)host_key, len);
+	if (len >= 4)
+		algo_len = be32toh(*(uint32_t*)hostkey);
+	else
+		goto fail;
+	hostkey += 4;
+	len -= 4;
 
-  int algo_len = -1;
-  unsigned char *algo = (unsigned char *)buffer.getString(&algo_len);
+	if (!(len >= 7 && algo_len == 7 && memcmp(hostkey, "ssh-rsa", 7) == 0))
+		goto fail;
+	hostkey += 7;
+	len -= 7;
 
-  FQ_VERIFY(std::string("ssh-rsa") == std::string((char *)algo));
+	if (len >= 4)
+		e_len = be32toh(*(uint32_t*)hostkey);
+	else
+		goto fail;
+	if (len >= 4+e_len)
+		BN_mpi2bn(hostkey, 4+e_len, rsa_e);
+	else
+		goto fail;
+	hostkey += 4 + e_len;
+	len -= 4 + e_len;
 
-  int e_len = -1;
-  unsigned char *e = (unsigned char *)buffer.getString(&e_len);
-
-  int n_len = -1;
-  unsigned char *n = (unsigned char *)buffer.getString(&n_len);
-
-
-  RSA *rsa = RSA_new();
-  BIGNUM *rsa_e = BN_new();
-  BIGNUM *rsa_n = BN_new();
-
-  BN_bin2bn(e, e_len, rsa_e);
-  BN_bin2bn(n, n_len, rsa_n);
+	if (len >= 4)
+		n_len = be32toh(*(uint32_t*)hostkey);
+	else
+		goto fail;
+	if (len >= 4+n_len)
+		BN_mpi2bn(hostkey, 4+n_len, rsa_n);
+	else
+		goto fail;
+	hostkey += 4 + n_len;
+	len -= 4 + n_len;
 
 #ifdef HAVE_OPAQUE_STRUCTS
-  RSA_set0_key(rsa, rsa_n, rsa_e, NULL);
+	RSA_set0_key(rsa, rsa_n, rsa_e, NULL);
 #else
-  rsa->n = rsa_n;
-  rsa->e = rsa_e;
+	rsa->n = rsa_n;
+	rsa->e = rsa_e;
 #endif
-  delete[] algo;
-  delete[] e;
-  delete[] n;
 
-  return rsa;
+	return rsa;
+fail:
+	BN_clear_free(rsa_e);
+	BN_clear_free(rsa_n);
+	RSA_free(rsa);
+	return NULL;
 }
 
 void FQTermSSH2Kex::sendNewKeys(){
