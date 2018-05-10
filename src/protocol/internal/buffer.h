@@ -24,6 +24,8 @@
 #include <stdint.h>
 #include <string.h>
 
+#define SSH_BUFFER_MAX 10000000
+
 #ifdef __cplusplus
 extern "C" {
 #endif /* } */

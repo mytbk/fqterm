@@ -29,7 +29,6 @@ set(internal_SRCS
   internal/crc32.h
   internal/fqterm_serialization.h
   internal/fqterm_ssh_auth.h
-  internal/fqterm_ssh_buffer.h
   internal/fqterm_ssh_const.h
   internal/fqterm_ssh_kex.h
   internal/fqterm_ssh2_kex.h
@@ -40,7 +39,6 @@ set(internal_SRCS
   internal/fqterm_ssh_types.h
   internal/crc32.cpp
   internal/fqterm_ssh_auth.cpp
-  internal/fqterm_ssh_buffer.cpp
   internal/fqterm_ssh_kex.cpp
   internal/fqterm_ssh2_kex.cpp
   internal/fqterm_ssh_packet.cpp

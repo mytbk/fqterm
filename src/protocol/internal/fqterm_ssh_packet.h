@@ -26,7 +26,6 @@
 #include <QObject>
 
 #include "fqterm_ssh_types.h"
-#include "fqterm_ssh_buffer.h"
 #include "ssh_mac.h"
 #include "fqterm_serialization.h"
 #include "ssh_cipher.h"

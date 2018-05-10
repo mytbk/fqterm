@@ -19,7 +19,6 @@
  ***************************************************************************/
 
 #include "fqterm_trace.h"
-#include "fqterm_ssh_buffer.h"
 #include "fqterm_ssh_packet.h"
 #include "fqterm_ssh_const.h"
 
