@@ -22,7 +22,6 @@
 #include "fqterm_ssh_packet.h"
 #include "fqterm_ssh1_packet.h"
 #include "fqterm_ssh2_packet.h"
-#include "fqterm_ssh_buffer.h"
 #include "fqterm_ssh_kex.h"
 #include "fqterm_ssh2_kex.h"
 #include "fqterm_ssh_const.h"
@@ -46,8 +45,8 @@ FQTermSSHSocket::FQTermSSHSocket(int col, int row, const QString& termtype, cons
 
   private_socket_ = new FQTermSocketPrivate();
 
-  input_buffer_ = NULL;
-  output_buffer_ = NULL;
+  buffer_init(&input_buffer);
+  buffer_init(&output_buffer);
   buffer_init(&socket_buffer);
   packet_receiver_ = NULL;
   packet_sender_ = NULL;
@@ -70,8 +69,8 @@ FQTermSSHSocket::FQTermSSHSocket(int col, int row, const QString& termtype, cons
 
 FQTermSSHSocket::~FQTermSSHSocket() {
   delete private_socket_;
-  delete input_buffer_;
-  delete output_buffer_;
+  buffer_deinit(&input_buffer);
+  buffer_deinit(&output_buffer);
   buffer_deinit(&socket_buffer);
   delete packet_receiver_;
   delete packet_sender_;
@@ -85,8 +84,8 @@ void FQTermSSHSocket::init(int ssh_version) {
   // but in that case reset methods should be added to all these classes.
   // Guys lazy as me won't do that.
 
-  delete input_buffer_;
-  delete output_buffer_;
+  buffer_clear(&input_buffer);
+  buffer_clear(&output_buffer);
   buffer_clear(&socket_buffer);
   delete packet_receiver_;
   delete packet_sender_;
@@ -98,8 +97,6 @@ void FQTermSSHSocket::init(int ssh_version) {
   auth_ok_emitted_ = false;
 
   if (ssh_version == 1) {
-    input_buffer_ = new FQTermSSHBuffer(1024);
-    output_buffer_ = new FQTermSSHBuffer(1024);
     packet_receiver_ = new FQTermSSH1PacketReceiver;
     packet_sender_ = new FQTermSSH1PacketSender;
     key_exchanger_ = new FQTermSSH1Kex(SSH_V1_C, server_name_.toLatin1().constData());
@@ -127,8 +124,6 @@ void FQTermSSHSocket::init(int ssh_version) {
 
     key_exchanger_->initKex(packet_receiver_, packet_sender_);
   } else {
-    input_buffer_ = new FQTermSSHBuffer(1024);
-    output_buffer_ = new FQTermSSHBuffer(1024);
     packet_receiver_ = new FQTermSSH2PacketReceiver;
     packet_sender_ = new FQTermSSH2PacketSender;
     key_exchanger_ = new FQTermSSH2Kex(SSH_V2_C, server_name_.toLatin1().constData());
@@ -188,9 +183,10 @@ void FQTermSSHSocket::channelOK() {
   //auth_ok_emitted_ = false;
 }
 
-void FQTermSSHSocket::channelReadyRead(const char *data, int len) {
-  input_buffer_->putRawData(data, len);
-  emit readyRead();
+void FQTermSSHSocket::channelReadyRead(const char *data, int len)
+{
+	buffer_append(&input_buffer, (const uint8_t*)data, len);
+	emit readyRead();
 }
 
 unsigned long FQTermSSHSocket::socketWriteBlock(const char *data, unsigned long len) {
@@ -303,32 +299,34 @@ void FQTermSSHSocket::handlePacket(int type) {
   }
 }
 
-unsigned long FQTermSSHSocket::bytesAvailable() {
-  return input_buffer_->len();
+unsigned long FQTermSSHSocket::bytesAvailable()
+{
+	return buffer_len(&input_buffer);
 }
 
-QByteArray FQTermSSHSocket::readBlock(unsigned long size) {
-  QByteArray data(size, 0);
-  input_buffer_->getRawData(data.data(), size);
-  return data;
+QByteArray FQTermSSHSocket::readBlock(unsigned long size)
+{
+	QByteArray data(size, 0);
+	buffer_get(&input_buffer, (uint8_t*)data.data(), size);
+	return data;
 }
 
-long FQTermSSHSocket::writeBlock(const QByteArray &data) {
-  if (!is_channel_ok_) return 0;
-  
-  unsigned long size = data.size();
-  output_buffer_->putRawData(data.data(), size);
-  return size;
+long FQTermSSHSocket::writeBlock(const QByteArray &data)
+{
+	if (!is_channel_ok_) return 0;
+
+	unsigned long size = data.size();
+	buffer_append(&output_buffer, (const uint8_t*)data.data(), size);
+	return size;
 }
 
-void FQTermSSHSocket::flush() {
-  if (!is_channel_ok_) return;
-  
-  int size = output_buffer_->len();
+void FQTermSSHSocket::flush()
+{
+	if (!is_channel_ok_) return;
 
-  ssh_channel_->sendData((const char *)output_buffer_->data(), size);
-
-  output_buffer_->consume(size); 
+	size_t size = buffer_len(&output_buffer);
+	ssh_channel_->sendData((const char *)buffer_data(&output_buffer), size);
+	buffer_consume(&output_buffer, size);
 }
 
 void FQTermSSHSocket::close() {
