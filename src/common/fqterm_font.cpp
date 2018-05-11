@@ -238,7 +238,7 @@ QString getDefaultFontFamilyForLanguage(bool isEnglish) {
         make_pair(lang, getFontFamilyForLang(lang)));
     it = langs_fonts_list.find(lang);
 
-    FQ_TRACE("font", 3)  << "Defaut font for "
+    FQ_TRACE("font", 3)  << "Default font for "
                          << Font::getLanguageName(lang)
                          << " is: "
                          << it->second

@@ -591,7 +591,7 @@ int FQTermTelnet::write(const char *data, uint len) {
 
   // process keyboard input
   // because we use GUI, there is no need to support a "command mode"
-  // So the keyboard-input FSM isnt' necessary.
+  // So the keyboard-input FSM isn't necessary.
 
   uint i;
 
@@ -1015,7 +1015,7 @@ int FQTermTelnet::ttputc(int c) {
 	if (synching)
 	return 0;
   */
-  /* TODO: FQTermTelnet doesnot interpret NVT code, provide datas to upper
+  /* TODO: FQTermTelnet does not interpret NVT code, provide datas to upper
      layer directly. So, <cr><lf>	will not be replaced with <lf>
   */
   xputc_up((char)c);

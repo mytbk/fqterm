@@ -767,7 +767,7 @@ int FQTermZmodem::ZmodemAbort(ZModem *info) {
   ZOFlush(info);
 
   transferstate = transferstop; // transfer complete
-  ZmodemReset(info); //Tranfer complete, zmodem return to receive state
+  ZmodemReset(info); //Transfer complete, zmodem return to receive state
 
   zmodemlog("ZmodemAbort[%s]: send CAN\n", sname(info));
   return ZXmitStr(canistr, sizeof(canistr), info);
@@ -2822,7 +2822,7 @@ int FQTermZmodem::GotRinit(ZModem *info) {
 
   itFile = strFileList.begin();
   QFileInfo fi(*itFile);
-  FQ_TRACE("zmodem", 0) << "Number of files to be transfered: "
+  FQ_TRACE("zmodem", 0) << "Number of files to be transferred: "
                         << strFileList.count();
   char *filename = strdup(fi.absoluteFilePath().toLatin1());
   char *rfilename = strdup(fi.fileName().toLatin1());
@@ -2947,7 +2947,7 @@ int FQTermZmodem::SkipFile(ZModem *info) {
   ZStatus(FileEnd, 0, info->rfilename);
   fclose(info->file);
 
-  // stupid SMTH doesnt send further command, kick
+  // stupid SMTH doesn't send further command, kick
   // lets send files in the list
   info->state = TStart;
   return GotRinit(info);
@@ -2977,7 +2977,7 @@ int FQTermZmodem::OverAndOut(ZModem *info) {
 
   transferstate = transferstop; // transfer complete
 
-  ZmodemReset(info); //Tranfer complete, zmodem return to receive state
+  ZmodemReset(info); //Transfer complete, zmodem return to receive state
 
   return ZmDone;
 }

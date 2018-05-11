@@ -36,7 +36,7 @@ namespace FQTerm {
 #define NSSTATES	3		// # of Telnet Option Subnegotiation FSM States
 #define NCHRS		256		// # of valid characters
 
-//  decleration
+//  declaration
 class FQTermTelnet;
 // actionFunc is a pointer, point to a FQTermTelnet's func
 typedef int(FQTermTelnet:: *ptrActionFunc)(int c);

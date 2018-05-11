@@ -109,7 +109,7 @@ void FQTermSSH1Kex::makeSessionKey() {
     FQ_TRACE("sshkex", 0) << "Warning: Server lies about "
                           << "size of server public key: "
                           << "actual size: " << rbits
-                          << " vs. anounced: " << bits;
+                          << " vs. announced: " << bits;
     FQ_TRACE("sshkex", 0) << "Warning: This may be due to "
                           << "an old implementation of ssh.";
   }
@@ -126,7 +126,7 @@ void FQTermSSH1Kex::makeSessionKey() {
     FQ_TRACE("sshkex", 0) << "Warning: Server lies about "
                           << "size of server public key: "
                           << "actual size: " << rbits
-                          << " vs. anounced: " << bits;
+                          << " vs. announced: " << bits;
     FQ_TRACE("sshkex", 0) << "Warning: This may be due to "
                           << "an old implementation of ssh.";
   }

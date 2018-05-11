@@ -638,7 +638,7 @@ void FQTermFrame::connectMenuActivated() {
   
   FQTermParam param;
 
-  // FIXME: don't know the relation with id and param setted by setItemParameter
+  // FIXME: don't know the relation with id and param set by setItemParameter
   if (loadAddress(pConf, id, param)) {
     newWindow(param, id);
   }

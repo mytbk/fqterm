@@ -4,9 +4,9 @@ download the directory
 
 	13/09/04	kingson
 	* add this changelog
-	
+
 Notes:
-	1. make sure the path is empty, otherwise mkdir complain and stoped
+	1. make sure the path is empty, otherwise mkdir complain and stopped
 	2. the time for sleep() varies dependent on sites
 	3. tested for FireBird BBS only
 Bugs:
@@ -27,7 +27,7 @@ wait_time = 2.0
 def txt2html(txt):
 	txt=string.replace(txt,"\n","\n<br>")
 	return string.replace(txt," ","&nbsp;")
-	
+
 def upper_dir(path):
 	if(sys.platform=="win32"):	# '\' for win32
 		i=path.rfind("\\",0,-1)
@@ -49,16 +49,16 @@ def write_html_header(hfile, num):
 		</head>""")
 	hfile.write("<body>")
 	hfile.write("<p><b><h1>FQTerm Article Downloader</h1></b></p>")
-	txt="""<p><p align=center><a href=%d.html>Prevoius</a>     
-		<a href=index.html>Index</a>      
+	txt="""<p><p align=center><a href=%d.html>Prevoius</a>
+		<a href=index.html>Index</a>
 		<a href=%d.html>Next</a></p align=center></p>""" % (num-1,num+1)
 	hfile.write(txt)
 	hfile.write("<hr><p></p>\n")
 
 def write_html_ender(hfile,num):
 	hfile.write("<hr><p></p>")
-	txt="""<p><p align=center><a href=%d.html>Prevoius</a>     
-		<a href=index.html>Index</a>      
+	txt="""<p><p align=center><a href=%d.html>Prevoius</a>
+		<a href=index.html>Index</a>
 		<a href=%d.html>Next</a></p align=center></p>""" % (num-1,num+1)
 	hfile.write(txt)
 	hfile.write("<p><b>FQTerm --- BBS client based on Qt library</b><p>")
@@ -97,7 +97,7 @@ def get_list_num(str_line):
 		# wrong format
 		return None
 	else:
-	   return str_line[matchobj.start():matchobj.end()]
+                return str_line[matchobj.start():matchobj.end()]
 
 def get_list_categary(str_line):
 	# get the categary
@@ -121,9 +121,9 @@ def down_folder():
 	global path
 	first_num = -1
 	while(1):
-		line=fqterm.caretY(lp) 
+		line=fqterm.caretY(lp)
 		str_line=fqterm.getText(lp,line)
-	
+
 		article_num = get_list_num(str_line)
 		if (first_num == -1):
 			first_num = article_num
@@ -133,15 +133,15 @@ def down_folder():
 			f=open(path+"index.html","a+")
 			write_index_ender(f)
 			f.close()
-			# wrong formated list, leave out
+			# wrong formatted list, leave out
 			print "leave %s" % path
 			fqterm.sendString(lp,'q')
 			path=upper_dir(path)
 			time.sleep(wait_time)
-			return	
+			return
 
 		article_categary = get_list_categary(str_line)
-		article_title = get_list_title(str_line)	
+		article_title = get_list_title(str_line)
 
 		# download if its file
 		if article_categary == '[文件]':
@@ -188,12 +188,12 @@ def down_folder():
 			f=open(path+"index.html","a+")
 			write_index_ender(f)
 			f.close()
-			# wrong formated list, leave out
+			# wrong formatted list, leave out
 			print "leave %s" % path
 			fqterm.sendString(lp,'q')
 			path=upper_dir(path)
 			time.sleep(wait_time)
-			return	
+			return
 		str_next=fqterm.getText(lp,line+1)
 		# move cursor down and get the num
 		fqterm.sendString(lp,'j')
@@ -206,12 +206,12 @@ def down_folder():
 			f=open(path+"index.html","a+")
 			write_index_ender(f)
 			f.close()
-			# wrong formated list, leave out
+			# wrong formatted list, leave out
 			print "leave %s" % path
 			fqterm.sendString(lp,'q')
 			path=upper_dir(path)
 			time.sleep(wait_time)
-			return	
+			return
 		# exit current dir when the number of the next one equals or small then last
 		# this may cause problem when the server is extra slow 
 		if(int(article_num_next) <= int(article_num)):
@@ -237,7 +237,7 @@ path_dir=path="/home/dp2/temp/test/"
 os.makedirs(path)
 
 # enter
-fqterm.sendString(lp,'x') 
+fqterm.sendString(lp,'x')
 time.sleep(wait_time)
 # create index.html and write the header
 f=open(path+"index.html","w")

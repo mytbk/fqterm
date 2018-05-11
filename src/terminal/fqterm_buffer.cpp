@@ -447,11 +447,11 @@ void FQTermBuffer::moveCaretOffset(int column_offset, int row_offset, bool scrol
               scroll_if_necessary);
 }
 
-void FQTermBuffer::changeCaretPosition(int coloumn, int row) {
+void FQTermBuffer::changeCaretPosition(int column, int row) {
   if (is_origin_mode_) {
-    moveCaretTo(coloumn, row + top_row_);
+    moveCaretTo(column, row + top_row_);
   } else {
-    moveCaretTo(coloumn, row);
+    moveCaretTo(column, row);
   }
 }
 

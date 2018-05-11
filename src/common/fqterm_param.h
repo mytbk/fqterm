@@ -182,7 +182,7 @@ class FQTermParam {
   // Send When Idle
   QString antiIdleMessage_;
   bool isAntiIdle_;
-  // wether autoreply
+  // whether autoreply
   bool isAutoReply_;
   // Auto Reply Messages
   QString autoReplyMessage_;

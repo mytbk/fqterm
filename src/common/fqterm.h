@@ -104,7 +104,7 @@ inline QString encoding2unicode(const QByteArray &text, int encoding) {
 
 // every character has a 16-bit description
 // low   8 for colors
-// hight 8 for attributes
+// high  8 for attributes
 #define COLORMASK 0x00ff
 #define ATTRMASK  0xff00
 
