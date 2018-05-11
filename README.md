@@ -3,8 +3,6 @@ FQTerm是为Telnet BBS设计的终端模拟器(俗称Term)，支持Telnet,SSH协
 本项目源自QTerm-Qt3,从2008年起，由Curvlet和dp2重写并移植至Qt4.    
 现在FQTerm的原开发组成员已经停止了该项目的维护，现由archlinux(mytbk@GitHub)网友维护并移植至Qt5。    
 
-**注：近来 [QTerm](https://github.com/qterm/qterm) 开发活跃，而本人没太大精力开发 FQTerm，建议大家关注 QTerm 项目，而 FQTerm 依然会继续维护。**
-
 ## 文档
 目前FQTerm还没有特别完整的文档，现在正在进行文档编写。用Markdown编写的文档请见[doc目录](doc/).
 
@@ -14,7 +12,10 @@ fork本项目，然后自己开发，提交自己的更改，再创建pull reque
 - https://help.github.com/articles/fork-a-repo
 - https://help.github.com/articles/using-pull-requests
 
+注意：除 master 之外的分支都会在 master 的基础上 rebase 并用 ``git push --force`` 推上 GitHub.
+
 ## 安装
+
 Windows用户可以直接到[fosshub页面](http://code.fosshub.com/FQTerm/downloads)下载预编译的包。
 
 鉴于此前SourceForge的一些事件，本项目的Windows预编译包已迁移至FossHub，原有的[SourceForge](http://sourceforge.net/projects/fqterm/files/windows/)上的包会保留。
@@ -68,13 +69,11 @@ REM 生成的fqterm.exe即为程序文件
 
 ## TODO
 以下是FQTerm日后需要改进和修复的地方，希望大家参与开发。
-- SSH: 增加host key记录和认证机制
-- SSH: public key auth
+- SSH: 建议使用系统的ssh，可参考 [doc/SSH.md](doc/SSH.md). 自带的SSH实现正在重构。
 - 改善终端渲染
 - 使用矢量UI
 - ~~Bug: Qt5分支中Ctrl按键异常 (暂时使用Mac OS的处理方法解决)~~
-- ~~Bug: Qt5分支中退出时SIGSEGV(resolved)~~
-- ~~Maybe something wrong with imageviewer (Qt5)~~
+- ~~Maybe something wrong with imageviewer (Qt5)~~ 准备删除imageviewer功能
 - 考虑代码重构
 - Bug: 处理不完整GBK字符时存在一些异常，特别是在Qt5分支
 
