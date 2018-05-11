@@ -56,7 +56,7 @@ void zmodemDialog::clearErrorLog() {
 }
 
 void zmodemDialog::slotCancel() {
-  QMessageBox mb("FQTerm", "We dont support cancel operation yet. "
+  QMessageBox mb("FQTerm", "We don't support cancel operation yet. "
                  "But you can try, it will crash when downloading.\n"
                  "Do you want to continue?",
                  QMessageBox::Warning, QMessageBox::Yes,

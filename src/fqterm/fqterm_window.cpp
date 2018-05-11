@@ -397,7 +397,7 @@ bool FQTermWindow::event(QEvent *qevent) {
       if (keyEvent->key() == Qt::Key_Tab ||
           keyEvent->key() == Qt::Key_Backtab) {
         // Key_Tab and Key_Backtab are special, if we don't process them here,
-        // the default behavoir is to move focus. see QWidget::event.
+        // the default behavior is to move focus. see QWidget::event.
         keyPressEvent(keyEvent);
         keyEvent->accept();
         res = true;

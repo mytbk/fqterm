@@ -313,7 +313,7 @@
        <item row="2" column="0">
         <widget class="QCheckBox" name="highlightCheckBox">
          <property name="text">
-          <string>Always Hightlight</string>
+          <string>Always Highlight</string>
          </property>
         </widget>
        </item>

@@ -725,7 +725,7 @@ p, li { white-space: pre-wrap; }
         <translation>ANSI 颜色</translation>
     </message>
     <message>
-        <source>Always Hightlight</source>
+        <source>Always Highlight</source>
         <translation>总是高亮</translation>
     </message>
     <message>

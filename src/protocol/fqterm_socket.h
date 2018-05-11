@@ -21,7 +21,7 @@
 #ifndef FQTERM_SOCKET_H
 #define FQTERM_SOCKET_H
 
-// _OS_X_ not defined if i dont include it
+// _OS_X_ not defined if i don't include it
 #include <QGlobalStatic>
 
 // different

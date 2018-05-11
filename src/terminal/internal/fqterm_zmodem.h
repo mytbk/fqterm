@@ -136,7 +136,7 @@ typedef enum zmstate {
 typedef struct {
   int ifd; /* input fd, for use by caller's routines */
   int ofd; /* output fd, for use by caller's routines */
-  FILE *file; /* file being transfered */
+  FILE *file; /* file being transferred */
   int zrinitflags; /* receiver capabilities, see below */
   int zsinitflags; /* sender capabilities, see below */
   char *attn; /* attention string, see below */

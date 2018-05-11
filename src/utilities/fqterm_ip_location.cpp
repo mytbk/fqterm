@@ -235,7 +235,7 @@ bool FQTermIPLocation::getLocation(QString &url, QByteArray &country,
 
   } else {
     // not in this range... miss
-    country = "unkown";
+    country = "unknown";
     city = "";
   }
   // if ip_start<=ip<=ip_end

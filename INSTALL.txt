@@ -17,7 +17,7 @@ below to setup the development environment.
 
   In the console run commands below:
    
-  $ cd $FQTERM/build  # change current postion to the build direcotry
+  $ cd $FQTERM/build  # change current position to the build direcotry
   $ cmake ../         # generate necessary Makefiles
   $ make              # build the program
   $ make love         # invoke this command if you are eager to run 
@@ -49,7 +49,7 @@ development environment.
 
   In the console run commands below:
    
-  $ cd $FQTERM/build  # change current postion to the build direcotry
+  $ cd $FQTERM/build  # change current position to the build direcotry
   $ cmake ../         # generate necessary Makefiles
   $ make              # build the program
   $ make love         # invoke this command if you are eager to run 
@@ -141,7 +141,7 @@ below to setup the development environment.
   For other versions of Visual Studio, please see the help
   message of CMake by running "cmake --help".
 
-5. Start coding/buiding/debuging as usual using Visual Studio.
+5. Start coding/buiding/debugging as usual using Visual Studio.
 
 6. Enable IP location detection feature.
 

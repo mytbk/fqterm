@@ -133,7 +133,7 @@ class FQTermSession: public QObject {
   static const QString protocolPrefix[];
   PageState getPageState();
 
-  // Set current cursor postion to pt,
+  // Set current cursor position to pt,
   // return whether the selection rectangle is changed.
   // the output parameter rc be a rectangle including both
   // the new and the old selection region.
@@ -163,7 +163,7 @@ class FQTermSession: public QObject {
 
 
   // Set current screen start line to help detect cursor type
-  // and select rectangle corresponding to current cursor postion.
+  // and select rectangle corresponding to current cursor position.
   void setScreenStart(int);
 
 

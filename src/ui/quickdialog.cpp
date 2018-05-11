@@ -181,7 +181,7 @@ void quickDialog::onAdvance() {
 
 void quickDialog::onConnect() {
   if (ui_.historyComboBox->currentText().isEmpty() || ui_.portEdit->text().isEmpty()) {
-    QMessageBox mb("FQTerm", "address or port cant be blank", QMessageBox::Warning,
+    QMessageBox mb("FQTerm", "address or port can't be blank", QMessageBox::Warning,
                    QMessageBox::Ok | QMessageBox::Default, 0, 0);
     mb.exec();
     return ;

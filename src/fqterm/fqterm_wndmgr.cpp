@@ -207,7 +207,7 @@ FQTermWindow* FQTermWndMgr::newWindow( const FQTermParam &param, FQTermConfig* c
   if (count() == 1) {
     termFrame_->enableMenuToolBar(true);
   }
-  //if no this call, the tab wont display untill you resize the window
+  //if no this call, the tab won't display until you resize the window
   int idx = tabBar_->addTab(*icon, window->windowTitle());
   tabBar_->updateGeometry();
   tabBar_->update();

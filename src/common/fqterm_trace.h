@@ -117,7 +117,7 @@ class FQTermTrace {
       if (trace_level < 0) {
         soft_break();
         assert(false);
-        qFatal("Fatal error occured!\n");
+        qFatal("Fatal error occurred!\n");
       }
     }
   }

@@ -112,7 +112,7 @@ class FQTermTextLine {
   void deleteText(unsigned cell_begin, unsigned cell_end);
   void deleteAllText();
 
-  // If cell_begin is a begining of a readable character, return
+  // If cell_begin is a beginning of a readable character, return
   // cell_begin itself, otherwise return the previous cell which starts a
   // readable character.
   unsigned getCellBegin(unsigned cell_begin) const;

@@ -958,7 +958,7 @@ void FQTermSession::doAutoLogin() {
     telnet_->write(&ch, 1);
   }
 
-  // smth ignore continous input, so sleep 1 sec :)
+  // smth ignore continuous input, so sleep 1 sec :)
 #if defined(_OS_WIN32_) || defined(Q_OS_WIN32)
   Sleep(1000);
 #else
@@ -1045,7 +1045,7 @@ void FQTermSession::readReady(int size, int raw_size) {
     //QToolTip::remove(this, screen_->mapToRect(m_rcUrl));
 
     // message received
-    // 03/19/2003. the caret posion removed as a message judgement
+    // 03/19/2003. the caret position removed as a message judgement
     // because smth.org changed
     if (decoder_->bellReceive()) {
       emit startAlert();

@@ -230,7 +230,7 @@ static void dumpData24 (int audiofd, int soundfd, int filesize) {
 
       unsigned int *u32 = (unsigned int *)&sample_s32; /* Alias */
 
-      /* Read the litle endian input samples */
+      /* Read the little endian input samples */
       *u32 = (buf[i] << 8) | (buf[i+1] << 16) | (buf[i+2]<<24);
       outbuf[outlen++]=sample_s32;
 

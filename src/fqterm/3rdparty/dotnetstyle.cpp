@@ -80,8 +80,8 @@ public:
     QColor shadowColor(const QStyleOption *option) const;
     QBrush highlightBrush(const QStyleOption *option, bool act) const;
     QBrush highlightMenuCheckBrush(const QStyleOption *option, bool act) const;
-    QLinearGradient toolbarGradient(const QStyleOption *option, QRect rect, Qt::Orientation orientaion) const;
-    QLinearGradient menuGradient(const QStyleOption *option, QRect rect, Qt::Orientation orientaion) const;
+    QLinearGradient toolbarGradient(const QStyleOption *option, QRect rect, Qt::Orientation orientation) const;
+    QLinearGradient menuGradient(const QStyleOption *option, QRect rect, Qt::Orientation orientation) const;
     void updatePalette();
 
     QColor menuSeparatorColor;
@@ -274,11 +274,11 @@ QLinearGradient DotNetStylePrivate::toolbarGradient(const QStyleOption *option, 
 }
 
 
-QLinearGradient DotNetStylePrivate::menuGradient(const QStyleOption *option, QRect rect, Qt::Orientation orientaion = Qt::Horizontal) const {
+QLinearGradient DotNetStylePrivate::menuGradient(const QStyleOption *option, QRect rect, Qt::Orientation orientation = Qt::Horizontal) const {
 
     QColor start, stop;
     QLinearGradient grad;
-    if (orientaion == Qt::Vertical) {
+    if (orientation == Qt::Vertical) {
         grad.setStart(rect.left(), rect.top());
         grad.setFinalStop(rect.left(), rect.bottom());
     } else {

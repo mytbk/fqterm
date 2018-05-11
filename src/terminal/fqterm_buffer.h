@@ -166,8 +166,8 @@ class FQTermBuffer: public QObject {
   // be marked as changed.
   void moveCaretOffset(int coloumn_offset, int row_offset,
                        bool scroll_if_necessary = false);
-  void moveCaretTo(int coloumn, int row, bool scroll_if_necessary = false);
-  void changeCaretPosition(int coloumn, int row);
+  void moveCaretTo(int column, int row, bool scroll_if_necessary = false);
+  void changeCaretPosition(int column, int row);
   void saveCaret();
   void restoreCaret();
 
@@ -280,7 +280,7 @@ class FQTermBuffer: public QObject {
   bool is_origin_mode_;     // Is origin or absolute mode.
   bool is_autowrap_mode_;   // Is auto-wrap mode enabled.
   bool is_autorepeat_mode_; // Is auto-repeat mode enabled.
-  bool is_lightbg_mode_;    // Is ligth background or dark backgrond mode.
+  bool is_lightbg_mode_;    // Is light background or dark backgrond mode.
 
   // Selection in buffer. If section start and end are in the same
   // line, start.x should be equal to or less than end.x. Otherwise
