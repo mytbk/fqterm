@@ -1,6 +1,5 @@
 [Desktop Entry]
 Version=1.0
-Encoding=UTF-8
 Type=Application
 Categories=Application;Qt;Network;
 Icon=fqterm
@@ -10,4 +9,6 @@ GenericName=BBS Client
 GenericName[zh_CN]=BBS 客户端程序
 GenericName[zh_TW]=BBS 客戶端程式
 Comment=BBS client based on Qt library in linux
+Comment[zh_CN]=用于 Linux 系统的基于 Qt 库的 BBS 客户端
+Keywords=Qt;BBS;Term;
 Terminal=false
