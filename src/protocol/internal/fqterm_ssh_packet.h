@@ -57,14 +57,11 @@ class FQTermSSHPacketSender: public QObject {
   virtual int getKeySize() const { return cipher->keySize;}
   int getMacKeySize() const { return mac->keySize;}
 
- public slots:
   void startEncryption(const u_char *key, const u_char *IV = NULL);
-  void resetEncryption();
-
   void startMac(const u_char *sessionkey);
   void resetMac();
-
-  void enableCompress(int enable) {is_compressed_ = enable;};
+ public slots:
+  void resetEncryption();
 
  signals:
   void dataToWrite();
@@ -109,14 +106,11 @@ class FQTermSSHPacketReceiver: public QObject {
   int getMacKeySize() const { return mac->keySize;}
 
   virtual void parseData(buffer *input) = 0;
- public slots:
   void startEncryption(const u_char *key, const u_char *IV = NULL);
-  void resetEncryption();
-
   void startMac(const u_char *sessionkey);
   void resetMac();
-
-  void enableCompress(int enable) {is_compressed_ = enable;};
+ public slots:
+  void resetEncryption();
 
  signals:
   void packetAvaliable(int type);

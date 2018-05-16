@@ -186,7 +186,8 @@ void FQTermSSH1Kex::makeSessionKey() {
   packet_sender_->putInt(1);
   packet_sender_->write();
 
-  emit startEncryption(session_key_);
+  packet_sender_->startEncryption(session_key_, NULL);
+  packet_receiver_->startEncryption(session_key_, NULL);
 }
 
 void FQTermSSH1Kex::makeSessionId() {

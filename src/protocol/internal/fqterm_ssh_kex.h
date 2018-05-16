@@ -61,9 +61,6 @@ signals:
   void kexOK();
   void reKex();
   void kexError(QString);
-
-  void startEncryption(const u_char *sessionkey);
-
 };
 
 class FQTermSSH1Kex: public FQTermSSHKex {

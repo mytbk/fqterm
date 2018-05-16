@@ -112,8 +112,6 @@ void FQTermSSHSocket::init(int ssh_version) {
     FQ_VERIFY(connect(key_exchanger_, SIGNAL(kexError(QString)), this, SLOT(handleError(QString))));
     FQ_VERIFY(connect(key_exchanger_, SIGNAL(reKex()), packet_receiver_, SLOT(resetEncryption())));
     FQ_VERIFY(connect(key_exchanger_, SIGNAL(reKex()), packet_sender_, SLOT(resetEncryption())));
-    FQ_VERIFY(connect(key_exchanger_, SIGNAL(startEncryption(const u_char*)), packet_receiver_, SLOT(startEncryption(const u_char*))));
-    FQ_VERIFY(connect(key_exchanger_, SIGNAL(startEncryption(const u_char*)), packet_sender_, SLOT(startEncryption(const u_char*))));
 
     FQ_VERIFY(connect(authentication_, SIGNAL(requestUserPwd(QString *, QString *, bool *)), this, SIGNAL(requestUserPwd(QString *, QString *, bool *))));
     FQ_VERIFY(connect(authentication_, SIGNAL(authOK()), this, SLOT(authOK())));
@@ -139,9 +137,6 @@ void FQTermSSHSocket::init(int ssh_version) {
     FQ_VERIFY(connect(key_exchanger_, SIGNAL(kexError(QString)), this, SLOT(handleError(QString))));
     FQ_VERIFY(connect(key_exchanger_, SIGNAL(reKex()), packet_receiver_, SLOT(resetEncryption())));
     FQ_VERIFY(connect(key_exchanger_, SIGNAL(reKex()), packet_sender_, SLOT(resetEncryption())));
-
-    FQ_VERIFY(connect(key_exchanger_, SIGNAL(startEncryption(const u_char*)), packet_receiver_, SLOT(startEncryption(const u_char*))));
-    FQ_VERIFY(connect(key_exchanger_, SIGNAL(startEncryption(const u_char*)), packet_sender_, SLOT(startEncryption(const u_char*))));
 
     FQ_VERIFY(connect(authentication_, SIGNAL(requestUserPwd(QString *, QString *, bool *)), this, SIGNAL(requestUserPwd(QString *, QString *, bool *))));
     FQ_VERIFY(connect(authentication_, SIGNAL(authOK()), this, SLOT(authOK())));
