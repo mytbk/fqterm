@@ -23,19 +23,12 @@
 
 #include "fqterm_serialization.h"
 #include "buffer.h"
+#include "ssh_packet.h"
 
 namespace FQTerm {
 //==============================================================================
 //FQTermSSH2PacketSender
 //==============================================================================
-// SSH2 Packet Structure:
-//      uint32    packet_length
-//      byte      padding_length
-//      byte[n1]  payload; n1 = packet_length - padding_length - 1
-//      byte[n2]  random padding; n2 = padding_length
-//      byte[m]   mac (Message Authentication Code - MAC); m = mac_length
-//==============================================================================
-
 void FQTermSSH2PacketSender::makePacket()
 {
 	FQ_TRACE("ssh2packet", 9) << "----------------------------Send "
@@ -46,79 +39,8 @@ void FQTermSSH2PacketSender::makePacket()
 	if (is_compressed_)
 		FQ_VERIFY(false);
 
-	// 1. compute the padding length for padding.
-	int non_padding_len = 4 + 1 + buffer_len(&orig_data);
-
-	int padding_block_len = 8;
-	if (cipher->started && cipher->blkSize > padding_block_len)
-		padding_block_len = cipher->blkSize;
-
-	int padding_len = padding_block_len - (non_padding_len % padding_block_len);
-	if (padding_len < 4)
-		padding_len += padding_block_len;
-
-	// 2. renew the output buffer.
-	int total_len = non_padding_len + padding_len;
-	if (is_mac_)
-		total_len += mac->dgstSize;
-
-	buffer_clear(&data_to_send);
-
-	// 3. Fill the output buffer.
-	int packet_len = 1 + buffer_len(&orig_data) + padding_len;
-
-	buffer_append_be32(&data_to_send, packet_len);
-	buffer_append_byte(&data_to_send, padding_len);
-	buffer_append(&data_to_send, buffer_data(&orig_data), buffer_len(&orig_data));
-
-	uint32_t padding[8]; /* padding at most 256 bits */
-	for (int i = 0; i < 8; i++)
-		padding[i] = rand();
-	buffer_append(&data_to_send, (const uint8_t*)padding, padding_len);
-
-	// 4. Add MAC on the entire unencrypted packet,
-	// including two length fields, 'payload' and 'random padding'.
-	if (is_mac_) {
-		const unsigned char *packet = buffer_data(&data_to_send);
-		int len = buffer_len(&data_to_send);
-
-		uint8_t digest[MAX_DGSTLEN];
-
-		buffer mbuffer;
-		buffer_init(&mbuffer);
-		buffer_append_be32(&mbuffer, sequence_no_);
-		buffer_append(&mbuffer, packet, len);
-		mac->getmac(mac, buffer_data(&mbuffer), buffer_len(&mbuffer), digest);
-		buffer_deinit(&mbuffer);
-
-		buffer_append(&data_to_send, digest, mac->dgstSize);
-	}
-
-	if (is_compressed_) {
-		FQ_VERIFY(false);
-	}
-
-	if (cipher->started) {
-		// as RFC 4253:
-		// When encryption is in effect, the packet length, padding
-		// length, payload, and padding fields of each packet MUST be encrypted
-		// with the given algorithm.
-
-		uint8_t *data = buffer_data(&data_to_send);
-		int len = buffer_len(&data_to_send) - mac->dgstSize;
-
-		FQ_TRACE("ssh2packet", 9) << "An packet (without MAC) to be encrypted:" 
-			<< len << " bytes:\n" 
-			<< dumpHexString << std::string((const char *)data, len);
-
-		FQ_VERIFY(cipher->crypt(cipher, data, data, len)==1);
-
-		FQ_TRACE("ssh2packet", 9) << "An encrypted packet (without MAC) made:" 
-			<< len << " bytes:\n" 
-			<< dumpHexString << std::string((const char *)data, len);
-	} 
-
-	++sequence_no_;
+	make_ssh2_packet(&orig_data, &data_to_send, cipher,
+			mac, is_mac_, &sequence_no_);
 }
 
 //==============================================================================

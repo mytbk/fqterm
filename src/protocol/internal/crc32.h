@@ -26,12 +26,17 @@
 
 #ifndef SSH_CRC32_H
 #define SSH_CRC32_H
-#include "fqterm_ssh_types.h"
 
-namespace FQTerm {
+#include <stdint.h>
 
-u_int32_t ssh_crc32(const u_char *, u_int32_t);
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-}  // namespace FQTerm
+uint32_t ssh_crc32(const uint8_t *, uint32_t);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

@@ -23,22 +23,11 @@
 
 #include "fqterm_serialization.h"
 #include "crc32.h"
+#include "ssh_packet.h"
 
 namespace FQTerm {
 //==============================================================================
 //FQTermSSH1PacketSender
-//==============================================================================
-//==============================================================================
-//
-// SSH1 Packet Structure:
-//  --------------------------------------------------------------------------
-//  | length | padding  | type  |                data                | crc32 |
-//  --------------------------------------------------------------------------
-//  | uint32 | 1-7bytes | uchar |                                    | 4bytes|
-//  --------------------------------------------------------------------------
-//  encrypt = padding + type + data + crc32
-//  length =  type + data + crc32
-//
 //==============================================================================
 
 	FQTermSSH1PacketSender::FQTermSSH1PacketSender()
@@ -48,29 +37,7 @@ namespace FQTerm {
 
 void FQTermSSH1PacketSender::makePacket()
 {
-	int len, padding_len;
-	uint32_t padding[2];
-	uint8_t *data = buffer_data(&orig_data);
-	size_t data_len = buffer_len(&orig_data);
-
-	len = data_len + 4; //CRC32
-	padding_len = 8 - (len % 8);
-	padding[0] = rand();
-	padding[1] = rand();
-
-	buffer_clear(&data_to_send);
-	buffer_append_be32(&data_to_send, len);
-	buffer_append(&data_to_send, (const uint8_t*)padding, padding_len);
-	buffer_append(&data_to_send, data, data_len);
-	buffer_append_be32(&data_to_send, ssh_crc32(
-				buffer_data(&data_to_send) + 4,
-				buffer_len(&data_to_send) - 4));
-
-	if (cipher->started) {
-		cipher->crypt(cipher, buffer_data(&data_to_send) + 4,
-				buffer_data(&data_to_send) + 4,
-				buffer_len(&data_to_send) - 4);
-	}
+	make_ssh1_packet(&orig_data, &data_to_send, cipher);
 }
 
 //==============================================================================
