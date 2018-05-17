@@ -22,6 +22,7 @@
 #include "fqterm_ssh_const.h"
 #include "fqterm_ssh_packet.h"
 #include "fqterm_trace.h"
+#include "ssh_endian.h"
 #include <QString>
 namespace FQTerm {
 

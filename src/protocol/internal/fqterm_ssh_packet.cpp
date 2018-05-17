@@ -22,7 +22,6 @@
 #include "fqterm_ssh_packet.h"
 #include "fqterm_ssh_const.h"
 
-#include "fqterm_serialization.h"
 #include "crc32.h"
 #include <openssl/bn.h>
 

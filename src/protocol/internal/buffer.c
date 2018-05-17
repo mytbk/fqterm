@@ -18,7 +18,7 @@
  */
 
 #include "buffer.h"
-#include <endian.h>
+#include "ssh_endian.h"
 
 #define INITSIZE 2048
 

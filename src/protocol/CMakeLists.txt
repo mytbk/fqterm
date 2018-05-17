@@ -29,7 +29,6 @@ set(internal_SRCS
   internal/ssh_diffie-hellman.c
   internal/crc32.c
   internal/ssh_packet.c
-  internal/fqterm_serialization.h
   internal/fqterm_ssh_auth.h
   internal/fqterm_ssh_const.h
   internal/fqterm_ssh_kex.h

@@ -21,7 +21,7 @@
 #include "fqterm_trace.h"
 #include "fqterm_ssh2_packet.h"
 
-#include "fqterm_serialization.h"
+#include "ssh_endian.h"
 #include "buffer.h"
 #include "ssh_packet.h"
 

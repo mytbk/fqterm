@@ -2,6 +2,7 @@
 #include "ssh_pubkey_crypto.h"
 #include "ssh_rsa.h"
 #include "buffer.h"
+#include "ssh_endian.h"
 
 static RSA *CreateRSAContext(unsigned char *hostkey, int len)
 {

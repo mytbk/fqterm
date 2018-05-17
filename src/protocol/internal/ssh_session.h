@@ -2,6 +2,7 @@
 #define SSH_SESSION_H
 
 #include "ssh_diffie-hellman.h"
+#include <stdint.h>
 
 #ifdef __cplusplus
 extern "C" {
