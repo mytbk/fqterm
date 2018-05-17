@@ -122,22 +122,13 @@ void FQTermSSH2PacketReceiver::parseData(buffer *input) {
 
     // 4. get every field of the ssh packet.
     packet_len = buffer_get_u32(input);
-
-    std::vector<u_char> data(packet_len);
-
-    buffer_get(input, &data[0], packet_len);
+    uint8_t padding_len = buffer_get_u8(input);
+    real_data_len_ = packet_len - 1 - padding_len;
+    buffer_clear(&recvbuf);
+    buffer_append(&recvbuf, buffer_data(input), real_data_len_);
+    buffer_consume(input, packet_len - 1);
     if (is_mac_)
       buffer_consume(input, mac->dgstSize);
-
-    int padding_len = data[0];
-
-    real_data_len_ = packet_len - 1 - padding_len;
-
-    buffer_clear(&recvbuf);
-    buffer_append(&recvbuf, &data[0] + 1, real_data_len_);
-
-    FQ_TRACE("ssh2packet", 9) << "Receive " << real_data_len_ << " bytes payload:\n" 
-                              << dumpHexString << std::string((char *)&data[0] + 1, real_data_len_);
 
     // 5. notify others a ssh packet is parsed successfully.
     packet_type_ = buffer_get_u8(&recvbuf);
