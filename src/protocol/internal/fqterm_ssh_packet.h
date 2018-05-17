@@ -67,8 +67,6 @@ class FQTermSSHPacketSender: public QObject {
   void dataToWrite();
 
  protected:
-  int cipher_type_;
-
   bool is_mac_;
 
   bool is_compressed_;
@@ -116,8 +114,6 @@ class FQTermSSHPacketReceiver: public QObject {
   void packetError(QString);
 
  protected:
-  int cipher_type_;
-
   bool is_mac_;
 
   bool is_compressed_;

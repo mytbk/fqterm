@@ -37,7 +37,6 @@ FQTermSSHPacketSender::FQTermSSHPacketSender()
   buffer_init(&orig_data);
   buffer_init(&data_to_send);
 
-  cipher_type_ = SSH_CIPHER_NONE;
   cipher = &ssh_cipher_dummy;
 
   is_mac_ = false;
@@ -126,7 +125,6 @@ FQTermSSHPacketReceiver::FQTermSSHPacketReceiver()
 {
 	buffer_init(&recvbuf);
 
-  cipher_type_ = SSH_CIPHER_NONE;
   cipher = &ssh_cipher_dummy;
 
   is_mac_ = false;
