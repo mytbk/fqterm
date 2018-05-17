@@ -13,16 +13,17 @@ struct ssh1_3des_priv
 };
 
 static int
-init_3des(SSH_CIPHER* my)
+init_3des(SSH_CIPHER* my, const uint8_t *dkey, const uint8_t *IV)
 {
 	struct ssh1_3des_priv *priv = (struct ssh1_3des_priv*)my->priv;
-	const_DES_cblock *key = (const_DES_cblock*)my->key;
+	const_DES_cblock *key = (const_DES_cblock*)dkey;
 	DES_set_key(key, &priv->d_key1);
 	DES_set_key(key+1, &priv->d_key2);
 	DES_set_key(key+2, &priv->d_key3);
 	memset(priv->d_IV1, 0, sizeof(DES_cblock));
 	memset(priv->d_IV2, 0, sizeof(DES_cblock));
 	memset(priv->d_IV3, 0, sizeof(DES_cblock));
+	my->started = true;
 
 	return 1;
 }
@@ -30,9 +31,6 @@ init_3des(SSH_CIPHER* my)
 static void
 cleanup(SSH_CIPHER* my)
 {
-	if (my->key!=NULL)
-		free(my->key);
-
 	if (my->priv!=NULL)
 		free(my->priv);
 
@@ -68,8 +66,6 @@ new_3des_ssh1(int enc)
 	cipher->blkSize = 8;
 	cipher->IVSize = 0;
 	cipher->keySize = 24;
-	cipher->IV = NULL;
-	cipher->key = (unsigned char*)malloc(24);
 	if (enc)
 		cipher->crypt = encrypt;
 	else
@@ -77,6 +73,7 @@ new_3des_ssh1(int enc)
 
 	cipher->init = init_3des;
 	cipher->cleanup = cleanup;
+	cipher->started = false;
 
 	return cipher;
 }

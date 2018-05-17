@@ -13,6 +13,22 @@ EVP_CIPHER_FUNC(aes256_ctr, EVP_aes_256_ctr, 32, 16, 16)
 EVP_CIPHER_FUNC(aes192_ctr, EVP_aes_192_ctr, 24, 16, 16)
 EVP_CIPHER_FUNC(aes128_ctr, EVP_aes_128_ctr, 16, 16, 16)
 
+static int dummy_init(SSH_CIPHER *me, const uint8_t *key, const uint8_t *IV)
+{
+	return 1;
+}
+
+static void dummy_deinit(SSH_CIPHER *me)
+{
+}
+
+SSH_CIPHER ssh_cipher_dummy = {
+	.name = "(none)",
+	.started = false,
+	.init = dummy_init,
+	.cleanup = dummy_deinit,
+};
+
 struct
 {
 	const char *name;

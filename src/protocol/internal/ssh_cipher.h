@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 #include <stdint.h>
+#include <stdbool.h>
 #include <openssl/evp.h>
 
 #ifdef __cplusplus
@@ -11,7 +12,7 @@ extern "C" {
 
 	typedef struct ssh_cipher_t SSH_CIPHER;
 	typedef int (*crypt_t)(SSH_CIPHER*, const uint8_t*, uint8_t*, size_t);
-	typedef int (*init_t)(SSH_CIPHER*);
+	typedef int (*init_t)(SSH_CIPHER*, const uint8_t*, const uint8_t*);
 	typedef void (*cleanup_t)(SSH_CIPHER*);
 
 	struct ssh_cipher_t
@@ -25,15 +26,14 @@ extern "C" {
 		 * be set and then init function must be called
 		 */
 		const char *name;
-		unsigned char *IV;
-		unsigned char *key;
-		void *priv;
+		void *priv; /* IV and key should be placed in priv */
 		crypt_t crypt;
 		init_t init;
 		cleanup_t cleanup;
 		size_t blkSize;
 		size_t keySize;
 		size_t IVSize;
+		bool started;
 	};
 
 	typedef const EVP_CIPHER*(*SSH_EVP)(void);
@@ -43,6 +43,7 @@ extern "C" {
 	SSH_CIPHER* new_3des_ssh1(int);
 	/* all_ciphers.c */
 	extern const char all_ciphers_list[];
+	extern SSH_CIPHER ssh_cipher_dummy;
 	NEW_CIPHER search_cipher(const char *s);
 
 #ifdef __cplusplus

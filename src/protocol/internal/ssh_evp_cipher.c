@@ -8,12 +8,13 @@ struct evp_priv
 };
 
 static int
-cipher_init(SSH_CIPHER* my)
+cipher_init(SSH_CIPHER* my, const uint8_t *key, const uint8_t *IV)
 {
 	struct evp_priv *priv = (struct evp_priv*)my->priv;
+	my->started = true;
 	priv->ctx = EVP_CIPHER_CTX_new();
 	EVP_CIPHER_CTX_init(priv->ctx);
-	return EVP_CipherInit(priv->ctx, priv->evp(), my->key, my->IV, priv->enc);
+	return EVP_CipherInit(priv->ctx, priv->evp(), key, IV, priv->enc);
 }
 
 static int
@@ -25,12 +26,6 @@ do_crypt(SSH_CIPHER* my, const uint8_t* in, uint8_t* out, size_t l)
 static void
 cleanup(SSH_CIPHER* my)
 {
-	if (my->IV!=NULL)
-		free(my->IV);
-
-	if (my->key!=NULL)
-		free(my->key);
-
 	if (my->priv!=NULL) {
 		struct evp_priv *priv = my->priv;
 		if (priv->ctx!=NULL)
@@ -54,10 +49,9 @@ new_ssh_cipher_evp(SSH_EVP evp, size_t ks, size_t is, size_t bs, int enc)
 	cipher->blkSize = bs;
 	cipher->keySize = ks;
 	cipher->IVSize = is;
-	cipher->key = (unsigned char*)malloc(ks);
-	cipher->IV = (unsigned char*)malloc(is);
 	cipher->init = cipher_init;
 	cipher->crypt = do_crypt;
 	cipher->cleanup = cleanup;
+	cipher->started = false;
 	return cipher;
 }

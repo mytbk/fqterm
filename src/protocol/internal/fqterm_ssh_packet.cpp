@@ -37,9 +37,8 @@ FQTermSSHPacketSender::FQTermSSHPacketSender()
   buffer_init(&orig_data);
   buffer_init(&data_to_send);
 
-  is_encrypt_ = false;
   cipher_type_ = SSH_CIPHER_NONE;
-  cipher = NULL;
+  cipher = &ssh_cipher_dummy;
 
   is_mac_ = false;
   mac = NULL;
@@ -51,8 +50,7 @@ FQTermSSHPacketSender::FQTermSSHPacketSender()
 
 FQTermSSHPacketSender::~FQTermSSHPacketSender()
 {
-	if (cipher)
-		cipher->cleanup(cipher);
+	cipher->cleanup(cipher);
         if (mac)
 		mac->cleanup(mac);
 	buffer_deinit(&data_to_send);
@@ -101,18 +99,14 @@ void FQTermSSHPacketSender::write()
 	emit dataToWrite();
 }
 
-void FQTermSSHPacketSender::startEncryption(const u_char *key, const u_char *IV) {
-	is_encrypt_ = true;
-
-	if (cipher!=NULL) {
-		memcpy(cipher->IV, IV, cipher->IVSize);
-		memcpy(cipher->key, key, cipher->keySize);
-		cipher->init(cipher);
-	}
+void FQTermSSHPacketSender::startEncryption(const u_char *key, const u_char *IV)
+{
+	cipher->init(cipher, key, IV);
 }
 
-void FQTermSSHPacketSender::resetEncryption() {
-  is_encrypt_ = false;
+void FQTermSSHPacketSender::resetEncryption()
+{
+	cipher->started = false;
 }
 
 void FQTermSSHPacketSender::startMac(const u_char *key) {
@@ -132,9 +126,8 @@ FQTermSSHPacketReceiver::FQTermSSHPacketReceiver()
 {
 	buffer_init(&recvbuf);
 
-  is_decrypt_ = false;
   cipher_type_ = SSH_CIPHER_NONE;
-  cipher = NULL;
+  cipher = &ssh_cipher_dummy;
 
   is_mac_ = false;
   mac = NULL;
@@ -147,8 +140,7 @@ FQTermSSHPacketReceiver::FQTermSSHPacketReceiver()
 FQTermSSHPacketReceiver::~FQTermSSHPacketReceiver()
 {
 	buffer_deinit(&recvbuf);
-	if (cipher)
-		cipher->cleanup(cipher);
+	cipher->cleanup(cipher);
         if (mac)
 		mac->cleanup(mac);
 }
@@ -221,18 +213,14 @@ void FQTermSSHPacketReceiver::consume(int len)
 	buffer_consume(&recvbuf, len);
 }
 
-void FQTermSSHPacketReceiver::startEncryption(const u_char *key, const u_char *IV) {
-	is_decrypt_ = true;
-
-	if (cipher!=NULL) {
-		memcpy(cipher->IV, IV, cipher->IVSize);
-		memcpy(cipher->key, key, cipher->keySize);
-		cipher->init(cipher);
-	}
+void FQTermSSHPacketReceiver::startEncryption(const u_char *key, const u_char *IV)
+{
+	cipher->init(cipher, key, IV);
 }
 
-void FQTermSSHPacketReceiver::resetEncryption() {
-  is_decrypt_ = false;
+void FQTermSSHPacketReceiver::resetEncryption()
+{
+	cipher->started = false;
 }
 
 void FQTermSSHPacketReceiver::startMac(const u_char *key) {

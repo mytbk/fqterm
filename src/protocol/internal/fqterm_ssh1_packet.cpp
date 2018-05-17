@@ -66,7 +66,7 @@ void FQTermSSH1PacketSender::makePacket()
 				buffer_data(&data_to_send) + 4,
 				buffer_len(&data_to_send) - 4));
 
-	if (is_encrypt_) {
+	if (cipher->started) {
 		cipher->crypt(cipher, buffer_data(&data_to_send) + 4,
 				buffer_data(&data_to_send) + 4,
 				buffer_len(&data_to_send) - 4);
@@ -121,7 +121,7 @@ void FQTermSSH1PacketReceiver::parseData(buffer *input) {
     memset(sourceData, 0, total_len);
 
     buffer_get(input, sourceData, total_len);
-    if (is_decrypt_) {
+    if (cipher->started) {
 	    cipher->crypt(cipher, sourceData, targetData, total_len);
     } else {
 	    memcpy(targetData, sourceData, total_len);

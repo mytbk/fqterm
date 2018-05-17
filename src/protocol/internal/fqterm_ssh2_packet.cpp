@@ -39,7 +39,7 @@ namespace FQTerm {
 void FQTermSSH2PacketSender::makePacket()
 {
 	FQ_TRACE("ssh2packet", 9) << "----------------------------Send "
-		<< (is_encrypt_ ? "Encrypted": "plain")
+		<< (cipher->started ? "Encrypted": "plain")
 		<< " Packet---->>>>>>>";
 
 	// 0. compress
@@ -50,7 +50,7 @@ void FQTermSSH2PacketSender::makePacket()
 	int non_padding_len = 4 + 1 + buffer_len(&orig_data);
 
 	int padding_block_len = 8;
-	if (is_encrypt_ && cipher->blkSize > padding_block_len)
+	if (cipher->started && cipher->blkSize > padding_block_len)
 		padding_block_len = cipher->blkSize;
 
 	int padding_len = padding_block_len - (non_padding_len % padding_block_len);
@@ -98,7 +98,7 @@ void FQTermSSH2PacketSender::makePacket()
 		FQ_VERIFY(false);
 	}
 
-	if (is_encrypt_) {
+	if (cipher->started) {
 		// as RFC 4253:
 		// When encryption is in effect, the packet length, padding
 		// length, payload, and padding fields of each packet MUST be encrypted
@@ -126,12 +126,12 @@ void FQTermSSH2PacketSender::makePacket()
 //==============================================================================
 void FQTermSSH2PacketReceiver::parseData(buffer *input) {
   FQ_TRACE("ssh2packet", 9) << "----------------------------Receive "
-                            << (is_decrypt_ ? "Encrypted": "plain")
+                            << (cipher->started ? "Encrypted": "plain")
                             << " Packet----<<<<<<<";
   while (buffer_len(input) > 0) {
     // 1. Check the ssh packet
     if (buffer_len(input) < 16
-        || (is_decrypt_ && buffer_len(input) < cipher->blkSize)
+        || (cipher->started && buffer_len(input) < cipher->blkSize)
         || buffer_len(input) < last_expected_input_length_
         ) {
       FQ_TRACE("ssh2packet", 3)
@@ -140,7 +140,7 @@ void FQTermSSH2PacketReceiver::parseData(buffer *input) {
     }
 
     if (last_expected_input_length_ == 0) {
-      if (is_decrypt_) {
+      if (cipher->started) {
 			// decrypte the first block to get the packet_length field.
 			FQ_VERIFY(cipher->crypt(cipher, buffer_data(input), buffer_data(input), cipher->blkSize)==1);
       }
@@ -170,7 +170,7 @@ void FQTermSSH2PacketReceiver::parseData(buffer *input) {
     }
 
     // 2. decrypte data.
-    if (is_decrypt_) {
+    if (cipher->started) {
       // decrypte blocks left.
       unsigned char *tmp = buffer_data(input) + cipher->blkSize;
       int left_len = expected_input_len - cipher->blkSize - mac->dgstSize;
