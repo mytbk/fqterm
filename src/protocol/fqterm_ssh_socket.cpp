@@ -30,7 +30,11 @@
 #include "fqterm_trace.h"
 #include "fqterm_path.h"
 #include "ssh_known_hosts.h"
+#include "ccan_base64.h"
 #include <QString>
+#include <cstdlib>
+#include <cstring>
+
 namespace FQTerm {
 
 #define V1STR	"SSH-1.5-FQTermSSH\n"
@@ -152,17 +156,53 @@ void FQTermSSHSocket::kexOK()
 		struct ssh_host *hosts;
 		const char *hosts_file;
 #ifdef WIN32
-		hosts_file = (getPath(USER_CONFIG) + "known_hosts").toLatin1().constData();
+		QString known_hosts = getPath(USER_CONFIG) + "known_hosts";
+		hosts_file = strdup(known_hosts.toLatin1().constData());
 #else
 		hosts_file = ssh_hosts_filename();
 #endif
 		hosts = parse_hosts_file(hosts_file, &nhosts);
 		int idx = find_ssh_host(hosts, nhosts, conn_info.hostname, conn_info.port);
 		FQTermSSH2Kex *kex = dynamic_cast<FQTermSSH2Kex *> (key_exchanger_);
-		if (idx >=0 && key_matches(&hosts[idx], kex->K_S(), kex->K_S_len()))
-			conn_info.ssh_proto_info.key_matches = 1;
-		else
+		bool isok;
+		if (idx >=0) {
+		       if (key_matches(&hosts[idx], kex->K_S(), kex->K_S_len())) {
+			       conn_info.ssh_proto_info.key_matches = 1;
+		       } else {
+			       conn_info.ssh_proto_info.key_matches = 0;
+			       emit warnInsecure("Host key mismatch!", &isok);
+			       if (!isok)
+				       handleError("Uesr closed connection due to key mismatch.");
+		       }
+		} else {
 			conn_info.ssh_proto_info.key_matches = 0;
+			unsigned char hash[32];
+			char hash_b64[64];
+			kex->hostKeyHash(hash);
+			base64_encode(hash_b64, sizeof(hash_b64), (const char*)hash, 32);
+			hash_b64[base64_encoded_length(32)-1] = 0; /* final byte is '=' */
+
+			const char *tab = "0123456789ABCDEF";
+			QString msg = "Unknown host, trust the host key?\nSHA256: ";
+			for (int i = 0; i < 32; i++) {
+				char d[4];
+				d[0] = tab[hash[i]>>4];
+				d[1] = tab[hash[i]&0xf];
+				d[2] = (i==31)?'\n':':';
+				d[3] = 0;
+				msg.append(d);
+			}
+			msg.append(QString("base64: %1").arg(hash_b64));
+			emit warnInsecure(msg, &isok);
+			if (!isok)
+				handleError("Uesr closed connection due to an unknown host.");
+			else
+				/* FIXME: port != 22? */
+				append_hostkey(hosts_file, conn_info.hostname, kex->K_S(), kex->K_S_len());
+		}
+#ifdef WIN32
+		free(hosts_file);
+#endif
 	}
 
 	key_exchanger_->hostKeyHash(conn_info.ssh_proto_info.hash);
