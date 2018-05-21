@@ -31,14 +31,6 @@ namespace FQTerm {
 //==============================================================================
 void FQTermSSH2PacketSender::makePacket()
 {
-	FQ_TRACE("ssh2packet", 9) << "----------------------------Send "
-		<< (cipher->started ? "Encrypted": "plain")
-		<< " Packet---->>>>>>>";
-
-	// 0. compress
-	if (is_compressed_)
-		FQ_VERIFY(false);
-
 	make_ssh2_packet(&orig_data, &data_to_send, cipher,
 			mac, is_mac_, &sequence_no_);
 }

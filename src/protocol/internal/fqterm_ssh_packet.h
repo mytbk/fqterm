@@ -39,6 +39,8 @@ class FQTermSSHPacketSender: public QObject {
   buffer data_to_send;
   ssh_cipher_t *cipher;
   ssh_mac_t *mac;
+  bool is_mac_;
+  uint32_t sequence_no_;
 
   FQTermSSHPacketSender();
   virtual ~FQTermSSHPacketSender();
@@ -66,12 +68,6 @@ class FQTermSSHPacketSender: public QObject {
   void dataToWrite();
 
  protected:
-  bool is_mac_;
-
-  bool is_compressed_;
-
-  u_int32_t sequence_no_;
-
   virtual void makePacket() = 0;
 };
 
@@ -81,6 +77,8 @@ class FQTermSSHPacketReceiver: public QObject {
   buffer recvbuf;
   ssh_cipher_t *cipher;
   ssh_mac_t *mac;
+  bool is_mac_;
+  uint32_t sequence_no_;
 
   FQTermSSHPacketReceiver();
   virtual ~FQTermSSHPacketReceiver();
@@ -113,14 +111,8 @@ class FQTermSSHPacketReceiver: public QObject {
   void packetError(QString);
 
  protected:
-  bool is_mac_;
-
-  bool is_compressed_;
-
   int packet_type_;
   int real_data_len_;
-
-  u_int32_t sequence_no_;
 };
 
 }  // namespace FQTerm

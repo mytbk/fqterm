@@ -41,8 +41,6 @@ FQTermSSHPacketSender::FQTermSSHPacketSender()
   is_mac_ = false;
   mac = NULL;
 
-  is_compressed_ = false;
-
   sequence_no_ = 0;
 }
 
@@ -128,8 +126,6 @@ FQTermSSHPacketReceiver::FQTermSSHPacketReceiver()
 
   is_mac_ = false;
   mac = NULL;
-
-  is_compressed_ = false;
 
   sequence_no_ = 0;
 }
