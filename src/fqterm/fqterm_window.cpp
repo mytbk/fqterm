@@ -678,6 +678,13 @@ void FQTermWindow::requestUserPwd(QString *user, QString *pwd, bool *isOK) {
   *isOK = (login.exec() == QDialog::Accepted);
 }
 
+void FQTermWindow::warnInsecure(const QString &msg, bool *isOK)
+{
+	QMessageBox mb(QMessageBox::Warning, "FQTerm", msg,
+			QMessageBox::Yes | QMessageBox::No, this);
+	*isOK = (mb.exec() == QMessageBox::Yes);
+}
+
 void FQTermWindow::ZmodemState(int type, int value, const char *status) {
   QString strMsg;
   //to be completed

@@ -192,6 +192,12 @@ void FQTermSSHSocket::socketReadyRead() {
         FQ_TRACE("sshsocket", 3) << "SSH version chosen: " << version;
 
         if (version == 1) {
+		bool isok;
+		emit warnInsecure(tr("You are using the insecure SSH1 connection, continue?"), &isok);
+		if (!isok) {
+			handleError(tr("Closed by user because of the insecure SSH1 connection."));
+			return;
+		}
           init(1);
           ssh_version_ = 1;
           socketWriteBlock(V1STR, strlen(V1STR));
