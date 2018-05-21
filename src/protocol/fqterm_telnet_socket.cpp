@@ -33,8 +33,12 @@ void FQTermTelnetSocket::setProxy(int nProxyType, bool bAuth,
                             strProxyPwd);
 }
 
-void FQTermTelnetSocket::connectToHost(const QString &host, quint16 port) {
-  private_socket_->connectToHost(host, port);
+void FQTermTelnetSocket::connectToHost(const QString &host, quint16 port)
+{
+	private_socket_->connectToHost(host, port);
+	strncpy(conn_info.hostname, host.toLatin1().constData(),
+			sizeof(conn_info.hostname));
+	conn_info.port = port;
 }
 
 void FQTermTelnetSocket::close() {

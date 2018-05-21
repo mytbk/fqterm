@@ -254,9 +254,13 @@ int FQTermSSHSocket::chooseVersion(const QString &ver) {
     return -1;
 }
 
-void FQTermSSHSocket::connectToHost(const QString &host_name, quint16 port) {
-  ssh_socket_state_ = BeforeSession;
-  private_socket_->connectToHost(host_name, port);
+void FQTermSSHSocket::connectToHost(const QString &host_name, quint16 port)
+{
+	ssh_socket_state_ = BeforeSession;
+	private_socket_->connectToHost(host_name, port);
+	strncpy(conn_info.hostname, host_name.toLatin1().constData(),
+			sizeof(conn_info.hostname));
+	conn_info.port = port;
 }
 
 void FQTermSSHSocket::writeData()

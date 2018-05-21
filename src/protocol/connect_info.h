@@ -10,6 +10,8 @@ enum protocol
 
 typedef struct
 {
+	char hostname[256];
+	int port;
 	enum protocol proto;
 	struct
 	{

@@ -726,6 +726,8 @@ void FQTermFrame::conn_info()
 	switch (info->proto) {
 		case PROTO_TELNET:
 			txt = "protocol: Telnet";
+			txt.append(QString("\nHost: %1\nPort: %2")
+					.arg(info->hostname).arg(info->port));
 			break;
 		case PROTO_LOCAL:
 			txt = "protocol: Local";
@@ -733,6 +735,8 @@ void FQTermFrame::conn_info()
 		case PROTO_SSH:
 			txt = QString("protocol: SSH %1")
 				.arg(info->ssh_proto_info.proto_version);
+			txt.append(QString("\nHost: %1\nPort: %2")
+					.arg(info->hostname).arg(info->port));
 			if (info->ssh_proto_info.proto_version == 2)
 				txt.append(ssh2_info(info));
 			break;
