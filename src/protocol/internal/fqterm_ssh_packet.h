@@ -29,6 +29,7 @@
 #include "ssh_mac.h"
 #include "ssh_cipher.h"
 #include "buffer.h"
+#include "ssh_packet.h"
 
 namespace FQTerm {
 
@@ -42,7 +43,9 @@ class FQTermSSHPacketSender: public QObject {
   bool is_mac_;
   uint32_t sequence_no_;
 
-  FQTermSSHPacketSender();
+  int ver;
+
+  FQTermSSHPacketSender(int);
   virtual ~FQTermSSHPacketSender();
 
   void startPacket(uint8_t pkt_type);
@@ -61,14 +64,20 @@ class FQTermSSHPacketSender: public QObject {
   void startEncryption(const u_char *key, const u_char *IV = NULL);
   void startMac(const u_char *sessionkey);
   void resetMac();
+  inline void makePacket()
+  {
+	  if (ver == 2) {
+		  make_ssh2_packet(&orig_data, &data_to_send, cipher,
+				  mac, is_mac_, &sequence_no_);
+	  } else {
+		  make_ssh1_packet(&orig_data, &data_to_send, cipher);
+	  }
+  }
  public slots:
   void resetEncryption();
 
  signals:
   void dataToWrite();
-
- protected:
-  virtual void makePacket() = 0;
 };
 
 class FQTermSSHPacketReceiver: public QObject {

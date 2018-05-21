@@ -26,12 +26,6 @@
 
 namespace FQTerm {
 
-class FQTermSSH2PacketSender: public FQTermSSHPacketSender
-{
-protected:
-	virtual void makePacket();
-};
-
 class FQTermSSH2PacketReceiver: public FQTermSSHPacketReceiver
 {
 private:

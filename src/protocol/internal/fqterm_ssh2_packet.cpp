@@ -27,15 +27,6 @@
 
 namespace FQTerm {
 //==============================================================================
-//FQTermSSH2PacketSender
-//==============================================================================
-void FQTermSSH2PacketSender::makePacket()
-{
-	make_ssh2_packet(&orig_data, &data_to_send, cipher,
-			mac, is_mac_, &sequence_no_);
-}
-
-//==============================================================================
 //FQTermSSH2PacketReceiver
 //==============================================================================
 void FQTermSSH2PacketReceiver::parseData(buffer *input) {

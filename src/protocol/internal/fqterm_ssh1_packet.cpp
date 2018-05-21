@@ -27,20 +27,6 @@
 
 namespace FQTerm {
 //==============================================================================
-//FQTermSSH1PacketSender
-//==============================================================================
-
-	FQTermSSH1PacketSender::FQTermSSH1PacketSender()
-	{
-		cipher = new_3des_ssh1(1);
-	}
-
-void FQTermSSH1PacketSender::makePacket()
-{
-	make_ssh1_packet(&orig_data, &data_to_send, cipher);
-}
-
-//==============================================================================
 //FQTermSSH1PacketReceiver
 //==============================================================================
 

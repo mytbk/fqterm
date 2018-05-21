@@ -31,13 +31,17 @@ namespace FQTerm {
 //FQTermSSHPacketSender
 //==============================================================================
 
-FQTermSSHPacketSender::FQTermSSHPacketSender()
+FQTermSSHPacketSender::FQTermSSHPacketSender(int ver)
 {
   buffer_init(&orig_data);
   buffer_init(&data_to_send);
 
-  cipher = &ssh_cipher_dummy;
+  if (ver == 2)
+	  cipher = &ssh_cipher_dummy;
+  else
+	  cipher = new_3des_ssh1(1);
 
+  this->ver = ver;
   is_mac_ = false;
   mac = NULL;
 

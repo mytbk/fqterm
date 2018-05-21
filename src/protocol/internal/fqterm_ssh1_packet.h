@@ -25,13 +25,6 @@
 
 namespace FQTerm {
 
-class FQTermSSH1PacketSender: public FQTermSSHPacketSender {
-protected:
-  virtual void makePacket();
-public:
-  FQTermSSH1PacketSender();
-};
-
 class FQTermSSH1PacketReceiver: public FQTermSSHPacketReceiver {
 public:
   virtual void parseData(buffer *input);

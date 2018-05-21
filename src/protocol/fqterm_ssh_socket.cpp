@@ -79,79 +79,60 @@ FQTermSSHSocket::~FQTermSSHSocket() {
   delete ssh_channel_;
 }
 
-void FQTermSSHSocket::init(int ssh_version) {
-  // Actually we could reuse these buffers, sender/receivers, and etc.
-  // but in that case reset methods should be added to all these classes.
-  // Guys lazy as me won't do that.
+void FQTermSSHSocket::init(int ssh_version)
+{
+	// Actually we could reuse these buffers, sender/receivers, and etc.
+	// but in that case reset methods should be added to all these classes.
+	// Guys lazy as me won't do that.
 
-  buffer_clear(&input_buffer);
-  buffer_clear(&output_buffer);
-  buffer_clear(&socket_buffer);
-  delete packet_receiver_;
-  delete packet_sender_;
-  delete key_exchanger_;
-  delete authentication_;
-  delete ssh_channel_;
+	buffer_clear(&input_buffer);
+	buffer_clear(&output_buffer);
+	buffer_clear(&socket_buffer);
+	delete packet_receiver_;
+	delete packet_sender_;
+	delete key_exchanger_;
+	delete authentication_;
+	delete ssh_channel_;
 
-  is_channel_ok_ = false;
-  auth_ok_emitted_ = false;
+	is_channel_ok_ = false;
+	auth_ok_emitted_ = false;
 
-  if (ssh_version == 1) {
-    packet_receiver_ = new FQTermSSH1PacketReceiver;
-    packet_sender_ = new FQTermSSH1PacketSender;
-    key_exchanger_ = new FQTermSSH1Kex(SSH_V1_C, server_name_.toLatin1().constData());
-    authentication_ = new FQTermSSH1PasswdAuth(init_user_, init_passwd_);
-    ssh_channel_ = new FQTermSSH1Channel;
+	packet_sender_ = new FQTermSSHPacketSender(ssh_version);
+	if (ssh_version == 1) {
+		packet_receiver_ = new FQTermSSH1PacketReceiver;
+		key_exchanger_ = new FQTermSSH1Kex(SSH_V1_C, server_name_.toLatin1().constData());
+		authentication_ = new FQTermSSH1PasswdAuth(init_user_, init_passwd_);
+		ssh_channel_ = new FQTermSSH1Channel;
+	} else {
+		packet_receiver_ = new FQTermSSH2PacketReceiver;
+		key_exchanger_ = new FQTermSSH2Kex(SSH_V2_C, server_name_.toLatin1().constData());
+		authentication_ = new FQTermSSH2PasswdAuth(init_user_, init_passwd_);
+		ssh_channel_ = new FQTermSSH2Channel;
+	}
+	FQ_VERIFY(connect(packet_receiver_, SIGNAL(packetAvaliable(int)), this, SLOT(handlePacket(int))));
+	FQ_VERIFY(connect(packet_receiver_, SIGNAL(packetError(QString)), this, SLOT(handleError(QString))));
+	FQ_VERIFY(connect(packet_sender_, SIGNAL(dataToWrite()), this, SLOT(writeData())));
+	FQ_VERIFY(connect(key_exchanger_, SIGNAL(kexOK()), this, SLOT(kexOK())));
+	FQ_VERIFY(connect(key_exchanger_, SIGNAL(kexError(QString)), this, SLOT(handleError(QString))));
+	FQ_VERIFY(connect(key_exchanger_, SIGNAL(reKex()), packet_receiver_, SLOT(resetEncryption())));
+	FQ_VERIFY(connect(key_exchanger_, SIGNAL(reKex()), packet_sender_, SLOT(resetEncryption())));
+	FQ_VERIFY(connect(authentication_, SIGNAL(requestUserPwd(QString *, QString *, bool *)),
+				this, SIGNAL(requestUserPwd(QString *, QString *, bool *))));
+	FQ_VERIFY(connect(authentication_, SIGNAL(authOK()), this, SLOT(authOK())));
+	FQ_VERIFY(connect(authentication_, SIGNAL(authError(QString)), this, SLOT(handleError(QString))));
+	FQ_VERIFY(connect(ssh_channel_, SIGNAL(channelOK()), this, SLOT(channelOK())));
+	FQ_VERIFY(connect(ssh_channel_, SIGNAL(channelReadyRead(const char *, int)),
+				this, SLOT(channelReadyRead(const char *, int))));
+	if (ssh_version == 2) {
+		FQ_VERIFY(connect(ssh_channel_, SIGNAL(channelError(QString)),
+					this, SLOT(handleError(QString))));
+		FQ_VERIFY(connect(ssh_channel_, SIGNAL(channelClosed()),
+					this, SIGNAL(connectionClosed())));
+	}
+	key_exchanger_->initKex(packet_receiver_, packet_sender_);
 
-    FQ_VERIFY(connect(packet_receiver_, SIGNAL(packetAvaliable(int)), this, SLOT(handlePacket(int))));
-    FQ_VERIFY(connect(packet_receiver_, SIGNAL(packetError(QString)), this, SLOT(handleError(QString))));
-
-    FQ_VERIFY(connect(packet_sender_, SIGNAL(dataToWrite()), this, SLOT(writeData())));
-
-    FQ_VERIFY(connect(key_exchanger_, SIGNAL(kexOK()), this, SLOT(kexOK())));
-    FQ_VERIFY(connect(key_exchanger_, SIGNAL(kexError(QString)), this, SLOT(handleError(QString))));
-    FQ_VERIFY(connect(key_exchanger_, SIGNAL(reKex()), packet_receiver_, SLOT(resetEncryption())));
-    FQ_VERIFY(connect(key_exchanger_, SIGNAL(reKex()), packet_sender_, SLOT(resetEncryption())));
-
-    FQ_VERIFY(connect(authentication_, SIGNAL(requestUserPwd(QString *, QString *, bool *)), this, SIGNAL(requestUserPwd(QString *, QString *, bool *))));
-    FQ_VERIFY(connect(authentication_, SIGNAL(authOK()), this, SLOT(authOK())));
-    FQ_VERIFY(connect(authentication_, SIGNAL(authError(QString)), this, SLOT(handleError(QString))));
-
-    FQ_VERIFY(connect(ssh_channel_, SIGNAL(channelOK()), this, SLOT(channelOK())));
-    FQ_VERIFY(connect(ssh_channel_, SIGNAL(channelReadyRead(const char *, int)), this, SLOT(channelReadyRead(const char *, int))));
-
-    key_exchanger_->initKex(packet_receiver_, packet_sender_);
-  } else {
-    packet_receiver_ = new FQTermSSH2PacketReceiver;
-    packet_sender_ = new FQTermSSH2PacketSender;
-    key_exchanger_ = new FQTermSSH2Kex(SSH_V2_C, server_name_.toLatin1().constData());
-    authentication_ = new FQTermSSH2PasswdAuth(init_user_, init_passwd_);
-    ssh_channel_ = new FQTermSSH2Channel;
-
-    FQ_VERIFY(connect(packet_receiver_, SIGNAL(packetAvaliable(int)), this, SLOT(handlePacket(int))));
-    FQ_VERIFY(connect(packet_receiver_, SIGNAL(packetError(QString)), this, SLOT(handleError(QString))));
-
-    FQ_VERIFY(connect(packet_sender_, SIGNAL(dataToWrite()), this, SLOT(writeData())));
-
-    FQ_VERIFY(connect(key_exchanger_, SIGNAL(kexOK()), this, SLOT(kexOK())));
-    FQ_VERIFY(connect(key_exchanger_, SIGNAL(kexError(QString)), this, SLOT(handleError(QString))));
-    FQ_VERIFY(connect(key_exchanger_, SIGNAL(reKex()), packet_receiver_, SLOT(resetEncryption())));
-    FQ_VERIFY(connect(key_exchanger_, SIGNAL(reKex()), packet_sender_, SLOT(resetEncryption())));
-
-    FQ_VERIFY(connect(authentication_, SIGNAL(requestUserPwd(QString *, QString *, bool *)), this, SIGNAL(requestUserPwd(QString *, QString *, bool *))));
-    FQ_VERIFY(connect(authentication_, SIGNAL(authOK()), this, SLOT(authOK())));
-    FQ_VERIFY(connect(authentication_, SIGNAL(authError(QString)), this, SLOT(handleError(QString))));
-
-    FQ_VERIFY(connect(ssh_channel_, SIGNAL(channelOK()), this, SLOT(channelOK())));
-    FQ_VERIFY(connect(ssh_channel_, SIGNAL(channelReadyRead(const char *, int)), this, SLOT(channelReadyRead(const char *, int))));
-    FQ_VERIFY(connect(ssh_channel_, SIGNAL(channelError(QString)), this, SLOT(handleError(QString))));
-    FQ_VERIFY(connect(ssh_channel_, SIGNAL(channelClosed()), this, SIGNAL(connectionClosed())));
-
-    key_exchanger_->initKex(packet_receiver_, packet_sender_);
-  }
-
-  conn_info.proto = PROTO_SSH;
-  conn_info.ssh_proto_info.proto_version = ssh_version;
+	conn_info.proto = PROTO_SSH;
+	conn_info.ssh_proto_info.proto_version = ssh_version;
 }
 
 void FQTermSSHSocket::kexOK()
