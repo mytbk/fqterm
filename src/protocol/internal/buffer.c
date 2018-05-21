@@ -51,7 +51,8 @@ static int ensure(buffer *b, size_t len)
 int buffer_append(buffer *b, const uint8_t *s, size_t len)
 {
 	if (ensure(b, len)) {
-		memcpy(b->p + b->offs + b->sz, s, len);
+		if (s != NULL)
+			memcpy(b->p + b->offs + b->sz, s, len);
 		b->sz += len;
 		return 1;
 	} else {

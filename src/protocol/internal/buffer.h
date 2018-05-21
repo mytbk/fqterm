@@ -44,6 +44,9 @@ static inline void buffer_clear(buffer *b) { b->offs = b->sz = 0; }
 static inline void buffer_deinit(buffer *b) { free(b->p); }
 static inline uint8_t *buffer_data(buffer *b) { return b->p + b->offs; }
 static inline size_t buffer_len(buffer *b) { return b->sz; }
+/* buffer_append: append data in s to buffer b,
+ * if s is NULL, then just allocate len bytes of space in b
+ */
 int buffer_append(buffer *b, const uint8_t *s, size_t len);
 int buffer_append_string(buffer *b, const char *s, size_t len);
 int buffer_append_byte(buffer *b, uint8_t);
