@@ -238,6 +238,8 @@ FQTermTelnet::FQTermTelnet(const QString &strTermType, int rows, int columns,
 
   FQ_VERIFY(connect(socket, SIGNAL(requestUserPwd(QString *, QString *, bool *)), 
                     this, SIGNAL(requestUserPwd(QString *, QString *, bool *))));
+  FQ_VERIFY(connect(socket, SIGNAL(warnInsecure(const QString &, bool *)),
+			  this, SIGNAL(warnInsecure(const QString &, bool *))));
 
   FQ_VERIFY(connect(socket, SIGNAL(errorMessage(QString)), this, SIGNAL(errorMessage(QString))));
 

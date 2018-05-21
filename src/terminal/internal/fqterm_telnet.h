@@ -91,6 +91,7 @@ class FQTermTelnet: public QObject {
   void readyRead(int, int); // There are datas to be read out
   void TelnetState(int); // The  state telnet, defined as TSXXXX in fqterm.h
   void requestUserPwd(QString *user, QString *pwd, bool *isOK);
+  void warnInsecure(const QString&, bool *isOK);
   void errorMessage(QString);
 
  public slots:

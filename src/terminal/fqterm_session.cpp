@@ -143,6 +143,8 @@ FQTermSession::FQTermSession(FQTermConfig *config, FQTermParam param) {
                     this, SIGNAL(errorMessage(QString))));
   FQ_VERIFY(connect(telnet_, SIGNAL(requestUserPwd(QString*, QString*, bool*)),
                     this, SIGNAL(requestUserPwd(QString*, QString*, bool*))));
+  FQ_VERIFY(connect(telnet_, SIGNAL(warnInsecure(const QString &, bool*)),
+                    this, SIGNAL(warnInsecure(const QString &, bool*))));
 
   FQ_VERIFY(connect(telnet_, SIGNAL(onSSHAuthOK()),
                     this, SLOT(onSSHAuthOK())));

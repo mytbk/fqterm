@@ -182,6 +182,7 @@ signals:
   void sessionUpdated();
 
   void requestUserPwd(QString *userName, QString *password, bool *isOK);
+  void warnInsecure(const QString &msg, bool *isOK) {}
 
   void TelnetState(int);
   void ZmodemState(int, int, const char *);

@@ -150,6 +150,7 @@ protected:
   void errorMessage(QString);
   void socketState(int);
   void requestUserPwd(QString *user, QString *pwd, bool *isOK);
+  void warnInsecure(const QString&, bool *isOK);
 };
 
 

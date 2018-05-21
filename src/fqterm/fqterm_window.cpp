@@ -179,6 +179,8 @@ FQTermWindow::FQTermWindow(FQTermConfig *config, FQTermFrame *frame, FQTermParam
                     this, SLOT(articleCopied(int, const QString))));
   FQ_VERIFY(connect(session_, SIGNAL(requestUserPwd(QString*, QString*, bool*)),
                     this, SLOT(requestUserPwd(QString *, QString *, bool *))));
+  FQ_VERIFY(connect(session_, SIGNAL(warnInsecure(const QString &, bool*)),
+                    this, SLOT(warnInsecure(const QString &, bool *))));
   //connect telnet signal to slots
   // QVERIFY(connect(session_->telnet_, SIGNAL(readyRead(int)),
   //                 this, SLOT(readReady(int))));

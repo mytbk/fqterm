@@ -249,7 +249,7 @@ class FQTermSession: public QObject {
   void stopAlert();
 
   void requestUserPwd(QString *user, QString *pwd, bool *isOK);
-
+  void warnInsecure(const QString&, bool *isOK);
   void telnetStateChanged(int state);
   void zmodemStateChanged(int type, int value, const char *status);
 
