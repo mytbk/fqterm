@@ -21,6 +21,7 @@ typedef struct
 		const char *c2s_mac;
 		const char *s2c_mac;
 		unsigned char hash[32];
+		unsigned char key_matches;
 	} ssh_proto_info;
 } conn_info_t;
 

@@ -10,6 +10,7 @@ set(export_SRCS
   fqterm_local_socket.h
   fqterm_ssh_socket.h
   fqterm_ssh_socket.cpp
+  connect_info.h
 )
 
 set(internal_SRCS
@@ -31,6 +32,8 @@ set(internal_SRCS
   internal/ssh_packet.c
   internal/curve25519/smult.c
   internal/curve25519/base.c
+  internal/ccan_base64.c
+  internal/ssh_known_hosts.c
   internal/fqterm_ssh_auth.h
   internal/fqterm_ssh_const.h
   internal/fqterm_ssh_kex.h

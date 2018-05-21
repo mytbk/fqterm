@@ -715,6 +715,11 @@ static QString ssh2_info(conn_info_t *info)
 		txt.append(QString("\nMAC(s2c): %1")
 				.arg(info->ssh_proto_info.s2c_mac));
 	}
+	if (info->ssh_proto_info.key_matches)
+		txt.append("\nkey matches");
+	else
+		txt.append("\nkey mismatch!");
+
 	return txt;
 }
 

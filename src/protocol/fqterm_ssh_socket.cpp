@@ -28,6 +28,8 @@
 #include "fqterm_ssh_auth.h"
 #include "fqterm_ssh_channel.h"
 #include "fqterm_trace.h"
+#include "fqterm_path.h"
+#include "ssh_known_hosts.h"
 #include <QString>
 namespace FQTerm {
 
@@ -144,6 +146,25 @@ void FQTermSSHSocket::kexOK()
 		conn_info.ssh_proto_info.c2s_mac = packet_sender_->mac->name;
 	if (packet_receiver_->mac)
 		conn_info.ssh_proto_info.s2c_mac = packet_receiver_->mac->name;
+
+	if (ssh_version_ == 2) {
+		int nhosts;
+		struct ssh_host *hosts;
+		const char *hosts_file;
+#ifdef WIN32
+		hosts_file = (getPath(USER_CONFIG) + "known_hosts").toLatin1().constData();
+#else
+		hosts_file = ssh_hosts_filename();
+#endif
+		hosts = parse_hosts_file(hosts_file, &nhosts);
+		int idx = find_ssh_host(hosts, nhosts, conn_info.hostname, conn_info.port);
+		FQTermSSH2Kex *kex = dynamic_cast<FQTermSSH2Kex *> (key_exchanger_);
+		if (idx >=0 && key_matches(&hosts[idx], kex->K_S(), kex->K_S_len()))
+			conn_info.ssh_proto_info.key_matches = 1;
+		else
+			conn_info.ssh_proto_info.key_matches = 0;
+	}
+
 	key_exchanger_->hostKeyHash(conn_info.ssh_proto_info.hash);
 	authentication_->initAuth(packet_receiver_, packet_sender_);
 }

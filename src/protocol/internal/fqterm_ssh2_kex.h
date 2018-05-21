@@ -77,6 +77,8 @@ public:
 	  SHA256(sess.K_S, sess.K_S_len, md);
   }
 
+  const unsigned char *K_S() { return sess.K_S; }
+  int K_S_len() { return sess.K_S_len; }
 public slots:
   void handlePacket(int type);
 };
