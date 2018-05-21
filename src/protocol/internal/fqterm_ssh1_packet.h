@@ -22,6 +22,7 @@
 #define FQTERM_SSH1_PACKET_H
 
 #include "fqterm_ssh_packet.h"
+#include "ssh_error.h"
 
 namespace FQTerm {
 

@@ -20,14 +20,15 @@
 #include "ssh_packet.h"
 #include "crc32.h"
 #include "ssh_error.h"
+#include "ssh_endian.h"
 
 //==============================================================================
 //
 // SSH1 Packet Structure:
 //  --------------------------------------------------------------------------
-//  | length | padding  | type  |                data                | crc32 |
+//  | length | padding   | type  |                data                | crc32 |
 //  --------------------------------------------------------------------------
-//  | uint32 | 1-7bytes | uchar |                                    | 4bytes|
+//  | uint32 | 1-8 bytes | uchar |                                    | 4bytes|
 //  --------------------------------------------------------------------------
 //  encrypt = padding + type + data + crc32
 //  length =  type + data + crc32
@@ -59,6 +60,58 @@ void make_ssh1_packet(buffer *orig_data, buffer *data_to_send,
 			      buffer_data(data_to_send) + 4,
 			      buffer_len(data_to_send) - 4);
 	}
+}
+
+int parse_ssh1_packet(buffer *input, buffer *recvbuf, SSH_CIPHER *cipher)
+{
+	uint32_t mycrc, gotcrc;
+	uint8_t *targetData = NULL;
+	uint8_t *sourceData = NULL;
+	int real_data_len;
+
+	// Get the length of the packet.
+	if (buffer_len(input) < 4)
+		return -ETOOSMALL;
+
+	uint8_t *buf = buffer_data(input);
+	real_data_len = ntohu32(buf);
+
+	if (real_data_len > SSH_BUFFER_MAX)
+		return -ETOOBIG;
+
+	uint32_t total_len = (real_data_len + 8) & ~7;
+	uint32_t padding_len = total_len - real_data_len;
+
+	// Get the data of the packet.
+	if (buffer_len(input) - 4 < (long)total_len)
+		return -ETOOSMALL;
+
+	buffer_consume(input, 4);
+	real_data_len -= 5;
+
+	buffer_clear(recvbuf);
+	uint8_t *recv_ptr = buffer_data(recvbuf);
+	buffer_append(recvbuf, NULL, total_len);
+
+	if (cipher->started) {
+		cipher->crypt(cipher, buffer_data(input), recv_ptr, total_len);
+	} else {
+		memcpy(recv_ptr, buffer_data(input), total_len);
+	}
+
+	buffer_consume(input, total_len);
+
+	// Check the crc32.
+	buf = buffer_data(recvbuf) + total_len - 4;
+	mycrc = ntohu32(buf);
+	gotcrc = ssh_crc32(buffer_data(recvbuf), total_len - 4);
+
+	if (mycrc != gotcrc)
+		return -ECRC32;
+
+	// Drop the padding.
+	buffer_consume(recvbuf, padding_len);
+	return real_data_len;
 }
 
 //==============================================================================
@@ -139,4 +192,81 @@ int make_ssh2_packet(buffer *orig_data, buffer *data_to_send,
 
 	*seq = *seq + 1;
 	return 0;
+}
+
+int parse_ssh2_packet(buffer *input, buffer *recvbuf, SSH_CIPHER *cipher,
+		SSH_MAC *mac, bool is_mac_, uint32_t *decrypted, uint32_t *seq)
+{
+	int packet_len;
+	uint8_t *input_data = buffer_data(input);
+
+	// 1. Check the ssh packet
+	if (*decrypted == 0) {
+		if (buffer_len(input) < 16)
+			return -ETOOSMALL;
+		if (cipher->started && buffer_len(input) < cipher->blkSize)
+			return -ETOOSMALL;
+	}
+
+	if (*decrypted == 0 && cipher->started) {
+		if (cipher->crypt(cipher, input_data, input_data,
+					cipher->blkSize) != 1)
+			return -ECRYPT;
+		packet_len = ntohu32(input_data);
+		*decrypted = cipher->blkSize;
+	} else {
+		packet_len = ntohu32(input_data);
+	}
+
+	if (packet_len > SSH_BUFFER_MAX)
+		return -ETOOBIG;
+
+	int expected_input_len = 4 + packet_len + (is_mac_ ? mac->dgstSize : 0);
+
+	if (buffer_len(input) < (long)expected_input_len)
+		return -ETOOSMALL;
+
+	// 2. decrypte data.
+	if (cipher->started) {
+		/* TODO: what about having cipher but no MAC? */
+		unsigned char *tmp = input_data + *decrypted;
+		int left_len = expected_input_len - *decrypted;
+		if (is_mac_)
+			left_len -= mac->dgstSize;
+		if (cipher->crypt(cipher, tmp, tmp, left_len) != 1)
+			return -ECRYPT;
+	}
+	*decrypted = 0;
+
+	// 3. check MAC
+	if (is_mac_) {
+		int digest_len = mac->dgstSize;
+		uint8_t digest[MAX_DGSTLEN];
+
+		buffer mbuf;
+		buffer_init(&mbuf);
+		buffer_append_be32(&mbuf, *seq);
+		buffer_append(&mbuf, (const uint8_t *)buffer_data(input),
+			      expected_input_len - digest_len);
+		mac->getmac(mac, buffer_data(&mbuf), buffer_len(&mbuf), digest);
+		buffer_deinit(&mbuf);
+
+		uint8_t *received_digest =
+			input_data + expected_input_len - digest_len;
+
+		if (memcmp(digest, received_digest, digest_len) != 0)
+			return -EMAC;
+	}
+
+	// 4. get every field of the ssh packet.
+	packet_len = buffer_get_u32(input);
+	uint8_t padding_len = buffer_get_u8(input);
+	int real_data_len = packet_len - 1 - padding_len;
+	buffer_clear(recvbuf);
+	buffer_append(recvbuf, buffer_data(input), real_data_len);
+	buffer_consume(input, packet_len - 1);
+	if (is_mac_)
+		buffer_consume(input, mac->dgstSize);
+	*seq = *seq + 1;
+	return real_data_len;
 }

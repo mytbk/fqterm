@@ -29,10 +29,9 @@ namespace FQTerm {
 class FQTermSSH2PacketReceiver: public FQTermSSHPacketReceiver
 {
 private:
-	// greater than 0 if last time an incomplete ssh2 packet received.
-	int last_expected_input_length_;
+	uint32_t decrypted;
 public:
-FQTermSSH2PacketReceiver() : last_expected_input_length_(0)	{ }
+FQTermSSH2PacketReceiver() : decrypted(0) { }
 
 	virtual void parseData(buffer *input);
 };

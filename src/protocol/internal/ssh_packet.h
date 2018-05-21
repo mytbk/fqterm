@@ -31,6 +31,10 @@ extern "C" {
 void make_ssh1_packet(buffer *src, buffer *dest, SSH_CIPHER *);
 int make_ssh2_packet(buffer *src, buffer *dest, SSH_CIPHER *,
 		SSH_MAC *, bool is_mac_, uint32_t *seq);
+/* parse_ssh{1,2}_packet: return the length of the received data */
+int parse_ssh1_packet(buffer *input, buffer *output, SSH_CIPHER *cipher);
+int parse_ssh2_packet(buffer *input, buffer *recvbuf, SSH_CIPHER *cipher,
+		SSH_MAC *mac, bool is_mac, uint32_t *decrypted, uint32_t *seq);
 
 #ifdef __cplusplus
 }
