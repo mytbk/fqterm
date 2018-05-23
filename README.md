@@ -16,9 +16,7 @@ fork本项目，然后自己开发，提交自己的更改，再创建pull reque
 
 ## 安装
 
-Windows用户可以直接到[fosshub页面](http://code.fosshub.com/FQTerm/downloads)下载预编译的包。
-
-鉴于此前SourceForge的一些事件，本项目的Windows预编译包已迁移至FossHub，原有的[SourceForge](http://sourceforge.net/projects/fqterm/files/windows/)上的包会保留。
+从0.9.9版本开始，Windows 版本的二进制包使用 GitHub releases 发布，请到 https://github.com/mytbk/fqterm/releases 下载 Windows 版本的二进制包。
 
 ArchLinux用户可以使用[archlinuxcn仓库](https://wiki.archlinux.org/index.php/Unofficial_user_repositories#archlinuxcn)安装``fqterm-git``包，或者从AUR安装[fqterm-git](https://aur.archlinux.org/packages/fqterm-git/)或Qt5版本[fqterm-qt5-git](https://aur.archlinux.org/packages/fqterm-qt5-git/).
 
@@ -56,7 +54,7 @@ make install
 
 ## Windows版本
 - 在Linux下用MXE交叉编译，运行时错误，可能原因是MXE的Qt缺少语言Codec
-- MinGW: 在[SourceForge](http://sourceforge.net/projects/fqterm/files/windows/)上的Windows预编译包是在MinGW下编译的(静态连接的OpenSSL,Qt4,TDM GCC,构建方式请见项目wiki),编译方法如下  
+- MinGW: 发布的Windows二进制包是在Windows 7下用MinGW编译的(静态连接的OpenSSL,Qt4,TDM GCC,构建方式请见项目wiki),编译方法如下  
 ```
 REM 假设源码在C:\fqterm, OpenSSL在C:\openssl, Qt在C:\Qt\4.8.6.static
 mkdir build
