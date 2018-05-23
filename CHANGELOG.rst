@@ -1,3 +1,13 @@
+Changes in 0.9.9
+================
+
+This version includes some clean up and refactoring. Other changes include:
+
+* Better .desktop file
+* Give a warning on insecure SSHv1 connection
+
+A newer MS Windows build will also come with this release.
+
 Changes in 0.9.8.7
 ==================
 
