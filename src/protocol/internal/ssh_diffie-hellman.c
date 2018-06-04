@@ -1,7 +1,9 @@
 #include "ssh_diffie-hellman.h"
 #include "ssh_session.h"
 #include "ssh_crypto_common.h"
+#include "curve25519/crypto_scalarmult.h"
 #include <stdlib.h>
+#include <openssl/rand.h>
 
 static const char DH_G16_SHA512[] = "diffie-hellman-group16-sha512";
 static const char DH_G14_SHA256[] = "diffie-hellman-group14-sha256";
@@ -215,6 +217,38 @@ ssh_dh_group16_sha512(void)
 	return dh;
 }
 
+static void ecdh_compute(SSH_DH *dh)
+{
+	int i;
+
+	/* FIXME: check return value and throw error */
+	RAND_bytes(dh->priv.privkey, 32);
+
+	dh->priv.privkey[0] &= 248;
+	dh->priv.privkey[31] &= 127;
+	dh->priv.privkey[31] |= 64;
+
+	dh->e_len = 36;
+	dh->mpint_e = (unsigned char*)malloc(36);
+	dh->mpint_e[0] = dh->mpint_e[1] = dh->mpint_e[2] = 0;
+	dh->mpint_e[3] = 32;
+	crypto_scalarmult_base(dh->mpint_e + 4, dh->priv.privkey);
+}
+
+static SSH_DH *
+ssh_dh_curve25519_sha256(void)
+{
+	SSH_DH *dh = (SSH_DH*)malloc(sizeof(SSH_DH));
+	dh->name = DH_CURVE25519_SHA256;
+	dh->digest = (evp_md_t) {
+		.mdctx = ssh_md_ctx_new(),
+		.md = EVP_sha256(),
+		.hashlen = SHA256_DIGEST_LENGTH
+	};
+	ecdh_compute(dh);
+	return dh;
+}
+
 void
 ssh_dh_hash(SSH_DH *dh, const unsigned char *in, unsigned char *out, size_t n)
 {
@@ -223,8 +257,28 @@ ssh_dh_hash(SSH_DH *dh, const unsigned char *in, unsigned char *out, size_t n)
 	EVP_DigestFinal_ex(dh->digest.mdctx, out, NULL);
 }
 
+static int ecdh_compute_secret(SSH_DH *dh, const unsigned char *f_bin, int f_len)
+{
+	unsigned char s[32];
+	int i, j;
+
+	if (f_len != 32)
+		return -1;
+	crypto_scalarmult(s, dh->priv.privkey, f_bin);
+	BIGNUM *bn_k = BN_new();
+	BN_bin2bn(s, 32, bn_k);
+	dh->secret_len = BN_bn2mpi(bn_k, NULL);
+	dh->secret = (unsigned char*)malloc(dh->secret_len);
+	BN_bn2mpi(bn_k, dh->secret);
+	BN_clear_free(bn_k);
+	return 0;
+}
+
 int ssh_dh_compute_secret(SSH_DH *dh, const unsigned char *f_bin, int f_len)
 {
+	if (dh->name == DH_CURVE25519_SHA256)
+		return ecdh_compute_secret(dh, f_bin, f_len);
+
 	BIGNUM *bn_f = BN_new();
 	if (bn_f == NULL || BN_bin2bn(f_bin, f_len, bn_f) == NULL)
 		return -1;
@@ -233,6 +287,7 @@ int ssh_dh_compute_secret(SSH_DH *dh, const unsigned char *f_bin, int f_len)
 	dh->secret_len = BN_bn2mpi(bn_k, NULL);
 	dh->secret = (unsigned char*)malloc(dh->secret_len);
 	BN_bn2mpi(bn_k, dh->secret);
+	BN_clear_free(bn_k);
 	return 0;
 }
 
@@ -243,6 +298,7 @@ struct
 	const char *name;
 	NEW_DH f;
 } all_dh[] = {
+	{ DH_CURVE25519_SHA256, ssh_dh_curve25519_sha256 },
 	{ DH_G16_SHA512, ssh_dh_group16_sha512 },
 	{ DH_G14_SHA256, ssh_dh_group14_sha256 },
 	{ DH_G14_SHA1, ssh_dh_group14_sha1 },
@@ -261,6 +317,7 @@ search_dh(const char *s)
 }
 
 const char all_dh_list[] =
+	"curve25519-sha256@libssh.org,"
 	"diffie-hellman-group16-sha512,diffie-hellman-group14-sha256,"
 	"diffie-hellman-group14-sha1,diffie-hellman-group1-sha1";
 
