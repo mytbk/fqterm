@@ -29,14 +29,20 @@ extern "C" {
 
 	typedef struct ssh_diffie_hellman
 	{
-		BIGNUM *g; // generator
-		BIGNUM *p; // prime
-		BIGNUM *bn_x; /* random number */
+		const char *name;
+		union {
+			struct {
+				BIGNUM *g; // generator
+				BIGNUM *p; // prime
+				BIGNUM *bn_x; /* random number */
+				BN_CTX *ctx;
+			} dh;
+			unsigned char privkey[32];
+		} priv;
 		int e_len;
 		unsigned char *mpint_e; /* g^x mod p */
 		int secret_len;
 		unsigned char *secret;
-		BN_CTX *ctx;
 		evp_md_t digest;
 	} SSH_DH;
 

@@ -3,6 +3,12 @@
 #include "ssh_crypto_common.h"
 #include <stdlib.h>
 
+static const char DH_G16_SHA512[] = "diffie-hellman-group16-sha512";
+static const char DH_G14_SHA256[] = "diffie-hellman-group14-sha256";
+static const char DH_G14_SHA1[] = "diffie-hellman-group14-sha1";
+static const char DH_G1_SHA1[] = "diffie-hellman-group1-sha1";
+static const char DH_CURVE25519_SHA256[] = "curve25519-sha256@libssh.org";
+
 static const int g = 2;
 
 /* groups: https://tools.ietf.org/html/rfc3526 */
@@ -109,11 +115,13 @@ static const unsigned char prime_group16[] = {
 void
 ssh_dh_free(SSH_DH *dh)
 {
-	BN_free(dh->g);
-	BN_free(dh->p);
+	if (dh->name != DH_CURVE25519_SHA256) {
+		BN_free(dh->priv.dh.g);
+		BN_free(dh->priv.dh.p);
+		BN_clear_free(dh->priv.dh.bn_x);
+		BN_CTX_free(dh->priv.dh.ctx);
+	}
 	ssh_md_ctx_free(dh->digest.mdctx);
-	BN_clear_free(dh->bn_x);
-	BN_CTX_free(dh->ctx);
 	free(dh->mpint_e);
 	free(dh->secret);
 	free(dh);
@@ -121,11 +129,13 @@ ssh_dh_free(SSH_DH *dh)
 
 static void dh_compute(SSH_DH *dh)
 {
-	dh->bn_x = BN_new();
-	BN_pseudo_rand_range(dh->bn_x, dh->p);
+	dh->priv.dh.bn_x = BN_new();
+
+	/* FIXME: check return value and throw error */
+	BN_rand_range(dh->priv.dh.bn_x, dh->priv.dh.p);
 
 	BIGNUM *bn_e = BN_new();
-	BN_mod_exp(bn_e, dh->g, dh->bn_x, dh->p, dh->ctx);
+	BN_mod_exp(bn_e, dh->priv.dh.g, dh->priv.dh.bn_x, dh->priv.dh.p, dh->priv.dh.ctx);
 	dh->e_len = BN_bn2mpi(bn_e, NULL);
 	dh->mpint_e = (unsigned char*)malloc(dh->e_len);
 	BN_bn2mpi(bn_e, dh->mpint_e);
@@ -135,9 +145,9 @@ static void dh_compute(SSH_DH *dh)
 static SSH_DH *create_dh()
 {
 	SSH_DH *dh = (SSH_DH*)malloc(sizeof(SSH_DH));
-	dh->ctx = BN_CTX_new();
-	dh->g = BN_new();
-	dh->p = BN_new();
+	dh->priv.dh.ctx = BN_CTX_new();
+	dh->priv.dh.g = BN_new();
+	dh->priv.dh.p = BN_new();
 	return dh;
 }
 
@@ -145,13 +155,14 @@ static SSH_DH *
 ssh_dh_group1_sha1(void)
 {
 	SSH_DH *dh = create_dh();
+	dh->name = DH_G1_SHA1;
 	dh->digest = (evp_md_t) {
 		.mdctx = ssh_md_ctx_new(),
 		.md = EVP_sha1(),
 		.hashlen = SHA_DIGEST_LENGTH
 	};
-	BN_set_word(dh->g, g);
-	BN_bin2bn(prime_group1, 128, dh->p);
+	BN_set_word(dh->priv.dh.g, g);
+	BN_bin2bn(prime_group1, 128, dh->priv.dh.p);
 	dh_compute(dh);
 	return dh;
 }
@@ -160,13 +171,14 @@ static SSH_DH *
 ssh_dh_group14_sha1(void)
 {
 	SSH_DH *dh = create_dh();
+	dh->name = DH_G14_SHA1;
 	dh->digest = (evp_md_t) {
 		.mdctx = ssh_md_ctx_new(),
 		.md = EVP_sha1(),
 		.hashlen = SHA_DIGEST_LENGTH
 	};
-	BN_set_word(dh->g, g);
-	BN_bin2bn(prime_group14, 256, dh->p);
+	BN_set_word(dh->priv.dh.g, g);
+	BN_bin2bn(prime_group14, 256, dh->priv.dh.p);
 	dh_compute(dh);
 	return dh;
 }
@@ -175,13 +187,14 @@ static SSH_DH *
 ssh_dh_group14_sha256(void)
 {
 	SSH_DH *dh = create_dh();
+	dh->name = DH_G14_SHA256;
 	dh->digest = (evp_md_t) {
 		.mdctx = ssh_md_ctx_new(),
 		.md = EVP_sha256(),
 		.hashlen = SHA256_DIGEST_LENGTH
 	};
-	BN_set_word(dh->g, g);
-	BN_bin2bn(prime_group14, 256, dh->p);
+	BN_set_word(dh->priv.dh.g, g);
+	BN_bin2bn(prime_group14, 256, dh->priv.dh.p);
 	dh_compute(dh);
 	return dh;
 }
@@ -190,13 +203,14 @@ static SSH_DH *
 ssh_dh_group16_sha512(void)
 {
 	SSH_DH *dh = create_dh();
+	dh->name = DH_G16_SHA512;
 	dh->digest = (evp_md_t) {
 		.mdctx = ssh_md_ctx_new(),
 		.md = EVP_sha512(),
 		.hashlen = SHA512_DIGEST_LENGTH
 	};
-	BN_set_word(dh->g, g);
-	BN_bin2bn(prime_group16, 512, dh->p);
+	BN_set_word(dh->priv.dh.g, g);
+	BN_bin2bn(prime_group16, 512, dh->priv.dh.p);
 	dh_compute(dh);
 	return dh;
 }
@@ -215,7 +229,7 @@ int ssh_dh_compute_secret(SSH_DH *dh, const unsigned char *f_bin, int f_len)
 	if (bn_f == NULL || BN_bin2bn(f_bin, f_len, bn_f) == NULL)
 		return -1;
 	BIGNUM *bn_k = BN_new();
-	BN_mod_exp(bn_k, bn_f, dh->bn_x, dh->p, dh->ctx);
+	BN_mod_exp(bn_k, bn_f, dh->priv.dh.bn_x, dh->priv.dh.p, dh->priv.dh.ctx);
 	dh->secret_len = BN_bn2mpi(bn_k, NULL);
 	dh->secret = (unsigned char*)malloc(dh->secret_len);
 	BN_bn2mpi(bn_k, dh->secret);
@@ -229,10 +243,10 @@ struct
 	const char *name;
 	NEW_DH f;
 } all_dh[] = {
-	{ "diffie-hellman-group16-sha512", ssh_dh_group16_sha512 },
-	{ "diffie-hellman-group14-sha256", ssh_dh_group14_sha256 },
-	{ "diffie-hellman-group14-sha1", ssh_dh_group14_sha1 },
-	{ "diffie-hellman-group1-sha1", ssh_dh_group1_sha1 },
+	{ DH_G16_SHA512, ssh_dh_group16_sha512 },
+	{ DH_G14_SHA256, ssh_dh_group14_sha256 },
+	{ DH_G14_SHA1, ssh_dh_group14_sha1 },
+	{ DH_G1_SHA1, ssh_dh_group1_sha1 },
 	{ NULL, NULL }
 };
 
