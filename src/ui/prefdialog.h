@@ -21,6 +21,7 @@
 #ifndef FQTERM_PREF_DIALOG_H
 #define FQTERM_PREF_DIALOG_H
 
+#include <QButtonGroup>
 #include "ui_prefdialog.h"
 #include "fqterm_filedialog.h"
 

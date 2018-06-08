@@ -21,6 +21,7 @@
 #ifndef FQTERM_SOUND_CONF_H
 #define FQTERM_SOUND_CONF_H
 
+#include <QButtonGroup>
 #include "ui_soundconf.h"
 #include "fqterm_filedialog.h"
 

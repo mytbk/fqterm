@@ -22,6 +22,7 @@
 #define FQTERM_KEY_DIALOG_H
 
 #include "ui_keydialog.h"
+#include <QButtonGroup>
 
 namespace FQTerm {
 

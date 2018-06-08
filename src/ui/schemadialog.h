@@ -23,6 +23,8 @@
 
 #include "ui_schemadialog.h"
 #include <QStringList>
+#include <QButtonGroup>
+
 namespace FQTerm {
 
 class schemaDialog: public QDialog {
