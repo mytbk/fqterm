@@ -83,6 +83,8 @@
 
 int main(int argc, char **argv) {
   QApplication a(argc, argv);
+  a.setApplicationName("FQTerm");
+  a.setApplicationVersion(FQTERM_VERSION_STRING);
   // Set trace categories and level.
   FQTerm::setMaxTraceLevel(1);
   for (int i = 1; i < argc; ++i) {
