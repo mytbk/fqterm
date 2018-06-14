@@ -125,8 +125,8 @@ QString getErrOutputFile(FQTermWindow *lp) {
   return getPath(USER_CONFIG) + str2;
 }
 
-// copy current artcle for back compatible use only
-// for new coder please use getArticle
+// copy current article, for backward-compatible use only.
+// for new code, please use getArticle
 static PyObject *fqterm_copyArticle(PyObject *, PyObject *args) {
   long lp;
   if (!PyArg_ParseTuple(args, "l", &lp)) {
@@ -140,7 +140,7 @@ static PyObject *fqterm_copyArticle(PyObject *, PyObject *args) {
   QReadWriteLock& bufferLock = termWindow_->getSession()->getBufferLock();
   QReadLocker locker(&bufferLock);
   while (1) {
-    // check it there is duplicated string
+    // check if there is duplicated string
     // it starts from the end in the range of one screen height
     // so this is a non-greedy match
     QString strTemp;
@@ -156,7 +156,7 @@ static PyObject *fqterm_copyArticle(PyObject *, PyObject *args) {
       }
       QStringList::Iterator it2 = it;
       bool dup = true;
-      // match more to see if its duplicated
+      // match more to see if it's duplicated
       for (int j = 0; j <= i; j++, it2++) {
         QString str1;
         termWindow_->getSession()->getBuffer()->getTextLineInTerm(j)->getAllPlainText(str1);
@@ -237,7 +237,7 @@ static PyObject *fqterm_getArticle(PyObject *, PyObject *args) {
       }
       QStringList::Iterator it2 = it;
       bool dup = true;
-      // match more to see if its duplicated
+      // match more to see if it's duplicated
       for (int j = 0; j <= i && it2 != strList.end(); j++, it2++) {
         QString str1;
         termWindow_->getSession()->getBuffer()->getTextLineInTerm(j)->getAllPlainText(str1);
