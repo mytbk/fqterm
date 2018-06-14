@@ -41,7 +41,7 @@ var make_html_header = function(num)
 	return result;
 }
 
-var make_html_ender = function(num)
+var make_html_footer = function(num)
 {
 	num = parseInt(num);
 	var result = 	'<hr><p></p>\n'+
@@ -70,7 +70,7 @@ var make_index_header = function() {
     return result;
 }
 
-var make_index_ender = function() {
+var make_index_footer = function() {
     var result = '<hr><p></p>\n' +
                  '<p><p align=center>\n' +
 				 '<a href=\"../index.html\">Up</a>\n' +
@@ -176,7 +176,7 @@ var down_folder = function() {
         if (article_category == '[文件]') {
             var a = '<p><a href=' + article_num + '.html>[文件] ' + article_title + '</a></p>\n';
             fqterm.appendFile(path + "index.html", a);
-            var content = make_html_header(article_num) + txt2html(download()) + '\n' + make_html_ender(article_num);
+            var content = make_html_header(article_num) + txt2html(download()) + '\n' + make_html_footer(article_num);
             fqterm.writeFile(path + article_num + ".html", content);
         } else if (article_category == '[目录]') {
             var a = '<p><a href=' + article_num + '/index.html>[目录] ' + article_title + '</a></p>\n';
@@ -196,7 +196,7 @@ var down_folder = function() {
             break;
         }
     }
-    var e = make_index_ender();
+    var e = make_index_footer();
     fqterm.appendFile(path + 'index.html', e);
     fqterm.sendString('q');
     path = upper_dir(path);

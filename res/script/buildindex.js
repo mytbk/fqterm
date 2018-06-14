@@ -22,7 +22,7 @@ var make_html_header = function(num)
 	return result;
 }
 
-var make_html_ender = function(num)
+var make_html_footer = function(num)
 {
 	num = parseInt(num);
 	var result = 	'<hr><p></p>\n'+
@@ -51,7 +51,7 @@ var make_index_header = function() {
     return result;
 }
 
-var make_index_ender = function() {
+var make_index_footer = function() {
     var result = '<hr><p></p>\n' +
                  '<p><p align=center>\n' +
 				 '<a href=\"../index.html\">Up</a>\n' +
@@ -124,7 +124,7 @@ var build_index = function() {
             break;
         }
     }
-    var e = make_index_ender();
+    var e = make_index_footer();
     fqterm.appendFile(path + 'index.html', e);
     fqterm.sendString('q');
 }
