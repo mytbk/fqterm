@@ -360,7 +360,7 @@ ProgressBar &StatusBar::newProgressOperation(QObject *owner) {
   QObject *owner = (QObject*)sender(); //HACK deconsting it
   KIO::Job *job = dynamic_cast<KIO::Job*>( owner );
 
-  //FIXME doesn't seem to work for KIO::DeleteJob, it has it's own error handler and returns no error too
+  //FIXME doesn't seem to work for KIO::DeleteJob, it has its own error handler and returns no error too
   // if you try to delete http urls for instance <- KDE SUCKS!
 
   if( job && job->error() )

@@ -58,7 +58,7 @@ struct fsm_trans {
 // Telnet connection, a wrapper of socket.
 // It will translate raw NVT data from low level socket to ansi data,
 // and then upper level application can read it.
-// It also can send ascii data (0~127).
+// It also can send ASCII data (0~127).
 class FQTermTelnet: public QObject {
   Q_OBJECT;
  public:
@@ -72,7 +72,7 @@ class FQTermTelnet: public QObject {
                 const QString &strProxyPwd);
   void connectHost(const QString &hostname, quint16 portnumber);
 
-  // Read ansi data.
+  // Read ANSI data.
   int read(char *data, uint maxlen);
 
   // Write data raw data
@@ -88,7 +88,7 @@ class FQTermTelnet: public QObject {
   conn_info_t *connectionInfo() { return socket->connectionInfo(); }
 
  signals:
-  void readyRead(int, int); // There are datas to be read out
+  void readyRead(int, int); // There are data to be read out
   void TelnetState(int); // The  state telnet, defined as TSXXXX in fqterm.h
   void requestUserPwd(QString *user, QString *pwd, bool *isOK);
   void warnInsecure(const QString&, bool *isOK);

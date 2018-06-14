@@ -1012,13 +1012,13 @@ int FQTermTelnet::ttputc(int c) {
     xputc_up((char)c); /* print uninterpretted	*/
     return 0;
   }
-  /* no data, if in SYNCH	*/
+  /* no data, if in SYNCH */
   /*
 	if (synching)
 	return 0;
   */
-  /* TODO: FQTermTelnet does not interpret NVT code, provide datas to upper
-     layer directly. So, <cr><lf>	will not be replaced with <lf>
+  /* TODO: FQTermTelnet does not interpret NVT code, provide data to upper
+     layer directly. So, <cr><lf> will not be replaced with <lf>
   */
   xputc_up((char)c);
 

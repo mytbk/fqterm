@@ -55,7 +55,7 @@ var make_html_header = function(num)
 			'</head>\n'+
 			'<body>\n'+
 			'<p><b><h1>FQTerm Article Downloader</h1></b></p>\n'+
-			'<p><p align=center><a href=' + (num - 1) + '.html>Prevoius</a>\n'+
+			'<p><p align=center><a href=' + (num - 1) + '.html>Previous</a>\n'+
 		   	'<a href=index.html>Index</a>\n'+
 			'<a href=' + (num + 1) + '.html>Next</a></p align=center></p>'+
 			'<hr><p></p>\n';
@@ -66,7 +66,7 @@ var make_html_ender = function(num)
 {
 	num = parseInt(num);
 	var result = 	'<hr><p></p>\n'+
-			'<p><p align=center><a href=' + (num - 1) + '.html>Prevoius</a>\n'+
+			'<p><p align=center><a href=' + (num - 1) + '.html>Previous</a>\n'+
 			'<a href=index.html>Index</a>\n'+
 			'<a href=' + (num + 1) + '.html>Next</a></p align=center></p>\n'+
 			'<p><b>FQTerm --- BBS client based on Qt library</b><p>\n'+

@@ -24,7 +24,7 @@ def previewYTHT(lp):
 	if re.search('http://ytht.net/Ytht.Net' \
 		'(\S+)/con\?B=(\d+)&F=M\.(\d+)\.A', URL) != None:
 		# ytht article URL
-		print 'Analizing ytht article URL'
+		print 'Analyzing ytht article URL'
 		f_con = urllib.urlopen(URL)
 		con = f_con.read()
 		f_con.close()

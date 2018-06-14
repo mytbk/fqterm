@@ -324,7 +324,7 @@ const char *FQTermDecode::getStateName(const StateOption *state) {
   } else if (state == VT100StateMachine::title_state_) {
     return "VT100StateMachine::title_state_";
   } else {
-    return "Unknow";
+    return "Unknown";
   }
 }
 
@@ -436,7 +436,7 @@ static int utf8_expected_byte_count(char first_byte)
 {
   char expected = 0;
   if (!(first_byte & 0x80)) 
-    return 0; //1 byte ascii
+    return 0; //1 byte ASCII
   else
     expected++;
   if (!(first_byte & 0x40))
@@ -463,7 +463,7 @@ static int gdbnbig5_expected_byte_count(char first_byte)
 {
   char expected = 0;
   if (!(first_byte & 0x80)) 
-    return 0; //1 byte ascii
+    return 0; //1 byte ASCII
   else
     expected++;
   return expected;
@@ -582,12 +582,12 @@ int FQTermDecode::processInput(QByteArray& result)
 
 // fill letters into char buffer
 // TODO: this function may contain bug, need double-check.
-//       1. input should be ascii-compitable encoding.
+//       1. input should be ASCII-compatible encoding.
 void FQTermDecode::normalInput() {
 
   FQ_FUNC_TRACE("ansi", 8);
 
-  // TODO_UTF16: check ascii-incompitable encoding.
+  // TODO_UTF16: check ASCII-incompatible encoding.
   if (signed(inputData_[dataIndex_]) < 0x20 && signed(inputData_[dataIndex_]) >= 0x00) {
 	// not print char
     return ;

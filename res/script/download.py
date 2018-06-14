@@ -6,8 +6,8 @@ download the directory
 	* add this changelog
 
 Notes:
-	1. make sure the path is empty, otherwise mkdir complain and stopped
-	2. the time for sleep() varies dependent on sites
+	1. make sure the path is empty, otherwise mkdir would complain and stop
+	2. the time for sleep() varies depending on sites
 	3. tested for FireBird BBS only
 Bugs:
 	1.
@@ -49,7 +49,7 @@ def write_html_header(hfile, num):
 		</head>""")
 	hfile.write("<body>")
 	hfile.write("<p><b><h1>FQTerm Article Downloader</h1></b></p>")
-	txt="""<p><p align=center><a href=%d.html>Prevoius</a>
+	txt="""<p><p align=center><a href=%d.html>Previous</a>
 		<a href=index.html>Index</a>
 		<a href=%d.html>Next</a></p align=center></p>""" % (num-1,num+1)
 	hfile.write(txt)
@@ -57,7 +57,7 @@ def write_html_header(hfile, num):
 
 def write_html_ender(hfile,num):
 	hfile.write("<hr><p></p>")
-	txt="""<p><p align=center><a href=%d.html>Prevoius</a>
+	txt="""<p><p align=center><a href=%d.html>Previous</a>
 		<a href=index.html>Index</a>
 		<a href=%d.html>Next</a></p align=center></p>""" % (num-1,num+1)
 	hfile.write(txt)
