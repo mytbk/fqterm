@@ -55,7 +55,7 @@ def write_html_header(hfile, num):
 	hfile.write(txt)
 	hfile.write("<hr><p></p>\n")
 
-def write_html_ender(hfile,num):
+def write_html_footer(hfile,num):
 	hfile.write("<hr><p></p>")
 	txt="""<p><p align=center><a href=%d.html>Previous</a>
 		<a href=index.html>Index</a>
@@ -79,7 +79,7 @@ def write_index_header(hfile):
 				</p align=center</p>""")
 	hfile.write("<hr><p></p>\n")
 
-def write_index_ender(hfile):
+def write_index_footer(hfile):
 	hfile.write("<hr><p></p>")
 	hfile.write("""<p><p align=center>
 				<a href=\"../index.html\">Up</a>
@@ -131,7 +131,7 @@ def down_folder():
 			print "Wrong format list"
 			# end the index.html
 			f=open(path+"index.html","a+")
-			write_index_ender(f)
+			write_index_footer(f)
 			f.close()
 			# wrong formatted list, leave out
 			print "leave %s" % path
@@ -157,7 +157,7 @@ def down_folder():
 			write_html_header(f,int(article_num))
 			f.write(txt2html(fqterm.getArticle(lp, 100)[0]))
 			f.write("\n")
-			write_html_ender(f,int(article_num))
+			write_html_footer(f,int(article_num))
 			f.close()
 			time.sleep(wait_time)
 			fqterm.sendString(lp,"q")
@@ -186,7 +186,7 @@ def down_folder():
 			print "Unrecognized Categary"
 			# end the index.html
 			f=open(path+"index.html","a+")
-			write_index_ender(f)
+			write_index_footer(f)
 			f.close()
 			# wrong formatted list, leave out
 			print "leave %s" % path
@@ -204,7 +204,7 @@ def down_folder():
 			print "Wrong format list"
 			# end the index.html
 			f=open(path+"index.html","a+")
-			write_index_ender(f)
+			write_index_footer(f)
 			f.close()
 			# wrong formatted list, leave out
 			print "leave %s" % path
@@ -219,7 +219,7 @@ def down_folder():
 			if(path!=path_dir):
 				# end the index.html
 				f=open(path+"index.html","a+")
-				write_index_ender(f)
+				write_index_footer(f)
 				f.close()
 				# leave out
 				print "leave %s" % path
@@ -246,7 +246,7 @@ f.close()
 down_folder()
 # end the index.html
 f=open(path+"index.html","a+")
-write_index_ender(f)
+write_index_footer(f)
 f.close()
 # exit
 fqterm.sendString(lp,'q')
