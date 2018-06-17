@@ -22,7 +22,7 @@
 
 #include <stdint.h>
 
-#if defined(WIN32)
+#if defined(WIN32) || defined(__APPLE__)
 static inline uint16_t bswap_16(uint16_t x)
 {
 	return (x << 8) | (x >> 8);
