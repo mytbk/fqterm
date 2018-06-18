@@ -417,8 +417,8 @@ class FQTermZmodem: public QObject {
   uchar *ZEnc4(ulong n);
   ulong ZDec4(const uchar buf[4]);
 
-  int YrcvChar(char c, register ZModem *info);
-  int YrcvTimeout(register ZModem *info);
+  int YrcvChar(char c, ZModem *info);
+  int YrcvTimeout(ZModem *info);
   void ZIdleStr(uchar *buffer, int len, ZModem *info);
 
   /* LEXICAL BOX: handle characters received from remote end.
@@ -429,23 +429,23 @@ class FQTermZmodem: public QObject {
    * the state variable.
    */
 
-  int FinishChar(char c, register ZModem *info);
-  int DataChar(uchar c, register ZModem *info);
-  int HdrChar(uchar c, register ZModem *info);
-  int IdleChar(uchar c, register ZModem *info);
+  int FinishChar(char c, ZModem *info);
+  int DataChar(uchar c, ZModem *info);
+  int HdrChar(uchar c, ZModem *info);
+  int IdleChar(uchar c, ZModem *info);
 
   int YsendChar(char c, ZModem *info);
 
   int ZPF(ZModem *info);
   int Ignore(ZModem *info);
-  int AnswerChallenge(register ZModem *info);
-  int GotAbort(register ZModem *info);
+  int AnswerChallenge(ZModem *info);
+  int GotAbort(ZModem *info);
   int GotCancel(ZModem *info);
   int GotCommand(ZModem *info);
-  int GotStderr(register ZModem *info);
+  int GotStderr(ZModem *info);
   int RetDone(ZModem *info);
-  int GotCommandData(register ZModem *info, int crcGood);
-  int GotStderrData(register ZModem *info, int crcGood);
+  int GotCommandData(ZModem *info, int crcGood);
+  int GotStderrData(ZModem *info, int crcGood);
 
   int GotFileName(ZModem *info, int crcGood);
   int ResendCrcReq(ZModem *info);
@@ -488,9 +488,9 @@ class FQTermZmodem: public QObject {
 
   uint rcvHex(uint i, char c);
 
-  int ZDataReceived(register ZModem *info, int crcGood);
-  int dataSetup(register ZModem *info);
-  int ZProtocol(register ZModem *info);
+  int ZDataReceived(ZModem *info, int crcGood);
+  int dataSetup(ZModem *info);
+  int ZProtocol(ZModem *info);
 
   int ZXmitData(int, int, uchar, uchar *data, ZModem*);
   int YXmitData(uchar *, int, ZModem*);
