@@ -22,7 +22,7 @@
 
 namespace FQTerm {
 
-const ExifExtractor::uint16 ExifExtractor::IFD0Tag[16] = {0x010e, 0x010f, 0x0110, 0x0112, 0x011a,
+const uint16_t ExifExtractor::IFD0Tag[16] = {0x010e, 0x010f, 0x0110, 0x0112, 0x011a,
   0x011b, 0x0128, 0x0131, 0x0132, 0x013e,
   0x013f, 0x0211, 0x0213, 0x0214, 0x8298, 0x8769
 };
@@ -33,7 +33,7 @@ const char ExifExtractor::IFD0TagName[16][30] = {  "ImageDescription", "Make", "
   "YCbCrPositioning", "ReferenceBlackWhite", "Copyright", "ExifOffset"
 };
 
-const ExifExtractor::uint16 ExifExtractor::SubIFDTag[38] = {0x829a,0x829d,0x8822,0x8827,0x9000,0x9003,0x9004,0x9101,0x9102,0x9201,0x9202,0x9203,0x9204,
+const uint16_t ExifExtractor::SubIFDTag[38] = {0x829a,0x829d,0x8822,0x8827,0x9000,0x9003,0x9004,0x9101,0x9102,0x9201,0x9202,0x9203,0x9204,
   0x9205,0x9206,0x9207,0x9208,0x9209,0x920a,0x927c,0x9286,0x9290,0x9291,0x9292,0xa000,0xa001,
   0xa002,0xa003,0xa004,0xa005,0xa20e,0xa20f,0xa210,0xa215,0xa217,0xa300,0xa301,0xa302};
 
@@ -176,7 +176,7 @@ void ExifExtractor::postRead() {
     if ((*ii).second.length() < 1) {
       exifKeyValuePairs_.erase(ii);
     } else {
-      uint16 value = 123;
+      uint16_t value = 123;
       sscanf((*ii).second.c_str(), "%hu", &value);
       switch(value) {
         case 0: (*ii).second = "Unknown"; break;
@@ -196,7 +196,7 @@ void ExifExtractor::postRead() {
     if ((*ii).second.length() < 1) {
       exifKeyValuePairs_.erase(ii);
     } else {
-      uint16 value = 123;
+      uint16_t value = 123;
       sscanf((*ii).second.c_str(), "%hu", &value);
       switch(value) {
         case 0: (*ii).second = "unknown"; break;
@@ -220,7 +220,7 @@ void ExifExtractor::postRead() {
     if ((*ii).second.length() < 1) {
       exifKeyValuePairs_.erase(ii);
     } else {
-      uint16 value = 123;
+      uint16_t value = 123;
       sscanf((*ii).second.c_str(), "%hu", &value);
       value &= 0x07;
       switch(value) {
@@ -345,17 +345,17 @@ void ExifExtractor::postRead() {
 }
 
 std::string ExifExtractor::readInfo() {
-  uint32 count;
-  uint32 offset;
-  uint16 shortValue;
-  uint32 longValue;
-  uint32 urationalp;
-  uint32 urationalc;
-  uint32 urationalgcd;
-  int32 rationalp;
-  int32 rationalc;
-  int32 rationalgcd;
-  int32 sign;
+  uint32_t count;
+  uint32_t offset;
+  uint16_t shortValue;
+  uint32_t longValue;
+  uint32_t urationalp;
+  uint32_t urationalc;
+  uint32_t urationalgcd;
+  int32_t rationalp;
+  int32_t rationalc;
+  int32_t rationalgcd;
+  int32_t sign;
   DATATYPE dataType;
   char* buffer;
   std::string ret = "";
@@ -471,7 +471,7 @@ std::string ExifExtractor::readInfo() {
 
 bool ExifExtractor::analyzeIFD0TagInfo() {
   bool res = true;
-  uint16 tag;
+  uint16_t tag;
   if (!read(&tag, 2, 1))
     res = false;
   int index;
@@ -497,7 +497,7 @@ bool ExifExtractor::analyzeIFD0TagInfo() {
 
 bool ExifExtractor::analyzeSubIFDTagInfo() {
   bool res = true;
-  uint16 tag;
+  uint16_t tag;
   if (!read(&tag, 2, 1))
     res = false;
   int index;
@@ -527,7 +527,7 @@ bool ExifExtractor::readIFD0() {
     return false;
   }
   seek(ifdOffset_ + 12, SEEK_SET);
-  uint16 entryCount = 0;
+  uint16_t entryCount = 0;
   if (!read(&entryCount, 2, 1)) {
     return false;
   }
@@ -544,11 +544,11 @@ bool ExifExtractor::readSubIFD() {
   if ((ii = exifKeyValuePairs_.find("ExifOffset")) == exifKeyValuePairs_.end()) {
     return false;
   }
-  uint32 exifOffset = 0;
+  uint32_t exifOffset = 0;
   sscanf((*ii).second.c_str(), "%u", &exifOffset);
   seek(12 + exifOffset, SEEK_SET);
 
-  uint16 entryCount = 0;
+  uint16_t entryCount = 0;
   if (!read(&entryCount, 2, 1)) {
     return false;
   }
@@ -589,7 +589,7 @@ bool ExifExtractor::isReadable() {
 bool ExifExtractor::checkEndian() {
   toggle_ = false;
   seek(12, SEEK_SET);
-  uint16 endian = 0;
+  uint16_t endian = 0;
   if (!read(&endian, 2, 1)) {
     return false;
   }

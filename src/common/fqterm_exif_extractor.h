@@ -21,44 +21,17 @@
 #ifndef FQTERM_EXIF_EXTRACTOR
 #define FQTERM_EXIF_EXTRACTOR
 
-//#include <QtGlobal>
-
 #include "fqterm_trace.h"
 
-#include <iostream>
-#include <vector>
-#include <stdio.h>
-#include <stdlib.h>
-#include <algorithm>
 #include <map>
 #include <string>
-//using namespace std;
-#ifdef __GXX_EXPERIMENTAL_CXX0X__
 #include <cstdint>
-#endif
 
 namespace FQTerm {
 
 class ExifExtractor
 {
 public:
-
-#ifdef __GXX_EXPERIMENTAL_CXX0X__
-    typedef std::uint32_t uint32;
-    typedef std::uint16_t uint16;
-    typedef std::int32_t int32;
-    typedef std::int16_t int16;
-#elif defined(QT_VERSION)
-  typedef quint32 uint32;
-  typedef quint16 uint16;
-  typedef qint32 int32;
-  typedef qint16 int16;
-#else
-  typedef unsigned int uint32;
-  typedef unsigned short int uint16;
-  typedef short int int16;
-  typedef int int32;
-#endif
 
   enum DATATYPE {ZEORGARD = 0, UNSIGNEDCHAR = 1, ASCIISTRING = 2, UNSIGNEDINT16 = 3, UNSIGNEDINT32 = 4, 
     UNSIGNEDRATIONAL = 5, SIGNEDCHAR = 6, UNDEFINED = 7, SIGNEDSHORT = 8, SIGNEDLONG = 9, RATIONAL = 10,
@@ -107,12 +80,12 @@ private:
   bool toggle_;
   std::map<std::string, std::string> exifKeyValuePairs_;
   FILE* exifFile_;
-  uint32 ifdOffset_;
-  uint32 subIfdOffset_;
+  uint32_t ifdOffset_;
+  uint32_t subIfdOffset_;
 
-  static const uint16 IFD0Tag[16];
+  static const uint16_t IFD0Tag[16];
   static const char IFD0TagName[16][30];
-  static const uint16 SubIFDTag[38];
+  static const uint16_t SubIFDTag[38];
   static const char SubIFDTagName[38][30];
   static const char exifHeaderStandard[6];
 

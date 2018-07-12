@@ -21,18 +21,9 @@
 #ifndef FQTERM_FQWCWIDTH_H
 #define FQTERM_FQWCWIDTH_H
 
-#ifdef _MSC_VER
-#define uint32_t unsigned __int32
-#define uint16_t unsigned __int16
-typedef wchar_t UTF16;
-#else  // WIN32
-#include <stdio.h>
-#include <stdint.h>
+#include <cstdio>
+#include <cstdint>
 typedef uint16_t UTF16;
-#endif  // WIN32
-
-typedef char Verify_UTF16_Is_Two_Bytes[
-    (sizeof(UTF16) == 2)? 1 : -1];
 
 namespace FQTerm {
 
