@@ -199,6 +199,8 @@ bool iniSettings() {
   QString externSSH = conf->getItemValue("global", "externSSH");
   if (!externSSH.isEmpty())
     local_shell_bin = new QString(externSSH);
+  else
+    local_shell_bin = new QString("ssh -p %0 %1");
 
   delete conf;
   return true;
