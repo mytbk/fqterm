@@ -150,20 +150,24 @@ void FQTermSSHPacketReceiver::getRawData(char *data, int length)
 		emit packetError("Read too many bytes!");
 }
 
-u_char FQTermSSHPacketReceiver::getByte()
+uint8_t FQTermSSHPacketReceiver::getByte()
 {
-	if (buffer_len(&recvbuf) >= 1)
+	if (buffer_len(&recvbuf) >= 1) {
 		return buffer_get_u8(&recvbuf);
-	else
+	} else {
 		emit packetError("Read too many bytes!");
+		return 0;
+	}
 }
 
-u_int FQTermSSHPacketReceiver::getInt()
+uint32_t FQTermSSHPacketReceiver::getInt()
 {
-	if (buffer_len(&recvbuf) >= 4)
+	if (buffer_len(&recvbuf) >= 4) {
 		return buffer_get_u32(&recvbuf);
-	else
+	} else {
 		emit packetError("Read too many bytes!");
+		return 0;
+	}
 }
 
 void *FQTermSSHPacketReceiver::getString(int *length)
