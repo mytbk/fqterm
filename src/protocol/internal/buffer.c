@@ -78,6 +78,7 @@ int buffer_append_byte(buffer *b, uint8_t x)
 	if (ensure(b, 1)) {
 		b->p[b->offs + b->sz] = x;
 		b->sz += 1;
+		return 1;
 	} else {
 		return 0;
 	}
@@ -89,6 +90,7 @@ int buffer_append_be16(buffer *b, uint16_t x)
 	if (ensure(b, 2)) {
 		*(uint16_t *)(b->p + b->offs + b->sz) = beint;
 		b->sz += 2;
+		return 1;
 	} else {
 		return 0;
 	}
@@ -100,6 +102,7 @@ int buffer_append_be32(buffer *b, uint32_t x)
 	if (ensure(b, 4)) {
 		*(uint32_t *)(b->p + b->offs + b->sz) = beint;
 		b->sz += 4;
+		return 1;
 	} else {
 		return 0;
 	}
