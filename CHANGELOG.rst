@@ -1,3 +1,11 @@
+Changes in 0.9.10
+================
+
+This version is tagged for packaging. Changes include:
+
+* Some native SSH improvement
+* Some fix on format and spelling
+
 Changes in 0.9.9
 ================
 
