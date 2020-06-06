@@ -32,7 +32,6 @@
 
 #include "fqterm_canvas.h"
 #include "fqterm_config.h"
-#include "fqterm_exif_extractor.h"
 #include "fqterm_filedialog.h"
 #include "fqterm_path.h"
 #include "fqterm_trace.h"
@@ -47,7 +46,7 @@ namespace FQTerm {
       if (!isHidden())
         canvas_->hide();
 
-      QString exifInfo = QString::fromStdString(exifExtractor_->extractExifInfo(model_->filePath(tree_->currentIndex()).toLocal8Bit().data()));
+      QString exifInfo = QString::fromStdString(exifExtractor_.extractExifInfo(model_->filePath(tree_->currentIndex()).toLocal8Bit().data()));
       bool resized = false;
 
       if (exifInfo != "") {
@@ -96,7 +95,6 @@ namespace FQTerm {
 
     setWindowTitle(tr("FQTerm Image Viewer"));
     ItemDelegate* itemDelegate = new ItemDelegate;
-    exifExtractor_ = new ExifExtractor;
     exifTable_ = new ExifTable(this);
     exifTable_->setTextFormat(Qt::RichText);
     exifTable_->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
@@ -237,23 +235,23 @@ namespace FQTerm {
 
   void FQTermImageOrigin::showFullExifInfo() {
 
-    QString exifInfo = QString::fromStdString(exifExtractor_->extractExifInfo(model_->filePath(tree_->currentIndex()).toLocal8Bit().data()));
+    QString exifInfo = QString::fromStdString(exifExtractor_.extractExifInfo(model_->filePath(tree_->currentIndex()).toLocal8Bit().data()));
     QString comment;
 
-    if ((*exifExtractor_)["UserComment"].length() > 8) {
+    if (exifExtractor_["UserComment"].length() > 8) {
 
-      QString commentEncoding = QString::fromStdString((*exifExtractor_)["UserComment"].substr(0, 8));
+      QString commentEncoding = QString::fromStdString(exifExtractor_["UserComment"].substr(0, 8));
 
       if (commentEncoding.startsWith("UNICODE")) {
         //UTF-16
         QTextCodec* c = QTextCodec::codecForName("UTF-16");
-        comment = c->toUnicode((*exifExtractor_)["UserComment"].substr(8).c_str());
+        comment = c->toUnicode(exifExtractor_["UserComment"].substr(8).c_str());
       } else if (commentEncoding.startsWith("JIS")) {
         //JIS X 0208
         QTextCodec* c = QTextCodec::codecForName("JIS X 0208");
-        comment = c->toUnicode((*exifExtractor_)["UserComment"].substr(8).c_str());
+        comment = c->toUnicode(exifExtractor_["UserComment"].substr(8).c_str());
       } else {
-        comment = QString::fromStdString((*exifExtractor_)["UserComment"].substr(8));
+        comment = QString::fromStdString(exifExtractor_["UserComment"].substr(8));
       }
     }
 
@@ -294,17 +292,17 @@ namespace FQTerm {
     exifTable_->clear();
 
     QString exifInfoToShow = "<table border=\"1\"><tr><td>"
-      + tr("Model") + " : " + QString::fromStdString((*exifExtractor_)["Model"]) + "</td><td>"
-      + QString::fromStdString((*exifExtractor_)["DateTime"]) + "</td><td>"
-      + QString::fromStdString((*exifExtractor_)["Flash"]) + "</td>"
+      + tr("Model") + " : " + QString::fromStdString(exifExtractor_["Model"]) + "</td><td>"
+      + QString::fromStdString(exifExtractor_["DateTime"]) + "</td><td>"
+      + QString::fromStdString(exifExtractor_["Flash"]) + "</td>"
       + "</tr><tr><td>"
-      + tr("ExposureTime") + " : " + QString::fromStdString((*exifExtractor_)["ExposureTime"]) + "</td><td>"
-      + tr("FNumber") + " : " + QString::fromStdString((*exifExtractor_)["FNumber"]) + "</td><td>"
-      + tr("ISO") + " : " + QString::fromStdString((*exifExtractor_)["ISOSpeedRatings"]) + "</td>"
+      + tr("ExposureTime") + " : " + QString::fromStdString(exifExtractor_["ExposureTime"]) + "</td><td>"
+      + tr("FNumber") + " : " + QString::fromStdString(exifExtractor_["FNumber"]) + "</td><td>"
+      + tr("ISO") + " : " + QString::fromStdString(exifExtractor_["ISOSpeedRatings"]) + "</td>"
       + "</tr><tr><td>"
-      + tr("FocalLength") + " : " + QString::fromStdString((*exifExtractor_)["FocalLength"]) + "</td><td>"
-      + tr("MeteringMode") + " : " + QString::fromStdString((*exifExtractor_)["MeteringMode"]) + "</td><td>" 
-      + tr("ExposureBias") + " : " + QString::fromStdString((*exifExtractor_)["ExposureBiasValue"]) + "</td></tr></tabel>";
+      + tr("FocalLength") + " : " + QString::fromStdString(exifExtractor_["FocalLength"]) + "</td><td>"
+      + tr("MeteringMode") + " : " + QString::fromStdString(exifExtractor_["MeteringMode"]) + "</td><td>" 
+      + tr("ExposureBias") + " : " + QString::fromStdString(exifExtractor_["ExposureBiasValue"]) + "</td></tr></tabel>";
 
     exifTable_->setText(exifInfoToShow);
     if (!isHidden() && exifTable_->isHidden()) {

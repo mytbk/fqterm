@@ -608,7 +608,11 @@ FQTermZmodem::FQTermZmodem(FQTermConfig *config, FQTermTelnet *netinterface, int
 
 }
 
-FQTermZmodem::~FQTermZmodem(){}
+FQTermZmodem::~FQTermZmodem()
+{
+	if (info.buffer != NULL)
+		free(info.buffer);
+}
 
 int FQTermZmodem::ZmodemTInit(ZModem *info) {
   int err;

@@ -142,6 +142,9 @@ FQTermScreen::~FQTermScreen() {
   delete preedit_line_;
 
   delete tmp_im_query_;
+
+  delete englishFont_;
+  delete nonEnglishFont_;
 }
 
 bool FQTermScreen::event(QEvent *e) {

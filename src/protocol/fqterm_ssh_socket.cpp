@@ -203,6 +203,7 @@ void FQTermSSHSocket::kexOK()
 #ifdef WIN32
 		free(hosts_file);
 #endif
+		free(hosts);
 	}
 
 	key_exchanger_->hostKeyHash(conn_info.ssh_proto_info.hash);

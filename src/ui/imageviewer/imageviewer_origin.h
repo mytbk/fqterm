@@ -23,12 +23,12 @@
 
 #include "pictureflow.h"
 #include "fqtermimage.h"
+#include "fqterm_exif_extractor.h"
 
 namespace FQTerm
 {
 
     class FQTermCanvas;
-    class ExifExtractor;
 
     class ItemDelegate : public QItemDelegate {
     public:
@@ -97,7 +97,7 @@ namespace FQTerm
             QMenuBar* menuBar_;
             QComboBox* comboBox_;
             FQTermConfig* config_;
-            ExifExtractor* exifExtractor_;
+            ExifExtractor exifExtractor_;
             ExifTable* exifTable_;
             QGridLayout* layout_;
             bool isExifTableShown_;
