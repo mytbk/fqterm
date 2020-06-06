@@ -1,3 +1,10 @@
+Changes in 0.9.10.1
+====================
+
+No major changes from 0.9.10. Changes:
+
+* ASAN support and removal of some minor leaks
+
 Changes in 0.9.10
 ================
 

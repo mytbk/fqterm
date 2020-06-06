@@ -23,7 +23,7 @@ vscrollpos=2
 externSSH=ssh -p %0 %1
 
 [key]
-key0=0^M--^MPosted from FQTerm 0.9.8 ^M^WL^M
+key0=0^M--^MPosted from FQTerm 0.9.10.1^M^WL^M
 key1=0b1^M7^My^M^M^M
 key2=0b1^M1^My^M^M
 name0=Save+post(^X)
