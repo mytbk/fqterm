@@ -28,10 +28,8 @@ ELSE(WIN32)
     set(global_shortcut_impl_SRCS 3rdparty/qxtglobalshortcut_mac.cpp)
   ELSE(APPLE)
     set(global_shortcut_impl_SRCS 3rdparty/qxtglobalshortcut_x11.cpp)
-    IF(USE_QT5)
-      find_package(Qt5X11Extras REQUIRED)
-      set(QXTLIB Qt5::X11Extras)
-    ENDIF(USE_QT5)
+    find_package(Qt5X11Extras REQUIRED)
+    set(QXTLIB Qt5::X11Extras)
   ENDIF(APPLE)
 ENDIF(WIN32)
 set(GLOBAL_SHORTCUT_SRC
@@ -53,22 +51,15 @@ set(3rdparty_SRCS
   ${GLOBAL_SHORTCUT_SRC}
 )
 
-if(USE_QT5)
-  find_package(Qt5Core REQUIRED)
-  find_package(Qt5Widgets REQUIRED)
-  find_package(Qt5Network REQUIRED)
-  find_package(Qt5Script REQUIRED)
+find_package(Qt5Core REQUIRED)
+find_package(Qt5Widgets REQUIRED)
+find_package(Qt5Network REQUIRED)
+find_package(Qt5Script REQUIRED)
 
-  qt5_create_translation(fqterm_qm_file
-    ${fqterm_SRCS}
-    ${CMAKE_SOURCE_DIR}/res/dict/fqterm_zh_CN.ts
-    )
-else(USE_QT5)
-  qt4_create_translation(fqterm_qm_file
-    ${fqterm_SRCS}
-    ${CMAKE_SOURCE_DIR}/res/dict/fqterm_zh_CN.ts
-    )
-endif(USE_QT5)
+qt5_create_translation(fqterm_qm_file
+  ${fqterm_SRCS}
+  ${CMAKE_SOURCE_DIR}/res/dict/fqterm_zh_CN.ts
+  )
 
 include_directories(
   ${QT_INCLUDE_DIR}
@@ -100,13 +91,11 @@ add_dependencies(fqterm_main
   fqterm_utilities
 )
 
-if(USE_QT5)
-  target_link_libraries(
-    fqterm_main
-    Qt5::Core
-    Qt5::Widgets
-    Qt5::Network
-    Qt5::Script
-    ${QXTLIB}
-    )
-endif(USE_QT5)
+target_link_libraries(
+  fqterm_main
+  Qt5::Core
+  Qt5::Widgets
+  Qt5::Network
+  Qt5::Script
+  ${QXTLIB}
+  )

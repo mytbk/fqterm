@@ -28,10 +28,7 @@ add_dependencies(fqterm_utilities
   fqterm_common
 )
 
-if(USE_QT5)
-  find_package(Qt5Core REQUIRED)
-  find_package(Qt5Widgets REQUIRED)
-  find_package(Qt5Network REQUIRED)
-  target_link_libraries(fqterm_utilities Qt5::Core Qt5::Widgets Qt5::Network)
-else(USE_QT5)
-endif(USE_QT5)
+find_package(Qt5Core REQUIRED)
+find_package(Qt5Widgets REQUIRED)
+find_package(Qt5Network REQUIRED)
+target_link_libraries(fqterm_utilities Qt5::Core Qt5::Widgets Qt5::Network)

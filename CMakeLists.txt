@@ -22,30 +22,17 @@ ELSE(MCGGIT_WC_REVISION MATCHES "NOTFOUND")
   message("Git revision: " ${MCGGIT_WC_REVISION})
 ENDIF(MCGGIT_WC_REVISION MATCHES "NOTFOUND")
 
-SET(USE_QT5 OFF CACHE PATH "Do the Qt5 build")
-
-IF(USE_QT5)
-  set(CMAKE_INCLUDE_CURRENT_DIR ON)
-  set(CMAKE_AUTOMOC ON)
-  find_package(Qt5Core REQUIRED)
-  find_package(Qt5Widgets REQUIRED)
-  find_package(Qt5LinguistTools REQUIRED)
-  qt5_add_translation(fqterm_qm_files
-    ${CMAKE_SOURCE_DIR}/res/dict/fqterm_zh_CN.ts
-    ${CMAKE_SOURCE_DIR}/res/dict/ui_zh_CN.ts
-    ${CMAKE_SOURCE_DIR}/res/dict/protocol_zh_CN.ts
-    ${CMAKE_SOURCE_DIR}/res/dict/common_zh_CN.ts
-    )
-ELSE(USE_QT5)
-  find_package(Qt4 COMPONENTS QtCore QtGui QtNetwork QtScript QtXml REQUIRED)
-  include(${QT_USE_FILE})
-  qt4_add_translation(fqterm_qm_files
-    ${CMAKE_SOURCE_DIR}/res/dict/fqterm_zh_CN.ts
-    ${CMAKE_SOURCE_DIR}/res/dict/ui_zh_CN.ts
-    ${CMAKE_SOURCE_DIR}/res/dict/protocol_zh_CN.ts
-    ${CMAKE_SOURCE_DIR}/res/dict/common_zh_CN.ts
-    )
-ENDIF(USE_QT5)
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+set(CMAKE_AUTOMOC ON)
+find_package(Qt5Core REQUIRED)
+find_package(Qt5Widgets REQUIRED)
+find_package(Qt5LinguistTools REQUIRED)
+qt5_add_translation(fqterm_qm_files
+  ${CMAKE_SOURCE_DIR}/res/dict/fqterm_zh_CN.ts
+  ${CMAKE_SOURCE_DIR}/res/dict/ui_zh_CN.ts
+  ${CMAKE_SOURCE_DIR}/res/dict/protocol_zh_CN.ts
+  ${CMAKE_SOURCE_DIR}/res/dict/common_zh_CN.ts
+  )
 
 add_custom_target(fqterm_qm_target
   DEPENDS ${fqterm_qm_files}
@@ -58,24 +45,6 @@ if (PYTHONLIBS_FOUND)
 else (PYTHONLIBS_FOUND)
   SET(PYTHON_LIB)
 endif (PYTHONLIBS_FOUND)
-
-if (NOT USE_QT5)
-  IF(WIN32)
-    FILE(READ ${QT_LIBRARY_DIR}/QtCore.prl FQ_CORE_QT_CONFIG)
-  ELSE(WIN32)
-    IF(APPLE)
-      FILE(READ ${QT_LIBRARY_DIR}/QtCore.framework/QtCore.prl FQ_CORE_QT_CONFIG)
-    ELSE(APPLE)
-      FILE(READ ${QT_LIBRARY_DIR}/libQtCore.prl FQ_CORE_QT_CONFIG)
-    ENDIF(APPLE)
-  ENDIF(WIN32)
-
-  IF(NOT FQ_CORE_QT_CONFIG MATCHES "static")
-    SET(FQTERM_USE_STATIC_QT false)
-  ELSE(NOT FQ_CORE_QT_CONFIG MATCHES "static")
-    SET(FQTERM_USE_STATIC_QT true)
-  ENDIF(NOT FQ_CORE_QT_CONFIG MATCHES "static")
-endif(NOT USE_QT5)
 
 SET(SUB_CMAKELIST "UNKNOWN")
 

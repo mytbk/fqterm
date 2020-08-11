@@ -52,11 +52,8 @@ set(internal_SRCS
   internal/fqterm_ssh_channel.cpp
 )
 
-if(USE_QT5)
-  find_package(Qt5Core REQUIRED)
-  find_package(Qt5Network REQUIRED)
-else(USE_QT5)
-endif(USE_QT5)
+find_package(Qt5Core REQUIRED)
+find_package(Qt5Network REQUIRED)
 
 include_directories(
   ${QT_INCLUDE_DIR}
@@ -77,6 +74,4 @@ add_dependencies(fqterm_protocol
   fqterm_common
 )
 
-if(USE_QT5)
-  target_link_libraries(fqterm_protocol Qt5::Core Qt5::Network)
-endif(USE_QT5)
+target_link_libraries(fqterm_protocol Qt5::Core Qt5::Network)

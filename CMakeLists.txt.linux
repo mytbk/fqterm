@@ -32,23 +32,13 @@ IF (WITH_ASAN)
     SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=address")
 ENDIF(WITH_ASAN)
 
-IF(USE_QT5)
-  find_package(Qt5Core REQUIRED)
-  find_package(Qt5Widgets REQUIRED)
-  find_package(Qt5Network REQUIRED)
-  find_package(Qt5Script REQUIRED)
-  find_package(Qt5Multimedia REQUIRED)
-  find_package(Qt5Xml REQUIRED)
-ELSE(USE_QT5)
-ENDIF(USE_QT5)
+find_package(Qt5Core REQUIRED)
+find_package(Qt5Widgets REQUIRED)
+find_package(Qt5Network REQUIRED)
+find_package(Qt5Script REQUIRED)
+find_package(Qt5Multimedia REQUIRED)
+find_package(Qt5Xml REQUIRED)
 
-IF(NOT USE_QT5)
-  include_directories(
-    ${QT_INCLUDE_DIR}
-    ${QT_QTCORE_INCLUDE_DIR}
-    ${QT_QTGUI_INCLUDE_DIR}
-    )
-ENDIF(NOT USE_QT5)
 include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/src/common
   ${CMAKE_CURRENT_SOURCE_DIR}/src/protocol
@@ -89,9 +79,7 @@ target_link_libraries(fqterm.bin
   X11
 )
 
-IF(USE_QT5)
-  target_link_libraries(fqterm.bin Qt5::Core Qt5::Widgets)
-ENDIF(USE_QT5)
+target_link_libraries(fqterm.bin Qt5::Core Qt5::Widgets)
 
 add_dependencies(fqterm.bin
   fqterm_main

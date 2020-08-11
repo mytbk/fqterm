@@ -33,21 +33,20 @@ git clone https://github.com/mytbk/fqterm.git
 # 假设FQTerm源码目录为fqterm
 mkdir build
 cd build
-# 用cmake生成Makefile,默认为Qt4版本，Qt5版本请添加-DUSE_QT5=1参数
 cmake ../fqterm
 make
 # 以root身份安装，以下用sudo获取root权限
 sudo make install
 ```
 
-在 macOS (Sierra) 中编译建议使用 Qt5 分支，利用 HomeBrew 安装依赖。目前支持并不完善。
+在 macOS (Sierra) 中编译，利用 HomeBrew 安装依赖。目前支持并不完善。
 ```shell
 brew install openssl qt5
 mkdir build
 cd build
 CMAKE_PREFIX_PATH=/usr/local/opt/qt5/lib/cmake \
 OPENSSL_ROOT_DIR=/usr/local/opt/openssl \
-cmake ../fqterm -DUSE_QT5=1
+cmake ../fqterm
 make
 make install
 ```
