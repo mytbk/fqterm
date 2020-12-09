@@ -222,7 +222,7 @@ FQTermWindow* FQTermWndMgr::newWindow( const FQTermParam &param, FQTermConfig* c
       | Qt::WindowSystemMenuHint));
     subWindow->show();
   }
-  tabBar_->setTabData(idx, qVariantFromValue((QObject*)window));
+  tabBar_->setTabData(idx, QVariant::fromValue((QObject*)window));
   FQ_VERIFY(connect(window, SIGNAL(destroyed(QObject*)), 
     this ,SLOT(onSubWindowClosed(QObject*))));
   FQ_VERIFY(connect(window, SIGNAL(resizeSignal(FQTermWindow*)),
@@ -241,7 +241,7 @@ FQTermWindow* FQTermWndMgr::newWindow( const FQTermParam &param, FQTermConfig* c
 void FQTermWndMgr::onSubWindowClosed(QObject* obj) {
 
   for (int i = 0; i < tabBar_->count(); ++i) {
-    if (tabBar_->tabData(i) == qVariantFromValue(obj)) {
+    if (tabBar_->tabData(i) == QVariant::fromValue(obj)) {
       if (count() == 0) {
         termFrame_->enableMenuToolBar(false);
       }
