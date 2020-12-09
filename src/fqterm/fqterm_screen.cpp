@@ -315,14 +315,14 @@ void FQTermScreen::setFontMetrics() {
   QFontMetrics englishFM(*englishFont_);
 
   // FIXME: find a typical character for the current language.
-  int cn = nonEnglishFM.width(QChar(0x4e2D));
-  int en = englishFM.width('W');
+  int cn = nonEnglishFM.horizontalAdvance(QChar(0x4e2D));
+  int en = englishFM.horizontalAdvance('W');
   
   int pix_size = nonEnglishFont_->pixelSize();
   while (cn % 2 && pix_size > 10) {
     nonEnglishFont_->setPixelSize(--pix_size);
     nonEnglishFM = QFontMetrics(*nonEnglishFont_);
-    cn = nonEnglishFM.width(QChar(0x4e2D));
+    cn = nonEnglishFM.horizontalAdvance(QChar(0x4e2D));
   }
   
   pix_size = englishFont_->pixelSize();
@@ -330,7 +330,7 @@ void FQTermScreen::setFontMetrics() {
 	  --pix_size;
 	  englishFont_->setPixelSize(pix_size);
 	  englishFM = QFontMetrics(*englishFont_);
-	  en = englishFM.width('W');
+	  en = englishFM.horizontalAdvance('W');
 /*    
 #ifndef __APPLE__
     //FIXME: correctly draw chars with left/right bearing.
@@ -351,7 +351,7 @@ void FQTermScreen::setFontMetrics() {
   cnLetterSpacing_ = qMax(charWidth_ * 2 - cn, 0.0);
   enLetterSpacing_ = qMax(charWidth_ - en, 0.0);
   
-  spLetterSpacing_ = qMax(charWidth_ - englishFM.width(' '), 0.0);
+  spLetterSpacing_ = qMax(charWidth_ - englishFM.horizontalAdvance(' '), 0.0);
 
   fontAscent_ = qMax(englishFM.ascent(), nonEnglishFM.ascent());
   fontDescent_ = qMax(englishFM.descent(), nonEnglishFM.descent());
@@ -1583,11 +1583,11 @@ void FQTermScreen::updateFixedPitchInfo() {
   cnFont.setPixelSize(cnPixelSize);
   enFont.setPixelSize(enPixelSize);
   QString cnTestString = QString::fromUtf8("\xe5\x9c\xb0\xe6\x96\xb9\xe6\x94\xbf\xe5\xba\x9c");
-  cnFixedPitch_ = (QFontMetrics(cnFont).width(cnTestString) == 
-    cnTestString.length() * QFontMetrics(cnFont).width(cnTestString.at(0)));
+  cnFixedPitch_ = (QFontMetrics(cnFont).horizontalAdvance(cnTestString) == 
+    cnTestString.length() * QFontMetrics(cnFont).horizontalAdvance(cnTestString.at(0)));
   QString enTestString = QString::fromUtf8("www.newsmth.net");
   enFixedPitch_ = QFontInfo(enFont).fixedPitch() &&
-                  (QFontMetrics(enFont).width(enTestString) == enTestString.length() * QFontMetrics(enFont).width(enTestString.at(0)));
+                  (QFontMetrics(enFont).horizontalAdvance(enTestString) == enTestString.length() * QFontMetrics(enFont).horizontalAdvance(enTestString.at(0)));
                   
     FQ_TRACE("font", 10) << "\nenglish: " << enFixedPitch_ 
                       << "\n chinese: " << cnFixedPitch_;
