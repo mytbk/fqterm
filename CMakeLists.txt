@@ -2,11 +2,7 @@ project(fqterm)
 
 set(FQTERM_VERSION "0.9.10.1")
 set(CMAKE_VERBOSE_MAKEFILE ON)
-cmake_minimum_required(VERSION 3.0.0 FATAL_ERROR)
-
-if(COMMAND cmake_policy)
-  cmake_policy(SET CMP0003 NEW)
-endif(COMMAND cmake_policy)
+cmake_minimum_required(VERSION 3.9)
 
 set(CMAKE_MODULE_PATH
   ${CMAKE_SOURCE_DIR}/cmake
