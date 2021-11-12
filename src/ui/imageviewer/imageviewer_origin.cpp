@@ -364,12 +364,7 @@ namespace FQTerm {
       QPixmap pixmap;
       bool res = pixmap.load(path);
       if (!res) {
-        QList<QByteArray> formats = QImageReader::supportedImageFormats();
-        for (QList<QByteArray>::iterator it = formats.begin();
-             !res && it != formats.end();
-             ++it) {
-          res = pixmap.load(path, it->data());
-        }
+	      return QVariant();
       }
 
       if (pixmap.height() > 128 || pixmap.width() > 128) {

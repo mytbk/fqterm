@@ -198,15 +198,8 @@ void FQTermCanvas::loadImage(const QString& name, bool performAdjust) {
 
 
   bool res = image_.load(name);
-  if (!res) {
-    QList<QByteArray> formats = QImageReader::supportedImageFormats();
-    for (QList<QByteArray>::iterator it = formats.begin();
-         !res && it != formats.end();
-         ++it) {
-      res = image_.load(name, it->data());
-    }
-  }
-  if (!image_.isNull()) {
+
+  if (res && !image_.isNull()) {
     fileName_ = QFileInfo(name).absoluteFilePath();
     setWindowTitle(QFileInfo(name).fileName());
 
