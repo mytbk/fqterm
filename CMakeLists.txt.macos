@@ -110,6 +110,3 @@ DEPENDS ${CMAKE_BINARY_DIR}/fqterm.app
 )
 
 set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR})
-
-include(DeployQt4)
-INSTALL_QT4_EXECUTABLE(fqterm.app "${FQ_QT_PLUGINS}" "" "")
