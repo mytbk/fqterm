@@ -266,7 +266,7 @@ void FQTermShortcutHelper::initShortcutDescriptionTableEntry(int index, const QS
     actionParent_->addAction(shortcutDescriptionTable_[index].action_);
   }
   shortcutDescriptionTable_[index].action_->setShortcut(getShortcutText(index));
-  if (actionSkin != QString::null)
+  if (actionSkin != QString())
     shortcutDescriptionTable_[index].action_->setIcon(QPixmap(getPath(RESOURCE) + "pic/" + actionSkin + ".png"));
 }
 

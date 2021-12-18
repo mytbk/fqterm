@@ -119,7 +119,7 @@ private:
   FQTermConfig* config_;
   QWidget* actionParent_;
   QMap<int, ShortcutDescriptionEntry> shortcutDescriptionTable_;
-  void initShortcutDescriptionTableEntry(int index, const QString& key, const QString& defaultshortcuttext, const QString& description, const QString& actionSkin = QString::null);
+  void initShortcutDescriptionTableEntry(int index, const QString& key, const QString& defaultshortcuttext, const QString& description, const QString& actionSkin = QString());
   
 public:
 
