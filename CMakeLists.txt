@@ -10,6 +10,11 @@ set(CMAKE_MODULE_PATH
 
 set(CMAKE_COLOR_MAKEFILE ON)
 
+IF (("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU") OR ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang"))
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Werror -Wno-error=deprecated-declarations")
+  set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -Werror -Wno-error=deprecated-declarations")
+ENDIF ()
+
 include(GetGitRevisionDescription)
 git_describe(MCGGIT_WC_REVISION)
 IF(MCGGIT_WC_REVISION MATCHES "NOTFOUND")
