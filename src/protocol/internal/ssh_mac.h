@@ -38,7 +38,7 @@ extern "C" {
 	struct ssh_mac_t
 	{
 		const char *name;
-		void *priv;
+		const void *priv;
 		create_t new_mac;
 		mac_cleanup_t cleanup;
 		mac_t getmac;

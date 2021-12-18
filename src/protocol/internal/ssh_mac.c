@@ -46,7 +46,7 @@ static void get_evp_digest(SSH_MAC *my, const unsigned char *d, int len, unsigne
 /* RFC 6668 */
 struct ssh_mac_t hmac_sha2_256 = {
 	.name = "hmac-sha2-256",
-	.priv = (void*)EVP_sha256,
+	.priv = (const void*)EVP_sha256,
 	.new_mac = new_evp_mac,
 	.cleanup = free_evp_mac,
 	.getmac = get_evp_digest,
@@ -56,7 +56,7 @@ struct ssh_mac_t hmac_sha2_256 = {
 
 struct ssh_mac_t hmac_sha1 = {
 	.name = "hmac-sha1",
-	.priv = (void*)EVP_sha1,
+	.priv = (const void*)EVP_sha1,
 	.new_mac = new_evp_mac,
 	.cleanup = free_evp_mac,
 	.getmac = get_evp_digest,
