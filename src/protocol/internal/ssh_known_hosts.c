@@ -119,7 +119,7 @@ int key_matches(struct ssh_host *h, const unsigned char *K_S, int K_S_len)
 	    memcmp(h->keytype, K_S + 4, algo_len) == 0) {
 		if (base64_encoded_length(K_S_len) != h_keylen)
 			return 0;
-		base64_encode(buf, sizeof(buf), K_S, K_S_len);
+		base64_encode(buf, sizeof(buf), (const char *)K_S, K_S_len);
 		if (memcmp(buf, h->pubkey, h_keylen) == 0)
 			return 1;
 		else
@@ -149,7 +149,7 @@ void append_hostkey(const char *fn, const char *hostname, const unsigned char *K
 	if (b64len >= sizeof(buf))
 		goto end;
 
-	base64_encode(buf, sizeof(buf), K_S, K_S_len);
+	base64_encode(buf, sizeof(buf), (const char *)K_S, K_S_len);
 	buf[b64len] = 0;
 
 	fprintf(fp, "%s %s %s\n", hostname, algo, buf);
