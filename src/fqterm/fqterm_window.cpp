@@ -465,13 +465,14 @@ void FQTermWindow::mousePressEvent(QMouseEvent *mouseevent) {
   }
   // Middle Button for paste
   if (mouseevent->button() &Qt::MidButton && !(mouseevent->modifiers())) {
-    if (isConnected())
+    if (isConnected()) {
       // on Url
       if (!session_->getUrl().isEmpty()) {
         previewLink();
       } else {
         pasteHelper(false);
       }
+    }
     return ;
   }
 
@@ -2385,6 +2386,9 @@ bool FQTermWindow::scriptMouseEvent(QMouseEvent *mouseevent){
     break; 
   case QEvent::MouseMove:
     type = SMET_MOUSE_MOVE;
+    break;
+  default:
+    // TODO: what about others?
     break;
   }
 

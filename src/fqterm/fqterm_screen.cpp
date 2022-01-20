@@ -136,6 +136,8 @@ bool FQTermScreen::event(QEvent *e) {
       // forward all key press events to parant (FQTermWindow).
       return false;
     }
+    default:
+      break;
   }
   return this->QWidget::event(e);
 }
@@ -1831,6 +1833,9 @@ void PreeditLine::setPreeditText(QInputMethodEvent *e, const QFont *font) {
         break;
       case QInputMethodEvent::Ruby:
         FQ_TRACE("ime", 10) << "Ruby: " << a.start << ", " << a.length;
+        break;
+      case QInputMethodEvent::Selection:
+        FQ_TRACE("ime", 10) << "Selection: " << a.start << ", " << a.length;
         break;
     }
   }
