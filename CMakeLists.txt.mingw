@@ -1,6 +1,4 @@
 #ADD_DEFINITIONS(-DUSE_DOTNET_STYLE)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mwindows")
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -mwindows")
 
 if(FQTERM_USE_STATIC_QT)
   ADD_DEFINITIONS(-DFQTERM_USE_STATIC_QT)
@@ -29,6 +27,7 @@ link_directories(
 )
 
 ADD_EXECUTABLE(fqterm
+  WIN32
   src/fqterm/main.cpp
 )
 
