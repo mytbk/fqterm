@@ -39,6 +39,7 @@ include_directories(
 link_directories(
   ${QT_PLUGINS_DIR}/codecs
   ${QT_PLUGINS_DIR}/imageformats
+  ${OPENSSL_ROOT_DIR}/lib
 )
 
 ADD_EXECUTABLE(fqterm
@@ -71,6 +72,7 @@ target_link_libraries(fqterm
   ${SOUND_LIBRARIES}
   ${NETWORK_LIBRARIES}
   ${IME_LIBRARIES}
+  libcrypto
 )
 
 add_dependencies(fqterm

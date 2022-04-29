@@ -82,11 +82,14 @@ basic_authentication_encode(const char *user, const char *passwd,
 	int len1 = strlen(user) + 1 +strlen(passwd);
 	int len2 = BASE64_LENGTH(len1);
 
-	char t1[len1+1], t2[len2+1];
+	char *t1 = new char[len1+1];
+	char *t2 = new char[len2+1];
 	sprintf(t1, "%s:%s", user, passwd);
 	base64_encode(t1, len1, t2);
 	res = (char*)malloc(len2 + 11 + strlen(header));
 	sprintf(res, "%s: Basic %s\r\n", header, t2);
+	delete []t1;
+	delete []t2;
 
 	return res;
 }

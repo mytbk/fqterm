@@ -72,7 +72,7 @@ void base64_encode_tail_using_maps(const base64_maps_t *maps, char dest[4],
  * @note dest will be nul-padded to destlen (past any required padding)
  * @note sets errno = EOVERFLOW if destlen is too small
  */
-ssize_t base64_encode_using_maps(const base64_maps_t *maps,
+intptr_t base64_encode_using_maps(const base64_maps_t *maps,
 				 char *dest, size_t destlen,
 				 const char *src, size_t srclen);
 
@@ -95,7 +95,7 @@ bool base64_char_in_alphabet(const base64_maps_t *maps, char b64char);
  * @note sets errno = EOVERFLOW if destlen is too small
  * @note sets errno = EDOM if src contains invalid characters
  */
-ssize_t base64_decode_using_maps(const base64_maps_t *maps,
+intptr_t base64_decode_using_maps(const base64_maps_t *maps,
 				 char *dest, size_t destlen,
 				 const char *src, size_t srclen);
 
@@ -148,7 +148,7 @@ extern const base64_maps_t base64_maps_rfc4648;
  *	printf("Returned data of length %zd @%p\n", encoded_length, &dest);
  */
 static inline
-ssize_t base64_encode(char *dest, size_t destlen,
+intptr_t base64_encode(char *dest, size_t destlen,
 		      const char *src, size_t srclen)
 {
 	return base64_encode_using_maps(&base64_maps_rfc4648,
@@ -201,7 +201,7 @@ void base64_encode_tail(char dest[4], const char *src, size_t srclen)
  *	printf("Returned data of length %zd @%p\n", decoded_length, &ret);
  */
 static inline
-ssize_t base64_decode(char *dest, size_t destlen,
+intptr_t base64_decode(char *dest, size_t destlen,
 		      const char *src, size_t srclen)
 {
 	return base64_decode_using_maps(&base64_maps_rfc4648,
@@ -232,7 +232,7 @@ int base64_decode_quartet(char dest[3], const char src[4])
  * @note sets errno = EINVAL if src is an invalid base64 tail
  */
 static inline
-ssize_t base64_decode_tail(char dest[3], const char *src, size_t srclen)
+intptr_t base64_decode_tail(char dest[3], const char *src, size_t srclen)
 {
 	return base64_decode_tail_using_maps(&base64_maps_rfc4648,
 					     dest, src, srclen);
