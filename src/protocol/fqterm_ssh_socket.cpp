@@ -183,7 +183,7 @@ void FQTermSSHSocket::kexOK()
 				append_hostkey(hosts_file, conn_info.hostname, kex->K_S(), kex->K_S_len());
 		}
 #ifdef WIN32
-		free(hosts_file);
+		free((void *)hosts_file);
 #endif
 		free(hosts);
 	}

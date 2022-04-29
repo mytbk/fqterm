@@ -47,6 +47,8 @@ target_link_libraries(fqterm
   ${QT_LIBRARIES}
   ${PYTHON_LIB}
   ${OPENSSL_CRYPTO_LIBRARY}
+  ssl
+  crypto
   ws2_32
 )
 

@@ -113,7 +113,7 @@ private:
 #endif //HAVE_PYTHON
 
 public:
-  virtual long windowID() {return long(this);}
+  virtual long long windowID() {return (long long)this;}
   //end FQTermScriptEventListener
 
 signals:

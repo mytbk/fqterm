@@ -42,7 +42,7 @@ public:
 #endif //HAVE_PYTHON
     return res;
   }
-  virtual long windowID() = 0;
+  virtual long long windowID() = 0;
   virtual ~FQTermScriptEventListener() {}
 private:
   virtual bool postQtScriptCallback(const QString& func, const QScriptValueList & args = QScriptValueList()) = 0;
