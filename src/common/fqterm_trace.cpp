@@ -3,7 +3,6 @@
 #include <string>
 
 #ifdef _MSC_VER
-#define _SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS
 #include <hash_set>
 #else
 #include <set>
