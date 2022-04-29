@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #ifdef WIN32
+#include <winsock2.h>
 #include <windows.h>
 #include <shlobj.h>
 #endif // WIN32

@@ -44,7 +44,7 @@ void addAllowedCategory(const char *category);
 static inline void soft_break() {
 #ifdef WIN32
 #ifdef _MSC_VER
-    __asm int 03h;
+    __debugbreak();
 #else
     asm("int $0x03");
 #endif
