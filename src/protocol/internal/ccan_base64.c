@@ -85,7 +85,7 @@ void base64_encode_tail_using_maps(const base64_maps_t *maps, char dest[4],
 	memset(dest+1+srclen, '=', 3-srclen);
 }
 
-intptr_t base64_encode_using_maps(const base64_maps_t *maps,
+ssize_t base64_encode_using_maps(const base64_maps_t *maps,
 				 char *dest, const size_t destlen,
 				 const char *src, const size_t srclen)
 {
@@ -172,12 +172,12 @@ int base64_decode_tail_using_maps(const base64_maps_t *maps, char dest[3],
 	return insize - 1;
 }
 
-intptr_t base64_decode_using_maps(const base64_maps_t *maps,
+ssize_t base64_decode_using_maps(const base64_maps_t *maps,
 				 char *dest, const size_t destlen,
 				 const char *src, const size_t srclen)
 {
-	intptr_t dest_offset = 0;
-	intptr_t i;
+	ssize_t dest_offset = 0;
+	ssize_t i;
 	size_t more;
 
 	if (destlen < base64_decoded_length(srclen)) {
