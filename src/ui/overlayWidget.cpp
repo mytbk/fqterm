@@ -11,8 +11,7 @@ namespace FQTerm {
 
 OverlayWidget::OverlayWidget(QWidget *parent, QWidget *anchor)
   : QFrame(parent->parentWidget()->parentWidget()),
-    anchor_(anchor),
-    parent_(parent) {
+    anchor_(anchor) {
   parent->installEventFilter(this);
 
   hide();

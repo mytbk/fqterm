@@ -2156,7 +2156,7 @@ int FQTermZmodem::SendMoreFileData(ZModem *info) {
 
   {
     int crc32 = info->crc32;
-    int c = 0, c2, atSign = 0;
+    int c = 0, c2;
     ulong crc;
     uchar *ptr = info->buffer;
 
@@ -2197,7 +2197,6 @@ int FQTermZmodem::SendMoreFileData(ZModem *info) {
       }
       ++ptr;
 
-      atSign = c2 == '@';
       ++info->offset;
     }
 

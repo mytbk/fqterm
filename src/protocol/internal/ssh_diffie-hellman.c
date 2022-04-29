@@ -219,8 +219,6 @@ ssh_dh_group16_sha512(void)
 
 static void ecdh_compute(SSH_DH *dh)
 {
-	int i;
-
 	/* FIXME: check return value and throw error */
 	RAND_bytes(dh->priv.privkey, 32);
 
@@ -260,7 +258,6 @@ ssh_dh_hash(SSH_DH *dh, const unsigned char *in, unsigned char *out, size_t n)
 static int ecdh_compute_secret(SSH_DH *dh, const unsigned char *f_bin, int f_len)
 {
 	unsigned char s[32];
-	int i, j;
 
 	if (f_len != 32)
 		return -1;

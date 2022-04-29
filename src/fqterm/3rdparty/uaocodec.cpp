@@ -15624,7 +15624,6 @@ static int qt_Big5ToUnicode(const uchar *s, uint *pwc)
 
 static int qt_UnicodeToBig5(uint wc, uchar *r)
 {
-    const Summary16 *summary = NULL;
     const uchar * c;
     if (wc < 0x80) {
         r[0] = (uchar) wc;

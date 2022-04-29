@@ -403,11 +403,9 @@ namespace FQTerm {
       QSize(fm.width(text),fm.height()));
 
     QRect checkRect;
-    Qt::CheckState checkState = Qt::Unchecked;
     QVariant value = index.data(Qt::CheckStateRole);
 
     if (value.isValid()) {
-      checkState = static_cast<Qt::CheckState>(value.toInt());
 #if QT_VERSION >= 0x050000
       checkRect = doCheck(opt, opt.rect, value);
 #else

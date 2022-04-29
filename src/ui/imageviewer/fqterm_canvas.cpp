@@ -86,7 +86,6 @@ FQTermCanvas::FQTermCanvas(FQTermConfig * config, QWidget *parent, Qt::WindowFla
   toolBar_->addAction(zoomInAction);
   toolBar_->addAction(zoomOutAction);
 
-  QActionGroup* gifGroup = new QActionGroup(this);
   gifPlayAction_->setIcon(
     QIcon(getPath(RESOURCE) + "pic/ViewerButtons/play_gif.png"));
   toolBar_->addAction(gifPlayAction_);

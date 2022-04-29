@@ -32,10 +32,11 @@ search_name(name_list l, const char *s)
 	for (i=0; l[i].name!=NULL; i++) {
 		size_t len = strlen(l[i].name);
 		for (j=0; j<ns; j++) {
-			if (start[j]+len==end[j] && strncmp(start[j],l[i].name,len)==0)
+			if (start[j]+len==end[j] && strncmp(start[j],l[i].name,len)==0) {
 				free(start);
 				free(end);
 				return i;
+			}
 		}
 	}
 	free(start);
