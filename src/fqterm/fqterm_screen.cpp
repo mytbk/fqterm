@@ -42,15 +42,15 @@ FQTermScreen::FQTermScreen(QWidget *parent, FQTermSession *session)
       scrollBarWidth_(15),
       termBuffer_(session->getBuffer()),
       cnLetterSpacing_(0.0),
-      spLetterSpacing_(0.0),
       enLetterSpacing_(0.0),
+      spLetterSpacing_(0.0),
       cnFixedPitch_(false),
       enFixedPitch_(false),
       hasBackground_(false),
       backgroundRenderOption_(0),
       backgroundCoverage_(0),
-      backgroundAlpha_(0),
-      backgroundUseAlpha_(false) {
+      backgroundUseAlpha_(false),
+      backgroundAlpha_(0) {
   termWindow_ = (FQTermWindow*)parent;
   session_ = session;
   param_ = &session->param();
@@ -1007,7 +1007,7 @@ void FQTermScreen::drawLine(QPainter &painter, int index, int startx, int endx,
         break;
       }
       bool colorBlock = isColorBlock(cstrText[0]);
-      if (cell_end != cellEnd && colorBlock || color_block && !colorBlock) {
+      if ((cell_end != cellEnd && colorBlock) || (color_block && !colorBlock)) {
         break;
       }
       ++i;
@@ -1195,7 +1195,6 @@ void FQTermScreen::drawStr(QPainter &painter, const QString &str,
     brush = QBrush(Qt::white);
   }
 
-  QPoint pt = mapToPixel(QPoint(x, y));
   QRect rcErase = mapToRect(x, y, length, 1);
 
   if (!menuRect_.intersects(rcErase)){
@@ -1231,13 +1230,6 @@ void FQTermScreen::drawStr(QPainter &painter, const QString &str,
   if (!(isBlinkScreen_ && GETBLINK(attr))) {
     FQ_TRACE("draw_text", 10) << "draw text: " << str;
     
-    QFontMetrics qm = painter.fontMetrics();
-    int font_height = qm.height();
-    int expected_font_height = rcErase.height();
-    int height_gap = expected_font_height - font_height;
-    int offset = (height_gap + 1)/2; 
-    int ascent = qm.ascent() + offset; 
-
 //#if defined(WIN32)
     int verticalAlign = Qt::AlignVCenter;
     switch(param_->alignMode_) {
@@ -1320,7 +1312,7 @@ void FQTermScreen::bossColor() {
 }
 
 QRect FQTermScreen::drawMenuSelect(QPainter &painter, int index) {
-  QRect rcSelect, rcMenu, rcInter;
+  QRect rcMenu;
   // 	FIXME: what is this for
 /*
   if (termBuffer_->isSelected(index)) {

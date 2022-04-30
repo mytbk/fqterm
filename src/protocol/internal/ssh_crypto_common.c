@@ -1,6 +1,6 @@
 #include "ssh_crypto_common.h"
 #include <string.h>
-
+#include <stdlib.h>
 /* We need the first algorithm in the client side,
    so search l first
 */
@@ -18,7 +18,8 @@ search_name(name_list l, const char *s)
 	for (p=s; *p; p++) {
 		if (*p==',') ns++;
 	}
-	const char *start[ns], *end[ns];
+	const char **start = (const char **)malloc(sizeof(char *) * ns);
+	const char **end = (const char **)malloc(sizeof(char *) * ns);
 
 	p = s;
 	for (i=0; i<ns; i++) {
@@ -31,9 +32,14 @@ search_name(name_list l, const char *s)
 	for (i=0; l[i].name!=NULL; i++) {
 		size_t len = strlen(l[i].name);
 		for (j=0; j<ns; j++) {
-			if (start[j]+len==end[j] && strncmp(start[j],l[i].name,len)==0)
+			if (start[j]+len==end[j] && strncmp(start[j],l[i].name,len)==0) {
+				free(start);
+				free(end);
 				return i;
+			}
 		}
 	}
+	free(start);
+	free(end);
 	return -1;
 }

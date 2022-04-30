@@ -65,8 +65,6 @@ void make_ssh1_packet(buffer *orig_data, buffer *data_to_send,
 int parse_ssh1_packet(buffer *input, buffer *recvbuf, SSH_CIPHER *cipher)
 {
 	uint32_t mycrc, gotcrc;
-	uint8_t *targetData = NULL;
-	uint8_t *sourceData = NULL;
 	int real_data_len;
 
 	// Get the length of the packet.
@@ -139,9 +137,9 @@ int make_ssh2_packet(buffer *orig_data, buffer *data_to_send,
 		padding_len += padding_block_len;
 
 	// 2. renew the output buffer.
-	int total_len = non_padding_len + padding_len;
-	if (is_mac_)
-		total_len += mac->dgstSize;
+	//int total_len = non_padding_len + padding_len;
+	//if (is_mac_)
+	//	total_len += mac->dgstSize;
 
 	buffer_clear(data_to_send);
 

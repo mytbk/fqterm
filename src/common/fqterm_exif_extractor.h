@@ -63,7 +63,6 @@ private:
   std::map<std::string, std::string> exifKeyValuePairs_;
   FILE* exifFile_;
   uint32_t ifdOffset_;
-  uint32_t subIfdOffset_;
 
   static const uint16_t IFD0Tag[16];
   static const char IFD0TagName[16][30];

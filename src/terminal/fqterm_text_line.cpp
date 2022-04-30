@@ -86,10 +86,10 @@ void FQTermTextLine::verifyCellRange(unsigned cell_begin, unsigned cell_end) con
 
 FQTermTextLine::FQTermTextLine(unsigned max_cell_count)
     : max_cell_count_(max_cell_count),
-      dirty_cell_begin_(0),
-      dirty_cell_end_(max_cell_count),
       stored_color_(0),
-      stored_attr_(0){
+      stored_attr_(0),
+      dirty_cell_begin_(0),
+      dirty_cell_end_(max_cell_count) {
   cells_.reserve(max_cell_count_);
   cell_colors_.reserve(max_cell_count_);
   cell_attrs_.reserve(max_cell_count_);
@@ -174,9 +174,6 @@ void FQTermTextLine::getPlainText(unsigned cell_begin, unsigned cell_end,
   result.insert(result.size(),
                 (QChar *) &chars_[char_begin],
                 char_end - char_begin);
-
-  typedef char Verify_QChar_Is_Two_Bytes[
-    (sizeof(QChar) == 2)? 1 : -1];
 }
 
 void FQTermTextLine::getAnsiText(unsigned cell_begin, unsigned cell_end,

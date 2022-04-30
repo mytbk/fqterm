@@ -1,12 +1,7 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <string>
-
-#ifdef _MSC_VER
-#include <hash_set>
-#else
 #include <set>
-#endif
 
 #include "fqterm_trace.h"
 
@@ -29,11 +24,7 @@ void setMaxTraceLevel(int max_trace_level) {
                       << max_trace_level;
 }
 
-#ifdef _MSC_VER
-typedef stdext::hash_set<std::string> CategorySet;
-#else
 typedef std::set<std::string> CategorySet;
-#endif
 
 CategorySet *getAllowedCategories() {
   static CategorySet *allowed_categories

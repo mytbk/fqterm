@@ -33,8 +33,8 @@ namespace FQTerm {
 //constructor
 FQTermWndMgr::FQTermWndMgr(QWidget *parent, const char *name)
     : QMdiArea(parent),
-      subWindowMax_(true),
       subWindowSize_(640, 480),
+      subWindowMax_(true),
       tabBar_(NULL)
  {
   tabBar_ = new FQTermTabBar(this);

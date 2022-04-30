@@ -50,8 +50,8 @@ int qScriptRegisterQObjectMetaType(
 
 FQTermScriptEngine::FQTermScriptEngine(FQTermWindow* parent) 
 : QObject(parent),
-  window_(parent),
   engine_(NULL),
+  window_(parent),
   articleCopyThread_(NULL),
   timerIDCount_(0) {
   FQ_VERIFY(window_);
@@ -450,7 +450,7 @@ int FQTermScriptEngine::createTimer(int ms, const QScriptValue& func, bool singl
     destroyTimer(id);
   }
   timerTable_[id] = timer;
-  bool res = qScriptConnect(timer, SIGNAL(timeout()), QScriptValue(), func);
+  qScriptConnect(timer, SIGNAL(timeout()), QScriptValue(), func);
   timer->start();
   return id;
 }

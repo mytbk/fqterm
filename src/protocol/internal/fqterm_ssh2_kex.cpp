@@ -117,66 +117,85 @@ bool FQTermSSH2Kex::negotiateAlgorithms() {
 
   // select KEX algorithm
   size_t kl_len = packet_receiver_->getInt();
-  char kex_algos[kl_len+1];
+  char *kex_algos = new char[kl_len+1];
   packet_receiver_->getRawData(kex_algos, kl_len);
   kex_algos[kl_len] = '\0';
   NEW_DH new_dh = search_dh(kex_algos);
   if (new_dh==NULL) {
 	  emit kexError(tr("No matching KEX algorithms!"));
+	  delete []kex_algos;
 	  return false;
   }
   sess.dh = new_dh();
 
   // TODO: host key algorithms
   size_t hk_algo_len = packet_receiver_->getInt();
-  char hk_algo[hk_algo_len+1];
+  char *hk_algo = new char[hk_algo_len+1];
   packet_receiver_->getRawData(hk_algo, hk_algo_len);
   hk_algo[hk_algo_len] = '\0';
 
   // encryption algo c2s
   size_t el_c2s_len = packet_receiver_->getInt();
-  char el_c2s[el_c2s_len+1];
+  char *el_c2s = new char[el_c2s_len+1];
   packet_receiver_->getRawData(el_c2s, el_c2s_len);
   el_c2s[el_c2s_len] = '\0';
   NEW_CIPHER c2s = search_cipher(el_c2s);
   if (c2s==NULL) {
 	  emit kexError(tr("No matching c2s cipher algorithms!"));
+	  delete []kex_algos;
+	  delete []hk_algo;
+	  delete []el_c2s;
 	  return false;
   }
   packet_sender_->cipher = c2s(1);
 
   // encryption algo s2c
   size_t el_s2c_len = packet_receiver_->getInt();
-  char el_s2c[el_s2c_len+1];
+  char *el_s2c = new char[el_s2c_len+1];
   packet_receiver_->getRawData(el_s2c, el_s2c_len);
   el_s2c[el_s2c_len] = '\0';
   NEW_CIPHER s2c = search_cipher(el_s2c);
   if (s2c==NULL) {
 	  emit kexError(tr("No matching s2c cipher algorithms!"));
+	  delete []kex_algos;
+	  delete []hk_algo;
+	  delete []el_c2s;
+	  delete []el_s2c;
 	  return false;
   }
   packet_receiver_->cipher = s2c(0);
 
   // mac algo c2s
   size_t m_c2s_len = packet_receiver_->getInt();
-  char m_c2s[m_c2s_len+1];
+  char *m_c2s = new char[m_c2s_len+1];
   packet_receiver_->getRawData(m_c2s, m_c2s_len);
   m_c2s[m_c2s_len] = '\0';
   const struct ssh_mac_t * mac_c2s = search_mac(m_c2s);
   if (mac_c2s == NULL) {
 	  emit kexError(tr("No matching c2s MAC algorithms!"));
+	  delete []kex_algos;
+	  delete []hk_algo;
+	  delete []el_c2s;
+	  delete []el_s2c;
+	  delete []m_c2s;
 	  return false;
   }
   packet_sender_->mac = mac_c2s->new_mac(mac_c2s);
 
   // mac algo s2c
   size_t m_s2c_len = packet_receiver_->getInt();
-  char m_s2c[m_s2c_len+1];
+  char *m_s2c = new char[m_s2c_len+1];
   packet_receiver_->getRawData(m_s2c, m_s2c_len);
   m_s2c[m_s2c_len] = '\0';
   const struct ssh_mac_t * mac_s2c = search_mac(m_s2c);
   if (mac_s2c == NULL) {
 	  emit kexError(tr("No matching s2c MAC algorithms!"));
+	  delete []kex_algos;
+	  delete []hk_algo;
+	  delete []el_c2s;
+	  delete []el_s2c;
+	  delete []m_c2s;
+	  delete []m_s2c;
 	  return false;
   }
   packet_receiver_->mac = mac_s2c->new_mac(mac_s2c);
@@ -225,6 +244,12 @@ bool FQTermSSH2Kex::negotiateAlgorithms() {
   // 4. send packet to server
   packet_sender_->write();
 
+  delete []kex_algos;
+  delete []hk_algo;
+  delete []el_c2s;
+  delete []el_s2c;
+  delete []m_c2s;
+  delete []m_s2c;
   return true;
 }
 

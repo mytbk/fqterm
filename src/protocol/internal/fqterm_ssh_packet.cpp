@@ -52,9 +52,8 @@ void FQTermSSHPacketSender::putBN(BIGNUM *bignum)
 {
 	int bits = BN_num_bits(bignum);
 	int bin_size = (bits + 7) / 8;
-	uint8_t buf[bin_size];
+	uint8_t *buf = new uint8_t[bin_size];
 	int oi;
-	uint8_t msg[2];
 
 	// Get the value of in binary
 	oi = BN_bn2bin(bignum, buf);
@@ -67,6 +66,8 @@ void FQTermSSHPacketSender::putBN(BIGNUM *bignum)
 	buffer_append_be16(&orig_data, bits);
 	// Store the binary data.
 	putRawData(buf, oi);
+	
+	delete []buf;
 }
 
 void FQTermSSHPacketSender::startPacket(uint8_t pkt_type)
@@ -166,7 +167,6 @@ void *FQTermSSHPacketReceiver::getString(int *length)
 void FQTermSSHPacketReceiver::getBN(BIGNUM *bignum)
 {
 	int bits, bytes;
-	u_char buf[2];
 	u_char *bin;
 
 	// Get the number for bits.

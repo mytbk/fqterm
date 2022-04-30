@@ -2410,7 +2410,6 @@ bool FQTermWindow::scriptMouseEvent(QMouseEvent *mouseevent){
 
 bool FQTermWindow::scriptWheelEvent( QWheelEvent *wheelevent ) {
   int type = SMET_WHEEL;
-  int delta = 0;
   int state=0;
   state |= translateQtModifiers(wheelevent->modifiers());
   QPoint ptc = screen_->mapToChar(wheelevent->pos());
@@ -2427,7 +2426,6 @@ const QString FQTermExternalEditor::textEditName_ =  "external editor input";
 
 FQTermExternalEditor::FQTermExternalEditor(QWidget* parent) 
 : QObject(parent),
-  editorProcess_(NULL),
   started_(false) {
   editorProcess_ = new QProcess(this);
   FQ_VERIFY(connect(editorProcess_, SIGNAL(stateChanged(QProcess::ProcessState)), 

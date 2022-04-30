@@ -32,15 +32,20 @@ ssh_pubkey_encrypt_rsa(RSA *k, BIGNUM *out, BIGNUM *in)
 	olen = RSA_size(k);
 	ilen = BN_num_bytes(in);
 
-	unsigned char outbuf[olen], inbuf[ilen];
+	unsigned char *outbuf = (unsigned char *)malloc(sizeof(char) * olen);
+	unsigned char *inbuf = (unsigned char *)malloc(sizeof(char) * ilen);
 
 	BN_bn2bin(in, inbuf);
 	len = RSA_public_encrypt(ilen, inbuf, outbuf, k,
 				 RSA_PKCS1_PADDING);
 	if (len <= 0) {
+		free(outbuf);
+		free(inbuf);
 		return -1;
 	}
 	BN_bin2bn(outbuf, len, out);
+	free(outbuf);
+	free(inbuf);
 	return 0;
 }
 

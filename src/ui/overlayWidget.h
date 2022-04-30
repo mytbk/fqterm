@@ -25,7 +25,6 @@ class OverlayWidget: public QFrame {
 
  private:
   QWidget *anchor_;
-  QWidget *parent_;
 };
 
 }  // namespace FQTerm

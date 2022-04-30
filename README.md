@@ -62,7 +62,24 @@ cmake -G "MinGW Makefiles" -DOPENSSL_ROOT_DIR=C:\openssl -DCMAKE_CXX_FLAGS=-mwin
 mingw32-make
 REM 生成的fqterm.exe即为程序文件
 ```
-- MSVC: 未测试
+- MSVC: 经过测试可以使用MSVC2019，Qt5.15.2编译，方法如下
+```
+REM 假设Qt安装在C:\Qt目录
+mkdir build
+cd build
+cmake.exe -DCMAKE_BUILD_TYPE=RelWithDebInfo -G"NMake Makefiles" -DCMAKE_PREFIX_PATH=C:\qt\5.15.2\msvc2019_64 -DOPENSSL_ROOT_DIR=C:\Qt\Tools\OpenSSL\Win_x64 C:\fqterm
+nmake
+```
+
+也可以使用JOM加快编译速度
+
+```
+REM 假设Qt安装在C:\Qt目录
+mkdir build
+cd build
+cmake.exe -DCMAKE_BUILD_TYPE=RelWithDebInfo -G"NMake Makefiles JOM" -DCMAKE_PREFIX_PATH=C:\qt\5.15.2\msvc2019_64 -DOPENSSL_ROOT_DIR=C:\Qt\Tools\OpenSSL\Win_x64 -DCMAKE_MAKE_PROGRAM=C:\Qt\Tools\QtCreator\bin\jom\jom.exe C:\fqterm
+jom
+```
 
 ## TODO
 以下是FQTerm日后需要改进和修复的地方，希望大家参与开发。
