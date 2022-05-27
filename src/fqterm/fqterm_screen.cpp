@@ -222,7 +222,7 @@ void FQTermScreen::mouseReleaseEvent(QMouseEvent *me) {
 
 void FQTermScreen::wheelEvent(QWheelEvent *we) {
   if (FQTermPref::getInstance()->isWheelSupported_) {
-    QApplication::sendEvent(termWindow_, we);
+//    QApplication::sendEvent(termWindow_, we);
   } else {
     QApplication::sendEvent(scrollBar_, we);
   }
