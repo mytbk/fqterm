@@ -20,7 +20,13 @@ cipher_init(SSH_CIPHER* my, const uint8_t *key, const uint8_t *IV)
 static int
 do_crypt(SSH_CIPHER* my, const uint8_t* in, uint8_t* out, size_t l)
 {
-	return EVP_Cipher(((struct evp_priv*)my->priv)->ctx, out, in, l);
+	int crypt_bytes;
+	int res = EVP_CipherUpdate(((struct evp_priv*)my->priv)->ctx, out, &crypt_bytes, in, l);
+	if (res == 0) {
+		// failed
+		return 0;
+	}
+	return EVP_CipherFinal_ex(((struct evp_priv*)my->priv)->ctx, out, &crypt_bytes);
 }
 
 static void
