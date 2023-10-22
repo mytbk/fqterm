@@ -1734,7 +1734,7 @@ void FQTermWindow::previewImage(const QString &filename, bool raiseViewer) {
   if (strViewer.isEmpty()) {
     frame_->viewImages(filename, raiseViewer);
   } else if(raiseViewer) {
-    runProgram(strViewer, filename);
+    runProgram(strViewer, QDir::toNativeSeparators(filename));
   }
 
 }
