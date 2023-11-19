@@ -377,7 +377,7 @@ void FQTermBuffer::moveCaretOffset(int column_offset, int row_offset, bool scrol
     // found caret_.column_ is out of bounds in other case, we should
     // correct it first.
     if (is_bbs_) {
-      // but the BBS (newsmth.net) assumes that the caret could be
+      // but the BBS (mysmth.net) assumes that the caret could be
       // located out of the screen :(
     } else {
       caret_.column_ = num_columns_ - 1;

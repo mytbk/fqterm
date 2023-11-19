@@ -8,7 +8,7 @@ namespace FQTerm {
 
 FQTermParam::FQTermParam() {
   name_ = "NEW SMTH";
-  hostAddress_ = "newsmth.net";
+  hostAddress_ = "mysmth.net";
   port_ = 23;
   hostType_ = 0; // 0--BBS 1--*NIX
   isAutoLogin_ = false;

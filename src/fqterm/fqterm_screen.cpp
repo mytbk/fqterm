@@ -1561,7 +1561,7 @@ void FQTermScreen::updateFixedPitchInfo() {
   QString cnTestString = QString::fromUtf8("\xe5\x9c\xb0\xe6\x96\xb9\xe6\x94\xbf\xe5\xba\x9c");
   cnFixedPitch_ = (QFontMetrics(cnFont).horizontalAdvance(cnTestString) == 
     cnTestString.length() * QFontMetrics(cnFont).horizontalAdvance(cnTestString.at(0)));
-  QString enTestString = QString::fromUtf8("www.newsmth.net");
+  QString enTestString = QString::fromUtf8("www.mysmth.net");
   enFixedPitch_ = QFontInfo(enFont).fixedPitch() &&
                   (QFontMetrics(enFont).horizontalAdvance(enTestString) == enTestString.length() * QFontMetrics(enFont).horizontalAdvance(enTestString.at(0)));
                   
