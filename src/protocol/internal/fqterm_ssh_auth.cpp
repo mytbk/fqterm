@@ -160,14 +160,17 @@ void FQTermSSH2PasswdAuth::sendUserPasswd() {
     return;
   }
 
-  u_char *service_name = (u_char *)packet_receiver_->getString();
+  auto service_name = packet_receiver_->getString();
 
-  if (std::string((char *)service_name) != std::string("ssh-userauth")) {
-    emit authError(tr("Error when sending username and password."));
+  if (!service_name) {
+    emit authError(tr("Invalid SSH2_MSG_SERVICE_ACCEPT service name"));
     return;
   }
 
-  delete[] service_name;
+  if (std::string(service_name.get()) != std::string("ssh-userauth")) {
+    emit authError(tr("Error when sending username and password."));
+    return;
+  }
 
   //  byte      SSH_MSG_USERAUTH_REQUEST
   //  string    user name in ISO-10646 UTF-8 encoding [RFC3629]

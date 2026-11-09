@@ -27,7 +27,7 @@ static RSA *CreateRSAContext(unsigned char *hostkey, int len)
 		e_len = be32toh(*(uint32_t *)hostkey);
 	else
 		goto fail;
-	if (len >= 4 + e_len)
+	if (e_len >= 0 && len - 4 >= e_len)
 		BN_mpi2bn(hostkey, 4 + e_len, rsa_e);
 	else
 		goto fail;
@@ -38,7 +38,7 @@ static RSA *CreateRSAContext(unsigned char *hostkey, int len)
 		n_len = be32toh(*(uint32_t *)hostkey);
 	else
 		goto fail;
-	if (len >= 4 + n_len)
+	if (n_len >= 0 && len - 4 >= n_len)
 		BN_mpi2bn(hostkey, 4 + n_len, rsa_n);
 	else
 		goto fail;
@@ -60,11 +60,20 @@ fail:
 	return NULL;
 }
 
-static inline const uint8_t *get_str(const uint8_t **data, uint32_t *L)
+/* Read one SSH string. *left is the number of bytes remaining after *data;
+ * return NULL if the length field or the string does not fit in it. */
+static inline const uint8_t *get_str(const uint8_t **data, size_t *left,
+				     uint32_t *L)
 {
 	const uint8_t *ptr = *data;
-	uint32_t len = be32toh(*(uint32_t *)ptr);
+	uint32_t len;
+	if (*left < 4)
+		return NULL;
+	len = be32toh(*(uint32_t *)ptr);
+	if (len > *left - 4)
+		return NULL;
 	*data = ptr + 4 + len;
+	*left -= 4 + (size_t)len;
 	*L = len;
 	return ptr + 4;
 }
@@ -72,24 +81,31 @@ static inline const uint8_t *get_str(const uint8_t **data, uint32_t *L)
 int verifyRSAKey(ssh_session *ss, const uint8_t *data, size_t len)
 {
 	const uint8_t *next = data;
+	size_t left = len;
 
 	uint32_t K_S_len;
 	const uint8_t *K_S;
-	K_S = get_str(&next, &K_S_len);
+	K_S = get_str(&next, &left, &K_S_len);
+	if (K_S == NULL)
+		return -ERSA;
 	ss->K_S_len = K_S_len;
 	ss->K_S = (uint8_t *)malloc(K_S_len);
 	memcpy(ss->K_S, K_S, K_S_len);
 
 	uint32_t mpint_f_len;
 	const uint8_t *mpint_f;
-	mpint_f = get_str(&next, &mpint_f_len);
+	mpint_f = get_str(&next, &left, &mpint_f_len);
+	if (mpint_f == NULL)
+		return -ESECRET;
 
 	if (ssh_dh_compute_secret(ss->dh, mpint_f, mpint_f_len) < 0)
 		return -ESECRET;
 
 	uint32_t s_len;
 	const uint8_t *s;
-	s = get_str(&next, &s_len);
+	s = get_str(&next, &left, &s_len);
+	if (s == NULL || s_len < 15)
+		return -ERSA;
 
 	buffer vbuf;
 	buffer_init(&vbuf);

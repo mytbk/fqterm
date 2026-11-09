@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 
+#include <memory>
 #include <vector>
 
 #include "fqterm_ssh2_kex.h"
@@ -19,6 +20,7 @@ FQTermSSH2Kex::FQTermSSH2Kex(const char *V_C, const char *V_S)
 	sess.I_S = NULL;
 	sess.K_S = NULL;
 	sess.session_id = NULL;
+	sess.dh = NULL;
 	sess.V_C = this->V_C_;
 	sess.V_S = this->V_S_;
 }
@@ -36,6 +38,11 @@ FQTermSSH2Kex::~FQTermSSH2Kex()
 
 	if (sess.session_id != NULL)
 		delete[] sess.session_id;
+
+	if (sess.dh) {
+		ssh_dh_free(sess.dh);
+		sess.dh = NULL;
+	}
 }
 
 void FQTermSSH2Kex::initKex(FQTermSSHPacketReceiver *packetReceiver, 
@@ -116,93 +123,96 @@ bool FQTermSSH2Kex::negotiateAlgorithms() {
   packet_receiver_->getRawData((char*)cookie_, 16);
 
   // select KEX algorithm
-  size_t kl_len = packet_receiver_->getInt();
-  char *kex_algos = new char[kl_len+1];
-  packet_receiver_->getRawData(kex_algos, kl_len);
-  kex_algos[kl_len] = '\0';
-  NEW_DH new_dh = search_dh(kex_algos);
-  if (new_dh==NULL) {
-	  emit kexError(tr("No matching KEX algorithms!"));
-	  delete []kex_algos;
+  // getString() refuses a length larger than the received data.
+  auto kex_algos = packet_receiver_->getString();
+  if (!kex_algos) {
+	  emit kexError(tr("Invalid name-list in SSH_MSG_KEXINIT"));
 	  return false;
   }
-  sess.dh = new_dh();
+  NEW_DH new_dh = search_dh(kex_algos.get());
+  if (new_dh==NULL) {
+	  emit kexError(tr("No matching KEX algorithms!"));
+	  return false;
+  }
+  // Keep ownership locally until the whole KEXINIT has been validated, so
+  // that every error return releases the DH context.
+  std::unique_ptr<SSH_DH, decltype(&ssh_dh_free)> dh(new_dh(), ssh_dh_free);
+  if (!dh) {
+	  emit kexError(tr("Failed to create DH context!"));
+	  return false;
+  }
 
   // TODO: host key algorithms
-  size_t hk_algo_len = packet_receiver_->getInt();
-  char *hk_algo = new char[hk_algo_len+1];
-  packet_receiver_->getRawData(hk_algo, hk_algo_len);
-  hk_algo[hk_algo_len] = '\0';
+  // getString() refuses a length larger than the received data.
+  auto hk_algo = packet_receiver_->getString();
+  if (!hk_algo) {
+	  emit kexError(tr("Invalid name-list in SSH_MSG_KEXINIT"));
+	  return false;
+  }
 
   // encryption algo c2s
-  size_t el_c2s_len = packet_receiver_->getInt();
-  char *el_c2s = new char[el_c2s_len+1];
-  packet_receiver_->getRawData(el_c2s, el_c2s_len);
-  el_c2s[el_c2s_len] = '\0';
-  NEW_CIPHER c2s = search_cipher(el_c2s);
+  // getString() refuses a length larger than the received data.
+  auto el_c2s = packet_receiver_->getString();
+  if (!el_c2s) {
+	  emit kexError(tr("Invalid name-list in SSH_MSG_KEXINIT"));
+	  return false;
+  }
+  NEW_CIPHER c2s = search_cipher(el_c2s.get());
   if (c2s==NULL) {
 	  emit kexError(tr("No matching c2s cipher algorithms!"));
-	  delete []kex_algos;
-	  delete []hk_algo;
-	  delete []el_c2s;
 	  return false;
   }
   packet_sender_->cipher = c2s(1);
 
   // encryption algo s2c
-  size_t el_s2c_len = packet_receiver_->getInt();
-  char *el_s2c = new char[el_s2c_len+1];
-  packet_receiver_->getRawData(el_s2c, el_s2c_len);
-  el_s2c[el_s2c_len] = '\0';
-  NEW_CIPHER s2c = search_cipher(el_s2c);
+  // getString() refuses a length larger than the received data.
+  auto el_s2c = packet_receiver_->getString();
+  if (!el_s2c) {
+	  emit kexError(tr("Invalid name-list in SSH_MSG_KEXINIT"));
+	  return false;
+  }
+  NEW_CIPHER s2c = search_cipher(el_s2c.get());
   if (s2c==NULL) {
 	  emit kexError(tr("No matching s2c cipher algorithms!"));
-	  delete []kex_algos;
-	  delete []hk_algo;
-	  delete []el_c2s;
-	  delete []el_s2c;
 	  return false;
   }
   packet_receiver_->cipher = s2c(0);
 
   // mac algo c2s
-  size_t m_c2s_len = packet_receiver_->getInt();
-  char *m_c2s = new char[m_c2s_len+1];
-  packet_receiver_->getRawData(m_c2s, m_c2s_len);
-  m_c2s[m_c2s_len] = '\0';
-  const struct ssh_mac_t * mac_c2s = search_mac(m_c2s);
+  // getString() refuses a length larger than the received data.
+  auto m_c2s = packet_receiver_->getString();
+  if (!m_c2s) {
+	  emit kexError(tr("Invalid name-list in SSH_MSG_KEXINIT"));
+	  return false;
+  }
+  const struct ssh_mac_t * mac_c2s = search_mac(m_c2s.get());
   if (mac_c2s == NULL) {
 	  emit kexError(tr("No matching c2s MAC algorithms!"));
-	  delete []kex_algos;
-	  delete []hk_algo;
-	  delete []el_c2s;
-	  delete []el_s2c;
-	  delete []m_c2s;
 	  return false;
   }
   packet_sender_->mac = mac_c2s->new_mac(mac_c2s);
 
   // mac algo s2c
-  size_t m_s2c_len = packet_receiver_->getInt();
-  char *m_s2c = new char[m_s2c_len+1];
-  packet_receiver_->getRawData(m_s2c, m_s2c_len);
-  m_s2c[m_s2c_len] = '\0';
-  const struct ssh_mac_t * mac_s2c = search_mac(m_s2c);
+  // getString() refuses a length larger than the received data.
+  auto m_s2c = packet_receiver_->getString();
+  if (!m_s2c) {
+	  emit kexError(tr("Invalid name-list in SSH_MSG_KEXINIT"));
+	  return false;
+  }
+  const struct ssh_mac_t * mac_s2c = search_mac(m_s2c.get());
   if (mac_s2c == NULL) {
 	  emit kexError(tr("No matching s2c MAC algorithms!"));
-	  delete []kex_algos;
-	  delete []hk_algo;
-	  delete []el_c2s;
-	  delete []el_s2c;
-	  delete []m_c2s;
-	  delete []m_s2c;
 	  return false;
   }
   packet_receiver_->mac = mac_s2c->new_mac(mac_s2c);
 
   std::vector<char> name_lists;
   for (int i = 6; i < 10; ++i) {
-    int name_lists_len = packet_receiver_->getInt();
+    uint32_t name_lists_len = packet_receiver_->getInt();
+    if (name_lists_len > buffer_len(&packet_receiver_->recvbuf)) {
+	  emit kexError(tr("Invalid name-list in SSH_MSG_KEXINIT"));
+	  return false;
+    }
     if (name_lists_len > 0) {
       name_lists.resize(name_lists_len);
       packet_receiver_->getRawData(&name_lists[0], name_lists_len);
@@ -244,12 +254,7 @@ bool FQTermSSH2Kex::negotiateAlgorithms() {
   // 4. send packet to server
   packet_sender_->write();
 
-  delete []kex_algos;
-  delete []hk_algo;
-  delete []el_c2s;
-  delete []el_s2c;
-  delete []m_c2s;
-  delete []m_s2c;
+  sess.dh = dh.release();
   return true;
 }
 
@@ -359,6 +364,7 @@ bool FQTermSSH2Kex::changeKeyAlg() {
 
   /* now key exchange ends */
   ssh_dh_free(sess.dh);
+  sess.dh = NULL;
 
   return true;
 }

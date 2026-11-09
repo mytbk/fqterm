@@ -153,14 +153,29 @@ uint32_t FQTermSSHPacketReceiver::getInt()
 	}
 }
 
-void *FQTermSSHPacketReceiver::getString(int *length)
+std::unique_ptr<char[]> FQTermSSHPacketReceiver::getString(int *length)
 {
+	// A string always starts with a 4-byte length. A short buffer does not
+	// mean an empty string, so do not let the caller continue with one.
+	if (buffer_len(&recvbuf) < 4) {
+		emit packetError("Read too many bytes!");
+		return nullptr;
+	}
 	uint32_t l = getInt();
-	char *data = new char[l+1];
-	getRawData(data, l);
+	// Validate the peer-controlled length before allocating. This removes the
+	// 32-bit wrap (l+1 == 0 for l == 0xFFFFFFFF) and the excessive allocation,
+	// and lets the caller observe the refusal. SSH_BUFFER_MAX bounds the whole
+	// transport buffer, so no single string can legitimately exceed it, and l
+	// can never exceed the bytes actually buffered.
+	if (l > SSH_BUFFER_MAX || l > buffer_len(&recvbuf)) {
+		emit packetError("SSH string length out of range");
+		return nullptr;
+	}
+	std::unique_ptr<char[]> data(new char[l+1]);
+	getRawData(data.get(), l);
 	data[l] = 0;
 	if (length != NULL)
-		*length = l;
+		*length = (int)l;
 	return data;
 }
 
@@ -193,6 +208,10 @@ void FQTermSSHPacketReceiver::getBN(BIGNUM *bignum)
 
 void FQTermSSHPacketReceiver::consume(int len)
 {
+	if (len < 0 || (size_t)len > buffer_len(&recvbuf)) {
+		emit packetError("Read too many bytes!");
+		return;
+	}
 	buffer_consume(&recvbuf, len);
 }
 

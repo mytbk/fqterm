@@ -5,6 +5,8 @@
 
 #include <openssl/bn.h>
 
+#include <memory>
+
 #include <QObject>
 
 #include "fqterm_ssh_types.h"
@@ -80,7 +82,7 @@ class FQTermSSHPacketReceiver: public QObject {
 
   u_char getByte();
   u_int getInt();
-  void *getString(int *length = NULL);
+  std::unique_ptr<char[]> getString(int *length = NULL);
   void getRawData(char *data, int length);
   void getBN(BIGNUM *bignum);
   void consume(int len);

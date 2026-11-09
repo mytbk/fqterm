@@ -8,6 +8,37 @@
 #include <QString>
 namespace FQTerm {
 
+namespace {
+
+/* Return a pointer to a string field (uint32 length followed by data) and
+ * its length without copying it out of the packet buffer. */
+bool readChannelString(FQTermSSHPacketReceiver *receiver,
+                       const char **data, int *len)
+{
+	if (buffer_len(&receiver->recvbuf) < 4)
+		return false;
+	uint32_t l = receiver->getInt();
+	if (l > buffer_len(&receiver->recvbuf))
+		return false;
+	*data = (const char *)buffer_data(&receiver->recvbuf);
+	*len = (int)l;
+	return true;
+}
+
+/* Consume one string field, refusing a length that does not fit. */
+bool skipChannelString(FQTermSSHPacketReceiver *receiver)
+{
+	if (buffer_len(&receiver->recvbuf) < 4)
+		return false;
+	uint32_t l = receiver->getInt();
+	if (l > buffer_len(&receiver->recvbuf))
+		return false;
+	receiver->consume((int)l);
+	return true;
+}
+
+}  // namespace
+
 //==============================================================================
 //FQTermSSH1Channel
 //==============================================================================
@@ -83,6 +114,8 @@ void FQTermSSH1Channel::handlePacket(int type) {
           {
             const char *data = (const char*)buffer_data(&packet_receiver_->recvbuf) + 4;
             int len = packet_receiver_->packetDataLen() - 4;
+            if (len < 0)
+              break;
             emit channelReadyRead(data, len);
           }
           break;
@@ -317,9 +350,13 @@ void FQTermSSH2Channel::processChannelPacket() {
         //    byte      SSH_MSG_CHANNEL_DATA
         //    uint32    recipient channel
         //    string    data
+        const char *data;
+        int len;
         packet_receiver_->consume(4);
-        int len = packet_receiver_->getInt();
-        const char *data = (const char*)buffer_data(&packet_receiver_->recvbuf);
+        if (!readChannelString(packet_receiver_, &data, &len)) {
+          FQ_TRACE("sshchannel", 1) << "Invalid channel data length";
+          break;
+        }
         local_window_size_ -= len;
         checkLocalWindowSize();
         emit channelReadyRead(data, len);
@@ -327,12 +364,18 @@ void FQTermSSH2Channel::processChannelPacket() {
       break;
     case  SSH2_MSG_CHANNEL_EXTENDED_DATA:
       {
-        //    byte      SSH_MSG_CHANNEL_DATA
+        //    byte      SSH_MSG_CHANNEL_EXTENDED_DATA
         //    uint32    recipient channel
+        //    uint32    data_type_code
         //    string    data
-        packet_receiver_->consume(4);
-        int len = packet_receiver_->getInt();
-        const char *data = (const char*)buffer_data(&packet_receiver_->recvbuf);
+        const char *data;
+        int len;
+        packet_receiver_->consume(4);  // recipient channel
+        packet_receiver_->consume(4);  // data_type_code (currently ignored)
+        if (!readChannelString(packet_receiver_, &data, &len)) {
+          FQ_TRACE("sshchannel", 1) << "Invalid channel extended data length";
+          break;
+        }
         local_window_size_ -= len;
         checkLocalWindowSize();
         emit channelReadyRead(data, len);
@@ -363,6 +406,9 @@ void FQTermSSH2Channel::processChannelPacket() {
 void FQTermSSH2Channel::handlePacket(int type)
 {
   // first check the channel id.
+  if (buffer_len(&packet_receiver_->recvbuf) < 4) {
+    return;
+  }
   u_int32_t channel_id = ntohu32(buffer_data(&packet_receiver_->recvbuf));
   if (channel_id != channel_id_) {
     return;
@@ -381,15 +427,23 @@ void FQTermSSH2Channel::handlePacket(int type)
       switch (type) {
         case SSH2_MSG_CHANNEL_REQUEST:
           {
-            FQ_TRACE("ssh2channel", 8) << "SSH2_MSG_CHANNEL_REQUEST isn't supported, just send back a packet with SSH2_MSG_CHANNEL_SUCCESS if reply is needed.";
+            FQ_TRACE("ssh2channel", 8) << "SSH2_MSG_CHANNEL_REQUEST isn't supported, send SSH2_MSG_CHANNEL_FAILURE if a reply is requested.";
 
             packet_receiver_->consume(4);
-            u_int32_t len = ntohu32(buffer_data(&packet_receiver_->recvbuf));
-            packet_receiver_->consume(4 + len);
+            if (!skipChannelString(packet_receiver_)) {
+              FQ_TRACE("sshchannel", 1) << "Invalid channel request name length";
+              break;
+            }
+            if (buffer_len(&packet_receiver_->recvbuf) < 1) {
+              FQ_TRACE("sshchannel", 1) << "Missing want_reply";
+              break;
+            }
             bool replyNeeded = packet_receiver_->getByte();
 
             if (replyNeeded) {
-              packet_sender_->startPacket(SSH2_MSG_CHANNEL_SUCCESS);
+              // RFC 4254 section 5.4: an unsupported request is answered
+              // with SSH_MSG_CHANNEL_FAILURE.
+              packet_sender_->startPacket(SSH2_MSG_CHANNEL_FAILURE);
               packet_sender_->putInt(server_channel_id_);
               packet_sender_->write();
             }

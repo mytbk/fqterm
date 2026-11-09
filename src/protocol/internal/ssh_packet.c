@@ -65,7 +65,7 @@ void make_ssh1_packet(buffer *orig_data, buffer *data_to_send,
 int parse_ssh1_packet(buffer *input, buffer *recvbuf, SSH_CIPHER *cipher)
 {
 	uint32_t mycrc, gotcrc;
-	int real_data_len;
+	uint32_t real_data_len;
 
 	// Get the length of the packet.
 	if (buffer_len(input) < 4)
@@ -74,7 +74,8 @@ int parse_ssh1_packet(buffer *input, buffer *recvbuf, SSH_CIPHER *cipher)
 	uint8_t *buf = buffer_data(input);
 	real_data_len = ntohu32(buf);
 
-	if (real_data_len > SSH_BUFFER_MAX)
+	/* type (1) and CRC (4) are always present */
+	if (real_data_len < 5 || real_data_len > SSH_BUFFER_MAX)
 		return -ETOOBIG;
 
 	uint32_t total_len = (real_data_len + 8) & ~7;
@@ -195,7 +196,7 @@ int make_ssh2_packet(buffer *orig_data, buffer *data_to_send,
 int parse_ssh2_packet(buffer *input, buffer *recvbuf, SSH_CIPHER *cipher,
 		SSH_MAC *mac, bool is_mac_, uint32_t *decrypted, uint32_t *seq)
 {
-	int packet_len;
+	uint32_t packet_len;
 	uint8_t *input_data = buffer_data(input);
 
 	// 1. Check the ssh packet
@@ -216,7 +217,8 @@ int parse_ssh2_packet(buffer *input, buffer *recvbuf, SSH_CIPHER *cipher,
 		packet_len = ntohu32(input_data);
 	}
 
-	if (packet_len > SSH_BUFFER_MAX)
+	/* padding_length (1), a message type (1) and 4 bytes of padding */
+	if (packet_len < 6 || packet_len > SSH_BUFFER_MAX)
 		return -ETOOBIG;
 
 	int expected_input_len = 4 + packet_len + (is_mac_ ? mac->dgstSize : 0);
@@ -259,6 +261,9 @@ int parse_ssh2_packet(buffer *input, buffer *recvbuf, SSH_CIPHER *cipher,
 	// 4. get every field of the ssh packet.
 	packet_len = buffer_get_u32(input);
 	uint8_t padding_len = buffer_get_u8(input);
+	/* the payload must keep at least its message type byte */
+	if (padding_len > packet_len - 2)
+		return -ETOOBIG;
 	int real_data_len = packet_len - 1 - padding_len;
 	buffer_clear(recvbuf);
 	buffer_append(recvbuf, buffer_data(input), real_data_len);

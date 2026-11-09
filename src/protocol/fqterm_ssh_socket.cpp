@@ -305,10 +305,14 @@ void FQTermSSHSocket::handlePacket(int type) {
   if (ssh_version_ == 1) {
     switch (type) {
       case SSH1_MSG_DISCONNECT:
-        char *reason;
-        reason = (char*)packet_receiver_->getString();
-        FQ_TRACE("sshsocket", 1) << "Disconnect because: " << reason;
-        delete [] reason;
+        {
+          auto reason = packet_receiver_->getString();
+          if (!reason) {
+            FQ_TRACE("sshsocket", 1) << "Invalid SSH1 disconnect reason";
+            break;
+          }
+          FQ_TRACE("sshsocket", 1) << "Disconnect because: " << reason.get();
+        }
         break;
       default:
         return ;
@@ -317,11 +321,15 @@ void FQTermSSHSocket::handlePacket(int type) {
     // ssh_version_ == 2;
     switch (type) {
       case SSH2_MSG_DISCONNECT:
-        char *reason;
-        packet_receiver_->consume(4);
-        reason = (char*)packet_receiver_->getString();
-        FQ_TRACE("sshsocket", 1) << "Disconnect because: " << reason;
-        delete[] reason;
+        {
+          packet_receiver_->consume(4);
+          auto reason = packet_receiver_->getString();
+          if (!reason) {
+            FQ_TRACE("sshsocket", 1) << "Invalid SSH2 disconnect reason";
+            break;
+          }
+          FQ_TRACE("sshsocket", 1) << "Disconnect because: " << reason.get();
+        }
         break;
       default:
         return ;

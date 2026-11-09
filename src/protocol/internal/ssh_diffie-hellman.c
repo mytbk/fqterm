@@ -146,7 +146,9 @@ static void dh_compute(SSH_DH *dh)
 
 static SSH_DH *create_dh()
 {
-	SSH_DH *dh = (SSH_DH*)malloc(sizeof(SSH_DH));
+	/* Zero-initialize so ssh_dh_free() is safe on error paths that
+	 * release the context before ssh_dh_compute_secret() has run. */
+	SSH_DH *dh = (SSH_DH*)calloc(1, sizeof(SSH_DH));
 	dh->priv.dh.ctx = BN_CTX_new();
 	dh->priv.dh.g = BN_new();
 	dh->priv.dh.p = BN_new();
@@ -236,7 +238,9 @@ static void ecdh_compute(SSH_DH *dh)
 static SSH_DH *
 ssh_dh_curve25519_sha256(void)
 {
-	SSH_DH *dh = (SSH_DH*)malloc(sizeof(SSH_DH));
+	/* Zero-initialize so ssh_dh_free() is safe on error paths that
+	 * release the context before ssh_dh_compute_secret() has run. */
+	SSH_DH *dh = (SSH_DH*)calloc(1, sizeof(SSH_DH));
 	dh->name = DH_CURVE25519_SHA256;
 	dh->digest = (evp_md_t) {
 		.mdctx = ssh_md_ctx_new(),
