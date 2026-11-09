@@ -696,7 +696,12 @@ void FQTermDecode::paramDigit() {
 
 void FQTermDecode::nextParam() {
   FQ_FUNC_TRACE("ansi", 9);
-  paramIndex_++;
+  // Bound the parameter index to the fixed param_[30] table. Further separators
+  // are dropped rather than walking the index out of bounds. This one clamp
+  // closes both the out-of-bounds write in paramDigit() and the out-of-bounds
+  // reads in the CSI handlers that iterate to paramIndex_ inclusive.
+  if (paramIndex_ < 30 - 1)
+    paramIndex_++;
 }
 
 void FQTermDecode::saveCursor() {
