@@ -1,3 +1,11 @@
+Changes in 0.9.11
+====================
+
+Changes include:
+
+* Fix render error on Wayland
+* Security fixes in SSH implementation and terminal
+
 Changes in 0.9.10.1
 ====================
 

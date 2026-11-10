@@ -1,6 +1,6 @@
 project(fqterm)
 
-set(FQTERM_VERSION "0.9.10.1")
+set(FQTERM_VERSION "0.9.11")
 set(CMAKE_VERBOSE_MAKEFILE ON)
 cmake_minimum_required(VERSION 3.9)
 
