@@ -527,7 +527,16 @@ static bool isSupportedImage(const QString &name) {
   static QList<QByteArray> image_formats =
       QImageReader::supportedImageFormats();
 
-  return image_formats.contains(name.section(".", -1).toLower().toUtf8());
+  const QUrl url(name);
+  if (image_formats.contains(QFileInfo(url.path()).suffix().toLower().toUtf8()))
+    return true;
+  // BBS attachment URLs may carry the image filename in a query parameter.
+  const QStringList parts = url.query(QUrl::FullyDecoded).split('&');
+  for (const QString &part : parts) {
+    if (image_formats.contains(part.section(".", -1).toLower().toUtf8()))
+      return true;
+  }
+  return false;
 }
 
 void FQTermWindow::mouseReleaseEvent(QMouseEvent *mouseevent) {
@@ -1693,6 +1702,10 @@ void FQTermWindow::getHttpHelper(const QString &url, bool preview) {
 
   FQ_VERIFY(connect(http, SIGNAL(message(const QString &)),
                     pageViewMessage_, SLOT(showText(const QString &))));
+
+  connect(http, &FQTermHttp::error, this, [this](const QString &reason) {
+    QMessageBox::critical(this, tr("Download Error"), reason);
+  });
 
   FQ_VERIFY(connect(http, SIGNAL(done(QObject*)),
                     FQTerm::StatusBar::instance(),
