@@ -1,245 +1,308 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 
-#include "fqterm.h"
 #include "fqterm_path.h"
 #include "fqterm_http.h"
 #include "fqterm_config.h"
 #include "fqterm_filedialog.h"
 
+#include <QCryptographicHash>
+#include <QDebug>
+#include <QDir>
+#include <QImageReader>
+#include <QNetworkAccessManager>
+#include <QNetworkProxy>
+#include <QRegularExpression>
+#include <QSaveFile>
+#include <QTextCodec>
+#include <QTimer>
+#include <QUrlQuery>
+
 namespace FQTerm {
+namespace {
 
-QMap<QString, int> FQTermHttp::downloadMap_;
-QMutex FQTermHttp::mutex_;
+QString safeFileName(QString name) {
+  // Neither response headers nor URLs may select a directory on disk.
+  name.replace('\\', '/');
+  name = name.section('/', -1);
+  name.replace(QRegularExpression("[\\x00-\\x1f<>:\"/\\\\|?*]"), "_");
+  name = name.trimmed();
+  while (name.endsWith('.') || name.endsWith(' '))
+    name.chop(1);
+  return name.isEmpty() ? QString("download") : name.left(160);
+}
 
-FQTermHttp::FQTermHttp(FQTermConfig *config, QWidget *p, const QString &poolDir, int serverEncodingID)
-  : nam_(new QNetworkAccessManager), poolDir_(poolDir)  {
-  // 	m_pDialog = NULL;
-  config_ = config;
+QString responseFileName(const QByteArray &header, const QUrl &url) {
+  // Match whole parameters, including quoted semicolons and escaped quotes.
+  QRegularExpression parameter(
+      "(?:^|;)\\s*(filename\\*?)\\s*=\\s*(?:\"((?:\\\\.|[^\"\\\\])*)\"|([^;]*))",
+      QRegularExpression::CaseInsensitiveOption);
+  QRegularExpressionMatchIterator matches = parameter.globalMatch(QString::fromLatin1(header));
+  QString name, extendedName;
+  while (matches.hasNext()) {
+    const QRegularExpressionMatch match = matches.next();
+    QString value = match.captured(2).isNull() ? match.captured(3).trimmed() : match.captured(2);
+    if (match.captured(1).endsWith('*')) {
+      const int first = value.indexOf('\'');
+      const int second = value.indexOf('\'', first + 1);
+      QTextCodec *codec = first > 0 ? QTextCodec::codecForName(value.left(first).toLatin1()) : nullptr;
+      if (second > first && codec)
+        extendedName = codec->toUnicode(QByteArray::fromPercentEncoding(value.mid(second + 1).toLatin1()));
+    } else {
+      // Decode quoted-pair escapes without stripping Windows path separators.
+      value.replace("\\\"", "\"");
+      name = value;
+    }
+  }
+  if (!extendedName.isEmpty())
+    return safeFileName(extendedName);
+  if (!name.isEmpty())
+    return safeFileName(name);
 
-  serverEncodingID_ = serverEncodingID;
+  name = QFileInfo(url.path()).fileName();
+  // Attachment endpoints often put the useful filename in the query only.
+  const auto items = QUrlQuery(url).queryItems(QUrl::FullyDecoded);
+  const auto formats = QImageReader::supportedImageFormats();
+  for (const auto &item : items) {
+    const QString candidate = item.second.isEmpty() ? item.first : item.second;
+    if (formats.contains(QFileInfo(candidate).suffix().toLower().toLatin1()))
+      return safeFileName(candidate);
+  }
+  return safeFileName(name);
+}
 
- }
+QString diagnosticUrl(const QUrl &url) {
+  // Query values and userinfo may contain session tokens or credentials.
+  QUrl safe = url.adjusted(QUrl::RemoveUserInfo | QUrl::RemoveFragment | QUrl::RemoveQuery);
+  return safe.toString() + (url.hasQuery() ? QString("?<redacted>") : QString());
+}
+
+}  // namespace
+
+FQTermHttp::FQTermHttp(FQTermConfig *config, QWidget *, const QString &poolDir, int)
+    : nam_(new QNetworkAccessManager), poolDir_(poolDir), config_(config) {
+}
 
 FQTermHttp::~FQTermHttp() {
 }
 
 void FQTermHttp::cancel() {
-  if(netreply_){
+  if (completed_)
+    return;
+  canceled_ = true;
+  if (netreply_ && netreply_->isRunning())
     netreply_->abort();
-  }
-  if (QFile::exists(cacheFileName_)) {
-    QFile::remove(cacheFileName_);
-  }
-
-  emit done(this);
+  else
+    httpDone();
 }
-
-
 
 void FQTermHttp::getLink(const QString &url, bool preview) {
-  QUrl u(url);
-  getLink(u,preview);
+  getLink(QUrl(url), preview);
 }
 
-void FQTermHttp::getLink(const QUrl& url, bool preview) {
-  QUrl u=url;
-  isExisting_ = false;
+void FQTermHttp::getLink(const QUrl &url, bool preview) {
+  if (netreply_) {
+    netreply_->disconnect(this);
+    netreply_->abort();
+    netreply_.reset();
+  }
+  download_.reset();
+  cacheFileName_.clear();
+  suggestedName_.clear();
+  failureReason_.clear();
+  originalUrl_ = url;
   isPreview_ = preview;
-  previewEmitted = false;
-  lastPercent_ = 0;
-  if (u.isRelative() || u.scheme() == "file") {
-    emit previewImage(cacheFileName_, false, true);
+  completed_ = canceled_ = false;
+
+  if (url.isRelative() || url.isLocalFile()) {
+    cacheFileName_ = url.isLocalFile() ? url.toLocalFile() : url.toString();
+    completed_ = true;
+    QImageReader reader(cacheFileName_);
+    reader.setDecideFormatFromContent(true);
+    if (preview && !reader.read().isNull())
+      emit previewImage(cacheFileName_, false, true);
+    else
+      emit error(tr("Cannot read image: %1").arg(cacheFileName_));
     emit done(this);
-    return ;
-  }
-
-  if (QFile::exists(getPath(USER_CONFIG) + "hosts.cfg")) {
-    config_ = new FQTermConfig(getPath(USER_CONFIG) + "hosts.cfg");
-    QString strTmp = config_->getItemValue("hosts", u.host().toLocal8Bit());
-    if (!strTmp.isEmpty()) {
-      QString strUrl = u.toString();
-      strUrl.replace(QRegExp(u.host(), Qt::CaseInsensitive), strTmp);
-      u = strUrl;
-    }
-  }
-  if (!(netreply_ && netreply_->hasRawHeader("Location"))) {
-    cacheFileName_ = QFileInfo(u.path()).fileName();
-  }
-  if(netreply_){
-    netreply_->blockSignals(true);
-    netreply_.take()->deleteLater();
-  }
-
-  netreply_.reset(nam_->get(QNetworkRequest(u)));
-  FQ_VERIFY(connect(netreply_.data(), SIGNAL(finished()), this, SLOT(httpDone())));
-  FQ_VERIFY(connect(netreply_.data(), SIGNAL(downloadProgress(qint64, qint64)),this, SLOT(httpRead(qint64, qint64))));
-  FQ_VERIFY(connect(netreply_.data(), SIGNAL(error( QNetworkReply::NetworkError)), this, SLOT(httpError(QNetworkReply::NetworkError))));
-  FQ_VERIFY(connect(netreply_.data(), SIGNAL(metaDataChanged()), this, SLOT(httpResponse())));
-}
-
-void FQTermHttp::httpResponse() {
-  if (netreply_->hasRawHeader("Location")) {
-    // use rawHeader("Location") instead of header(QNetworkRequest::LocationHeader)
-    // it works for both absolute and relative redirection
-    QUrl u(netreply_->rawHeader("Location"));
-    if (u.isRelative() ) {
-      u=netreply_->url().resolved(u);
-    }
-    cacheFileName_ = QFileInfo(u.path()).fileName(); // update filename
-    getLink(u,isPreview_);
     return;
   }
 
-  QString ValueString;
-  QString filename;
-
-  ValueString = netreply_->header(QNetworkRequest::ContentLengthHeader).toString();
-  int FileLength = ValueString.toInt();
-
-  ValueString = netreply_->rawHeader("Content-Disposition");
-  //	ValueString = ValueString.mid(ValueString.find(';') + 1).stripWhiteSpace();
-  //	if(ValueString.lower().find("filename") == 0)
-  //	m_strHttpFile = ValueString.mid(ValueString.find('=') + 1).stripWhiteSpace();
-  if (ValueString.right(1) != ";") {
-    ValueString += ";";
+  QUrl target = url;
+  if (QFile::exists(getPath(USER_CONFIG) + "hosts.cfg")) {
+    FQTermConfig hosts(getPath(USER_CONFIG) + "hosts.cfg");
+    const QString host = hosts.getItemValue("hosts", url.host().toLocal8Bit());
+    if (!host.isEmpty())
+      target.setHost(host);
   }
-  QRegExp re("filename=.*;", Qt::CaseInsensitive);
-  re.setMinimal(true);
-  //Dont FIXME:this will also split filenames with ';' inside, does anyone really do this?
-  int pos = re.indexIn(ValueString);
-  if (pos != -1) {
-    cacheFileName_ = ValueString.mid(pos + 9, re.matchedLength() - 10);
-  }
-  //cacheFileName_ = encoding2unicode(cacheFileName_.toLatin1(), serverEncodingID_);
-  filename = cacheFileName_;
-
-  if (isPreview_) {
-    cacheFileName_ = poolDir_ + cacheFileName_;
-
-    QFileInfo fi(cacheFileName_);
-
-    int i = 1;
-    QFileInfo fi2 = fi;
-
-    mutex_.lock();
-    if (downloadMap_.find(cacheFileName_) == downloadMap_.end() && !fi2.exists()) { 
-      downloadMap_[cacheFileName_] = FileLength;
-    }
-    while (fi2.exists()) {
-
-      QMap<QString, int>::iterator ii;
-      if ((ii = downloadMap_.find(cacheFileName_)) != downloadMap_.end()) { 
-        if (ii.value() == FileLength) {
-          mutex_.unlock();
-          netreply_->abort();
-          isExisting_ = true;
-          emit headerReceived(this, filename);
-          emit done(this);
-          return;
-        }
-      }
-
-      if (fi2.size() == FileLength) {
-        mutex_.unlock();
-        isExisting_ = true;
-        emit headerReceived(this, filename);
-        netreply_->abort();
-        return;
-      } else {
-		    cacheFileName_ = QString("%1/%2(%3).%4").arg(fi.path())
-								.arg(fi.completeBaseName()).arg(i).arg(fi.suffix());
-        fi2.setFile(cacheFileName_);
-        if (!fi2.exists()) {
-          downloadMap_[cacheFileName_] = FileLength;
-          break;
-        }
-        
-        i++;
-      }
-    }
-    mutex_.unlock();
-
-    fi.setFile(cacheFileName_);
-
-    QString strExt = fi.suffix().toLower();
-    if (strExt == "jpg" || strExt == "jpeg" || strExt == "gif" || strExt == "mng"
-        || strExt == "png" || strExt == "bmp") {
-      isPreview_ = true;
-    } else {
-      isPreview_ = false;
-    }
-  } else {
-    //getSaveFileName(cacheFileName_, NULL, strSave);
-	  mutex_.lock();
-
-	  FQTermFileDialog fileDialog(config_);
-    QString strSave = fileDialog.getSaveName(cacheFileName_, "*");
-	  mutex_.unlock();
-    // no filename specified which means the user canceled this download
-    if (strSave.isEmpty()) {
-      netreply_->abort();
-      emit done(this);
-      return ;
-    }
-    cacheFileName_ = strSave;
-  }
-
-  emit headerReceived(this, filename);
+  QNetworkRequest request(target);
+  // Qt resolves relative redirects, limits loops, and rejects HTTPS downgrades.
+  request.setAttribute(QNetworkRequest::RedirectPolicyAttribute,
+                       QNetworkRequest::NoLessSafeRedirectPolicy);
+  request.setMaximumRedirectsAllowed(10);
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+  request.setTransferTimeout(30000);
+#endif
+  netreply_.reset(nam_->get(request));
+  connect(netreply_.data(), &QNetworkReply::finished, this, &FQTermHttp::httpDone);
+  connect(netreply_.data(), &QNetworkReply::readyRead, this, &FQTermHttp::httpRead);
+  connect(netreply_.data(), &QNetworkReply::downloadProgress, this, &FQTermHttp::httpProgress);
+  connect(netreply_.data(), &QNetworkReply::metaDataChanged, this, &FQTermHttp::httpResponse);
 }
 
+void FQTermHttp::httpResponse() {
+  const int status = netreply_->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+  if (!completed_ && !choosingFile_ && status >= 200 && status < 300)
+    prepareDownload();
+}
 
-void FQTermHttp::httpRead(qint64 done, qint64 total) {
-  QByteArray ba = netreply_->readAll();
-  QFile file(cacheFileName_);
-  if (file.open(QIODevice::ReadWrite | QIODevice::Append)) {
-    QDataStream ds(&file);
-    ds.writeRawData(ba, ba.size());
-    file.close();
-  }
-  if (total != 0) {
-	//m_pDialog->setProgress(done,total);
-    int p = done *100 / total;
-    if (p - lastPercent_ >= 10 && isPreview_ && QFileInfo(cacheFileName_).suffix().toLower() == "jpg") {
-      if (!previewEmitted) {
-        emit previewImage(cacheFileName_,true, false);
-        previewEmitted = true;
-      } else {
-        emit previewImage(cacheFileName_,false, false);
-      }
-      lastPercent_ = p;
+bool FQTermHttp::prepareDownload() {
+  if (download_)
+    return true;
+  if (canceled_ || !failureReason_.isEmpty())
+    return false;
+  suggestedName_ = responseFileName(netreply_->rawHeader("Content-Disposition"), netreply_->url());
+  QString directory = poolDir_;
+  if (!isPreview_) {
+    choosingFile_ = true;
+    FQTermFileDialog dialog(config_);
+    cacheFileName_ = dialog.getSaveName(suggestedName_, "*");
+    choosingFile_ = false;
+    // The modal dialog runs a nested event loop: finished may arrive there.
+    QTimer::singleShot(0, this, [this]() {
+      if (!completed_ && netreply_ && netreply_->isFinished())
+        httpDone();
+    });
+    if (canceled_ || cacheFileName_.isEmpty()) {
+      cancel();
+      return false;
     }
-    emit percent(p);
+    directory = QFileInfo(cacheFileName_).absolutePath();
+  }
+  if (!QDir().mkpath(directory)) {
+    fail(tr("Cannot create download directory: %1").arg(directory));
+    return false;
+  }
+  download_.reset(new QTemporaryFile(QDir(directory).filePath(".fqterm-download-XXXXXX")));
+  if (!download_->open()) {
+    fail(tr("Cannot create download file: %1").arg(download_->errorString()));
+    return false;
+  }
+  emit headerReceived(this, suggestedName_);
+  return true;
+}
+
+void FQTermHttp::httpRead() {
+  if (completed_ || canceled_ || choosingFile_ || !failureReason_.isEmpty())
+    return;
+  const int status = netreply_->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+  if (status < 200 || status >= 300 || !prepareDownload())
+    return;
+  const QByteArray data = netreply_->readAll();
+  if (download_->write(data) != data.size())
+    fail(tr("Cannot write download file: %1").arg(download_->errorString()));
+}
+
+void FQTermHttp::httpProgress(qint64 received, qint64 total) {
+  if (!completed_ && !canceled_ && total > 0)
+    emit percent(qBound(0, int(100.0 * received / total), 100));
+}
+
+void FQTermHttp::fail(const QString &reason) {
+  failureReason_ = reason;
+  if (netreply_ && netreply_->isRunning())
+    netreply_->abort();
+}
+
+void FQTermHttp::reportResult(const QString &reason) {
+  if (netreply_) {
+    QString networkError = netreply_->errorString();
+    networkError.replace(netreply_->url().toString(), diagnosticUrl(netreply_->url()));
+    networkError.replace(originalUrl_.toString(), diagnosticUrl(originalUrl_));
+    qInfo().noquote() << "FQTerm download: url=" << diagnosticUrl(netreply_->url())
+        << "status=" << netreply_->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt()
+        << "networkError=" << int(netreply_->error()) << networkError
+        << "contentType=" << netreply_->rawHeader("Content-Type")
+        << "contentDisposition=" << netreply_->rawHeader("Content-Disposition").left(512)
+        << "cache=" << cacheFileName_
+        << "bytes=" << (download_ ? download_->size() : 0)
+        << "result=" << reason;
   }
 }
 
 void FQTermHttp::httpDone() {
-    mutex_.lock();
-    downloadMap_.remove(cacheFileName_);
-    mutex_.unlock();
-    if (isPreview_) {
-      emit previewImage(cacheFileName_, true, true);
+  if (completed_ || choosingFile_)
+    return;
+  if (netreply_ && !canceled_ && failureReason_.isEmpty() &&
+      netreply_->error() == QNetworkReply::NoError)
+    httpRead();  // finished may deliver bytes without a final progress update.
+  if (completed_)
+    return;
+  completed_ = true;
+
+  QString reason = failureReason_;
+  if (!canceled_ && reason.isEmpty() && netreply_) {
+    const int status = netreply_->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+    if (netreply_->error() != QNetworkReply::NoError || status < 200 || status >= 300) {
+      QString detail = netreply_->errorString();
+      if (netreply_->error() == QNetworkReply::OperationCanceledError)
+        detail = tr("Download timed out: no data was received for 30 seconds.");
+      detail.replace(netreply_->url().toString(), diagnosticUrl(netreply_->url()));
+      detail.replace(originalUrl_.toString(), diagnosticUrl(originalUrl_));
+      reason = tr("Download failed (HTTP %1, Qt error %2): %3")
+          .arg(status).arg(int(netreply_->error())).arg(detail);
+    }
+  }
+  if (!canceled_ && reason.isEmpty() && (!download_ || !download_->flush()))
+    reason = tr("The download is empty or could not be saved.");
+
+  if (!canceled_ && reason.isEmpty() && isPreview_) {
+    QImageReader reader(download_->fileName());
+    reader.setDecideFormatFromContent(true);
+    const QByteArray format = reader.format().toLower();
+    if (reader.read().isNull()) {
+      reason = tr("The downloaded file is not a readable image (Content-Type: %1): %2")
+          .arg(netreply_->header(QNetworkRequest::ContentTypeHeader).toString(), reader.errorString());
     } else {
-      emit message("Download one file successfully");
+      // Key by the ORIGINAL complete URL, including all query parameters.
+      const QByteArray key = QCryptographicHash::hash(
+          originalUrl_.adjusted(QUrl::RemoveFragment).toEncoded(), QCryptographicHash::Sha256).toHex();
+      cacheFileName_ = QDir(poolDir_).filePath(QString("%1-%2.%3")
+          .arg(QFileInfo(suggestedName_).completeBaseName().left(80),
+               QString::fromLatin1(key), QString::fromLatin1(format)));
     }
-    emit done(this);
+  }
+
+  if (!canceled_ && reason.isEmpty()) {
+    // Atomic replacement prevents partial files and same-size cache mixups.
+    QSaveFile output(cacheFileName_);
+    if (!download_->seek(0) || !output.open(QIODevice::WriteOnly)) {
+      reason = tr("Cannot save download: %1").arg(output.errorString());
+    } else {
+      while (!download_->atEnd()) {
+        const QByteArray block = download_->read(65536);
+        if (block.isEmpty() || output.write(block) != block.size()) {
+          reason = tr("Cannot save download: %1").arg(output.errorString());
+          break;
+        }
+      }
+      if (reason.isEmpty() && !output.commit())
+        reason = tr("Cannot save download: %1").arg(output.errorString());
+    }
+  }
+  reportResult(canceled_ ? QString("canceled") : reason.isEmpty() ? QString("success") : reason);
+  download_.reset();
+  if (!canceled_) {
+    if (!reason.isEmpty())
+      emit error(reason);
+    else if (isPreview_)
+      emit previewImage(cacheFileName_, true, true);
+    else
+      emit message(tr("Download one file successfully"));
+  }
+  emit done(this);
 }
 
-void FQTermHttp::httpError(QNetworkReply::NetworkError code) {
-    switch(code)
-    {
-    case QNetworkReply::OperationCanceledError:
-      break;
-    default:
-      QMessageBox::critical(NULL, tr("Download Error"), tr("Failed to download file\n code=%1").arg(code));
-      //deleteLater(); /*Not needed. http done will be called and this will cause a double free.
-      //return;
-      break;
-    }
-}
-
-void FQTermHttp::setProxy(const QNetworkProxy & proxy) {
+void FQTermHttp::setProxy(const QNetworkProxy &proxy) {
   nam_->setProxy(proxy);
 }
-}  // namespace FQTerm
 
-#include "fqterm_http.moc"
+}  // namespace FQTerm
